@@ -1,0 +1,267 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panel" header="Reportes">
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteResolucionComplexivo}"
+					value="Generar resolución complexivo" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporte.carreraTrabajoTitulacion}" filter="true"
+					filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteResolucionTrabajoTitulacion}"
+					value="Generar resolución trabajo titulación" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+					<p:ajax update="fecha" event="change"
+						listener="#{reporte.consultarFechaC}" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu required="true" requiredMessage="Escoja un tipo"
+					value="#{reporte.consultaOrdGra}"
+					styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+					<f:selectItem itemValue="1" itemLabel="Ordinario" />
+					<f:selectItem itemValue="2" itemLabel="Gracia" />
+					<p:ajax update="fecha" event="change"
+						listener="#{reporte.consultarFechaC}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Fecha de sustentación" styleClass="DispBlock" />
+				<p:selectOneMenu id="fecha" required="true" requiredMessage="Fecha"
+					value="#{reporte.fechaActaComplexivo}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItems value="#{reporte.listFechasComplexivo}" var="fecha"
+						itemValue="#{fecha.id}" itemLabel="#{fecha.id}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteActasCalificacionComplexivo}"
+					value="Generar actas complexivo" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporte.carreraTrabajoTitulacion}" filter="true"
+					filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+					<p:ajax update="fecha" event="change"
+						listener="#{reporte.consultarFechaTT}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Fecha de sustentación" styleClass="DispBlock" />
+				<p:selectOneMenu id="fecha" required="true" requiredMessage="Fecha"
+					value="#{reporte.fechaActaTrabajoTitulacion}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItems value="#{reporte.listFechasTrabajoTitulacion}"
+						var="fecha" itemValue="#{fecha.id}" itemLabel="#{fecha.id}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteActasCalificacionTrabajoTitulacion}"
+					value="Generar actas trabajo titulación" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporte.carreraTrabajoTitulacion}" filter="true"
+					filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteTutorias}"
+					value="Resumen tutorias" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{reporte.reporteCTT}"
+					styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+					<f:selectItem itemValue="1" itemLabel="Complexivo" />
+					<f:selectItem itemValue="2" itemLabel="Trabajo de titulación" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{reporte.consultaNomCal}"
+					styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+					<f:selectItem itemValue="1" itemLabel="Ordenar por nombre" />
+					<f:selectItem itemValue="2" itemLabel="Ordenar por calificacion" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{reporte.consultaPdfExcel}"
+					styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+					<f:selectItem itemValue="1" itemLabel="Generar en pdf" />
+					<f:selectItem itemValue="2" itemLabel="Generar en xls" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteEstudiantesCalificaciones}"
+					value="Calificaciones" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="MargTop10" />
+				<p:calendar id="datetime" value="#{reporte.fechaAptitud}"
+					pattern="dd/MM/yyyy" styleClass="TexAlCenter MargTop10 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteAptitudLegal}"
+					value="Aptitud legal" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+					<p:ajax update="actInc" event="change"
+						listener="#{reporte.consultarNumeroActa}" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu id="actInc" value="#{reporte.numeroActa}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItems value="#{reporte.listNumeroFechaActaIncorporacion}"
+						var="actInc" itemValue="#{actInc.numeroActa}¬#{actInc.fechaActa}"
+						itemLabel="#{actInc.numeroActa} | #{actInc.fechaActa}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteActaIncorporacion}"
+					value="Acta de incorporación" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormReportes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera" value="#{reporte.carreraComplexivo}"
+					filter="true" filterMatchMode="contains"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems value="#{reporte.listCarreraComplexivo}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporte.reporteActaGraduacion}"
+					value="Acta de graduación" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<div class="EmptyBox10"></div>
+			<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+				icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+		</p:panel>
+	</ui:define>
+
+</ui:composition>

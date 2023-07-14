@@ -1,0 +1,240 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Recepción de la parte práctica, dimensión escrita del examen complexivo"
+						visible="#{recepcionPPDEECBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{recepcionPPDEECBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{recepcionPPDEECBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{recepcionPPDEECBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{recepcionPPDEECBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText
+												value="#{recepcionPPDEECBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{recepcionPPDEECBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteExamenComplexivoPP"
+									value="#{recepcionPPDEECBean.listadoEstudiantesExamenComplexivoPP}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 10%" />
+											<p:column rowspan="2" headerText="Estudiante" />
+											<p:column rowspan="2" headerText="Especialista 1" />
+											<p:column colspan="2" headerText="Porcentaje de coincidencia" />
+											<p:column rowspan="2" headerText="Especialista 2" />
+											<p:column colspan="2"
+												headerText="Citas bibliográficas de papers" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Rev. 1" />
+											<p:column headerText="Rev. 2" />
+											<p:column headerText="Rev. 1" />
+											<p:column headerText="Rev. 2" />
+
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnComiteEvaluador" value="Validar documento" />
+										<p:commandButton id="btnComiteEvaluador"
+											icon="fa fa-users white"
+											action="#{recepcionPPDEECBean.seleccionarComiteEvaluador}"
+											rendered="#{((estudianteExamenComplexivoPP.antiplagio le 10 or estudianteExamenComplexivoPP.antiplagio2 le 10) and (estudianteExamenComplexivoPP.citas1 ge 10 or estudianteExamenComplexivoPP.citas2 ge 10)) ? true : false}"
+											disabled="#{estudianteExamenComplexivoPP.recepcionPPDE ? true : false}"
+											update="panelPrincipal, panelSeleccionar, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{recepcionPPDEECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.estudiante.id} - #{estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista1.id} - #{estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value=" #{estudianteExamenComplexivoPP.antiplagio}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.antiplagio2}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista2.id} - #{estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudianteExamenComplexivoPP.citas1}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudianteExamenComplexivoPP.citas2}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Validar recepción de la parte práctica, dimensión escrita del examen complexivo"
+						visible="#{recepcionPPDEECBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{recepcionPPDEECBean.estudianteExamenComplexivoPP.estudiante.id} - #{recepcionPPDEECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{recepcionPPDEECBean.estudianteExamenComplexivoPP.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar recepción"
+											actionListener="#{recepcionPPDEECBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{recepcionPPDEECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

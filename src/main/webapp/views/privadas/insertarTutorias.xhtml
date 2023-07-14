@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal"
+			header="Administrar Temas Prácticos y Comites de Evaluación">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{administrarTemasPracticosBean.carrera}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{administrarTemasPracticosBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{administrarTemasPracticosBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{administrarTemasPracticosBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{administrarTemasPracticosBean.listTemaPracticos}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnNuevo"
+								value="Insertar estudiante para tutoria" />
+							<p:commandButton id="btnNuevo" icon="fa fa-edit white"
+								update="formDataTable, :formNuevo"
+								oncomplete="PF('panelEditar').show()">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{administrarTemasPracticosBean.temaPractico}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Cédula" styleClass="Wid5">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.id}" />
+						</p:column>
+
+						<p:column headerText="Apellido paterno" styleClass="Wid5">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno}" />
+						</p:column>
+
+						<p:column headerText="Apellido materno" styleClass="Wid5">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno}" />
+						</p:column>
+
+						<p:column headerText="Nombres" styleClass="Wid5">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.nombre}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelInsertar" header="Insertar Comité Evaluador"
+			styleClass="DispNone">
+			<h:form id="formNuevo">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputTextarea value="" styleClass="DispBlock Wid90" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar"
+					update=":formDataTable ,:mensaje, formNuevo"
+					oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertar')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{administrarTemasPracticosBean.insertarComiteEvaluador}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelInsertar')" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

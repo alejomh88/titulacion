@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Validar reactivos teóricos">
+			<div class="TexAlCenter">
+
+				<h:form id="busqueda">
+					<div>
+						<p:selectOneMenu id="carrera" required="true"
+							requiredMessage="Carrera"
+							value="#{administrarPreguntasValidacionBean.carrera}"
+							filter="true" filterMatchMode="contains" styleClass="Wid90">
+							<f:selectItem itemValue="0" itemLabel="Carrera" />
+							<f:selectItems
+								value="#{administrarPreguntasValidacionBean.listaCarreras}"
+								var="carrera" itemValue="#{carrera.id}"
+								itemLabel="#{carrera.nombre}" />
+						</p:selectOneMenu>
+						<p:commandButton id="btnAgregar" icon="fa fa-search white"
+							style="margin-left: 3px; position: absolute;"
+							actionListener="#{administrarPreguntasValidacionBean.buscarReactivosTeoricos}"
+							update=":FDTReactivosTeoricos, :mensaje" />
+					</div>
+				</h:form>
+
+				<h:form id="FDTReactivosTeoricos">
+					<p:dataTable var="pregunta"
+						value="#{administrarPreguntasValidacionBean.listaPreguntas}"
+						paginator="true" rows="10"
+						rowStyleClass="#{pregunta.activo != true ? 'desactivo' : pregunta.revisado eq true ? 'revisado' : null }"
+						reflow="true" emptyMessage="No hay Información Disponible"
+						first="#{administrarPreguntasValidacionBean.paginaActual}">
+
+						<p:ajax event="page"
+							listener="#{administrarPreguntasValidacionBean.onPageChange}" />
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnEditar" value="Editar" />
+							<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+								disabled="#{pregunta.activo==true?'false':'true'}"
+								action="#{administrarPreguntasValidacionBean.cargarEditar}">
+								<f:setPropertyActionListener value="#{pregunta}"
+									target="#{administrarPreguntasValidacionBean.pregunta}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnVisualizar" value="Visualizar" />
+							<p:commandButton id="btnVisualizar" icon="fa fa-search white"
+								disabled="#{pregunta.activo==true?'false':'true'}"
+								action="#{administrarPreguntasValidacionBean.cargarVisualizar}">
+								<f:setPropertyActionListener value="#{pregunta}"
+									target="#{administrarPreguntasValidacionBean.pregunta}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnEliminar"
+								value="#{pregunta.activo==true?'Desactivar':'Activar'}" />
+							<p:commandButton id="btnEliminar"
+								icon="#{pregunta.activo==true?'fa fa-close white':'fa fa-check white'}"
+								update="FDTReactivosTeoricos, :mensaje"
+								actionListener="#{administrarPreguntasValidacionBean.eliminarPregunta(pregunta)}" />
+						</p:column>
+
+						<p:column headerText="Id" styleClass="Wid10">
+							<p:outputLabel value="#{pregunta.id}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Unidad Curricular" styleClass="Wid10">
+							<p:outputLabel
+								value="#{pregunta.unidadDidactica.asignatura.unidadCurricular.nombre}"
+								escape="false" />
+						</p:column>
+
+						<p:column headerText="Asignatura" styleClass="Wid10">
+							<p:outputLabel
+								value="#{pregunta.unidadDidactica.asignatura.nombre}"
+								escape="false" />
+						</p:column>
+
+						<p:column headerText="Enunciado" styleClass="Wid40">
+							<p:outputLabel value="#{pregunta.enunciado}" escape="false" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+				</h:form>
+			</div>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

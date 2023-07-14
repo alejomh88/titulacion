@@ -1,0 +1,938 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+	
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Historial Estudiante"
+						visible="#{historialEstudianteBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText placeholder="Cédula/Apellidos y Nombres"
+												required="true" requiredMessage="Ingrese datos en el campo"
+												value="#{historialEstudianteBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{historialEstudianteBean.buscar}"
+												update=":panelPrincipal, :panelEstudianteSeleccionado, :panelEC, :panelTT, :mensaje" />
+										</div>
+									</div>
+								</div>
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados búsqueda de estudiantes">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteHistorial"
+									value="#{historialEstudianteBean.listadoEstudiantesHistorial}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="5" reflow="true"
+									rowKey="#{estudianteHistorial.identificador}"
+									selection="#{historialEstudianteBean.estudianteHistorial}"
+									selectionMode="single"
+									emptyMessage="No hay Información Disponible">
+
+									<p:ajax event="rowSelect"
+										update=":panelPrincipal, :panelEstudianteSeleccionado, :panelEC, :panelTT, :mensaje"
+										listener="#{historialEstudianteBean.onRowSelect}" />
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="1" headerText="Cedula" />
+											<p:column rowspan="1" headerText="Estudiante" />
+											<p:column rowspan="1" headerText="Carrera" />
+										</p:row>
+
+									</p:columnGroup>
+
+									<p:column>
+										<p:outputLabel value="#{estudianteHistorial.cedula}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudianteHistorial.apellidosNombres}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteHistorial.carreraId} - #{estudianteHistorial.carrera}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+					</p:panel>
+
+					<div class="EmptyBox20"></div>
+
+					<p:panel id="panelEstudianteSeleccionado"
+						header="Estudiante Seleccionado"
+						visible="#{historialEstudianteBean.presentarTablaEstudianteEscogido}">
+
+
+						<h:form id="formDataTableDetalle">
+							<p:dataTable var="estudianteHistorialDetalle"
+								value="#{historialEstudianteBean.listadoEstudiantesHistorialDetalle}"
+								paginator="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="5" reflow="true"
+								rowKey="#{estudianteHistorialDetalle.identificador}"
+								emptyMessage="No hay Información Disponible">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="1" headerText="Acción" style="width: 5%;" />
+										<p:column rowspan="1" headerText="Estudiante" />
+										<p:column rowspan="1" headerText="Carrera" />
+										<p:column rowspan="1" headerText="Proceso" />
+										<p:column rowspan="1" headerText="Opción Titulación" />
+										<p:column rowspan="1" headerText="Nota Final" />
+										<p:column rowspan="1" headerText="Estado" />
+									</p:row>
+
+								</p:columnGroup>
+
+								<p:column>
+									<p:tooltip for="btnDetalleEstudiante"
+										value="Datos completos estudiante" />
+									<p:commandButton id="btnDetalleEstudiante"
+										icon="fa fa-eye white"
+										action="#{historialEstudianteBean.cargarDatosEstudiante}"
+										update=":panelPrincipal, :panelEstudianteSeleccionado, :panelEC, :panelTT, :mensaje">
+										<f:setPropertyActionListener
+											value="#{estudianteHistorialDetalle}"
+											target="#{historialEstudianteBean.estudianteHistorialDetalle}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteHistorialDetalle.cedula} - #{estudianteHistorialDetalle.apellidosNombres}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteHistorialDetalle.carreraId} - #{estudianteHistorialDetalle.carrera}" />
+								</p:column>
+
+								<p:column>
+									<p:button
+										value="#{estudianteHistorialDetalle.proceso} (#{estudianteHistorialDetalle.periodoProceso})"
+										target="_black"
+										href="#{estudianteHistorialDetalle.enlaceCronograma eq null ? estudianteHistorialDetalle.enlaceCronograma : estudianteHistorialDetalle.enlaceCronograma}"
+										readonly="#{estudianteHistorialDetalle.enlaceCronograma eq null ? true : false}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteHistorialDetalle.opcionTitulacion}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteHistorialDetalle.calificacionFinal}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{estudianteHistorialDetalle.estado}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div class="EmptyBox10"></div>
+						</h:form>
+
+					</p:panel>
+
+					<div class="EmptyBox20"></div>
+
+					<p:panel id="panelEC"
+						header="Detalle Opción Titulación del Esudiante Seleccionado"
+						visible="#{historialEstudianteBean.presentarTablaEC}">
+
+						<p:fieldset legend="Detalle opción Examen Complexivo"
+							rendered="#{historialEstudianteBean.presentarTablaEC}">
+
+							<h:form id="formDataTableExamenComplexivo">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Cedula" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.estudiante.id}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Apellidos y Nombres" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.estudiante.apellidoNombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Email" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.estudiante.email}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Teléfono" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.estudiante.telefono}"
+												readonly="true" />
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Unidad Académica" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.carrera.unidadAcademica.nombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.carrera.nombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPT.proceso.id} (#{historialEstudianteBean.estudianteExamenComplexivoPT.proceso.observacion})"
+												readonly="true" />
+										</div>
+									</div>
+								</div>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+						<p:fieldset legend="Parte Teórica">
+							<h:form id="formDataTableExamenComplexivoExamenes">
+								<p:dataTable var="ex"
+									value="#{historialEstudianteBean.examenes}" reflow="true"
+									rowKey="ex.id" scrollable="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="1" headerText="Tipo Examen" />
+											<p:column rowspan="1" headerText="Número del Grupo" />
+											<p:column rowspan="1" headerText="Hora Examen" />
+											<p:column rowspan="1" headerText="Calificación" />
+											<p:column rowspan="1" headerText="Estado" />
+										</p:row>
+
+									</p:columnGroup>
+
+									<p:column>
+										<p:outputLabel
+											value="#{ex.tipoExamen.id eq 'OR' ? 'Ordinario' : 'Gracia'}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{ex.grupo.id}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{ex.grupo.fechaInicio}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{ex.preguntasExamenes.size()}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{ex.preguntasExamenes.size() ge 20 ? 'APROBADO' : 'REPROBADO'}" />
+									</p:column>
+
+								</p:dataTable>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset
+							legend="PARTE PRÁCTICA: #{historialEstudianteBean.estudianteExamenComplexivoPP.id eq null ? '(El estudiante no continuó con el proceso)' : ''}">
+
+							<h:form id="formDetalleEstudianteECPartePractica">
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive"
+									style="display: #{historialEstudianteBean.estudianteExamenComplexivoPP.id eq null? 'none;': 'block;'}">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{historialEstudianteBean.estudianteExamenComplexivoPP.tituloInvestigacion eq null ? 'El estudiante no continuó con el proceso' : historialEstudianteBean.estudianteExamenComplexivoPP.tituloInvestigacion}" />
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Tutor" />
+											<p:inputText
+												value="(#{historialEstudianteBean.estudianteExamenComplexivoPP.tutor.id}) #{historialEstudianteBean.estudianteExamenComplexivoPP.tutor.apellidoNombre}"
+												readonly="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Número de tutorías" />
+											<p:inputText
+												value="#{historialEstudianteBean.tutoriasEC.size()}"
+												readonly="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Horas de tutorías" />
+											<p:inputText
+												value="#{historialEstudianteBean.numeroHorasTutorias}"
+												readonly="true" />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive"
+									style="display: #{historialEstudianteBean.estudianteExamenComplexivoPP.id eq null? 'none;': 'block;'}">
+									<p:fieldset legend="Comité evaluador y calificaciones">
+										<div class="ui-grid-row">
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Especialista 1" />
+												<br />
+												<p:outputLabel
+													value="(#{historialEstudianteBean.estudianteExamenComplexivoPP.especialista1.id}) #{historialEstudianteBean.estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+												<br />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Esc" />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ee1}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Ord." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ooe1}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Gra." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.oge1}" />
+													</div>
+												</div>
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Especialista 2" />
+												<br />
+												<p:outputLabel
+													value="(#{historialEstudianteBean.estudianteExamenComplexivoPP.especialista2.id}) #{historialEstudianteBean.estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+												<br />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Esc" />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ee2}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Ord." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ooe2}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Gra." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.oge2}" />
+													</div>
+												</div>
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Especialista 3" />
+												<br />
+												<p:outputLabel
+													value="(#{historialEstudianteBean.estudianteExamenComplexivoPP.especialista3.id}) #{historialEstudianteBean.estudianteExamenComplexivoPP.especialista3.apellidoNombre}" />
+												<br />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Esc" />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ee3}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Ord." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ooe3}" />
+													</div>
+													<div class="ui-grid-col-4UiGridCol">
+														<p:outputLabel value="Oral Gra." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.oge3}" />
+													</div>
+												</div>
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Especialista Suplente 1" />
+												<br />
+												<p:outputLabel
+													value="(#{historialEstudianteBean.estudianteExamenComplexivoPP.especialistaSuplente1.id}) #{historialEstudianteBean.estudianteExamenComplexivoPP.especialistaSuplente1.apellidoNombre}" />
+												<br />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Esc" />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.es1}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Ord." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.oos1}" />
+													</div>
+													<div class="ui-grid-col-4 UiGridCol">
+														<p:outputLabel value="Oral Gra." />
+														<p:inputText readonly="true"
+															value="#{historialEstudianteBean.estudianteExamenComplexivoPP.ogs1}" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</p:fieldset>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="EXAMEN COMPLEXIVO"
+													styleClass="FontBold" />
+											</div>
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="LUGAR" styleClass="FontBold" />
+											</div>
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="FECHAS" styleClass="FontBold" />
+											</div>
+											<div class="ui-grid-col-2 UiGridCol">
+												<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox30"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="PARTE TEÓRICA FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol"></div>
+
+											<div class="ui-grid-col-2 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionParteTeoricaFinal==0 ? '' : historialEstudianteBean.calificacionParteTeoricaFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="PARTE PRÁCTICA ESCRITA FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-2 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionParteEscritaFinal==0 ? '' : historialEstudianteBean.calificacionParteEscritaFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="PARTE PRÁCTICA ORAL  FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.estudianteExamenComplexivoPP.fechaSustentacionGracia == null ? historialEstudianteBean.estudianteExamenComplexivoPP.lugarSustentacionOrdinaria : historialEstudianteBean.estudianteExamenComplexivoPP.lugarSustentacionGracia}"
+													readonly="true" styleClass="TexAlRight">
+													<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+														timeZone="America/Guayaquil" />
+												</p:inputText>
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.estudianteExamenComplexivoPP.fechaSustentacionGracia == null ? historialEstudianteBean.estudianteExamenComplexivoPP.fechaSustentacionOrdinaria : historialEstudianteBean.estudianteExamenComplexivoPP.fechaSustentacionGracia}"
+													readonly="true" styleClass="TexAlRight">
+													<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+														timeZone="America/Guayaquil" />
+												</p:inputText>
+											</div>
+
+											<div class="ui-grid-col-2 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionParteOralFinal==0 ? '' : historialEstudianteBean.calificacionParteOralFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="CALIFICACIÓN TOTAL FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-2 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionFinal==0 ? '' : historialEstudianteBean.calificacionFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-8 UiGridCol">
+												<p:inputText
+													value="#{dashboardECBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</h:form>
+						</p:fieldset>
+					</p:panel>
+
+					<p:panel id="panelTT"
+						visible="#{historialEstudianteBean.presentarTablaTT}">
+
+						<p:fieldset legend="Detalle opción Trabajo Titulación"
+							rendered="#{historialEstudianteBean.presentarTablaTT}">
+
+							<h:form id="formDataTableTrabajoTitulacion">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Cedula" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.estudiante.id}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Apellidos y Nombres" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Email" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.estudiante.email}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Teléfono" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.estudiante.telefono}"
+												readonly="true" />
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Unidad Académica" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.carrera.unidadAcademica.nombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.carrera.nombre}"
+												readonly="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:inputText
+												value="#{historialEstudianteBean.estudianteTrabajoTitulacion.proceso.id} (#{historialEstudianteBean.estudianteTrabajoTitulacion.proceso.observacion})"
+												readonly="true" />
+										</div>
+									</div>
+								</div>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form id="formDetalleEstudianteTT">
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Título de la investigación" />
+										<p:inputText readonly="true"
+											value="#{historialEstudianteBean.estudianteTrabajoTitulacion.tituloInvestigacion}" />
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:outputLabel value="Tutor" />
+										<p:inputText
+											value="(#{historialEstudianteBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.id}) #{historialEstudianteBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre}"
+											readonly="true" />
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:outputLabel value="Número de tutorías" />
+										<p:inputText
+											value="#{historialEstudianteBean.tutoriasTT.size()}"
+											readonly="true" />
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:outputLabel value="Horas de tutorías" />
+										<p:inputText
+											value="#{historialEstudianteBean.numeroHorasTutorias}"
+											readonly="true" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<p:fieldset legend="Comité evaluador y calificaciones">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Especialista 1" />
+											<br />
+											<p:outputLabel
+												value="(#{historialEstudianteBean.estudianteTrabajoTitulacion.especialista1.id}) #{historialEstudianteBean.estudianteTrabajoTitulacion.especialista1.apellidoNombre}" />
+											<br />
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Esc" />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.ee1}" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Oral Ord." />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.oe1}" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Especialista 2" />
+											<br />
+											<p:outputLabel
+												value="(#{historialEstudianteBean.estudianteTrabajoTitulacion.especialista2.id}) #{historialEstudianteBean.estudianteTrabajoTitulacion.especialista2.apellidoNombre}" />
+											<br />
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Esc" />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.ee2}" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Oral Ord." />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.oe2}" />
+												</div>
+											</div>
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Especialista 3" />
+											<br />
+											<p:outputLabel
+												value="(#{historialEstudianteBean.estudianteTrabajoTitulacion.especialista3.id}) #{historialEstudianteBean.estudianteTrabajoTitulacion.especialista3.apellidoNombre}" />
+											<br />
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Esc" />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.ee3}" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Oral Ord." />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.oe3}" />
+												</div>
+											</div>
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Especialista Suplente 1" />
+											<br />
+											<p:outputLabel
+												value="(#{historialEstudianteBean.estudianteTrabajoTitulacion.especialistaSuplente1.id}) #{historialEstudianteBean.estudianteTrabajoTitulacion.especialistaSuplente1.apellidoNombre}" />
+											<br />
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Esc" />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.es1}" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Oral Ord." />
+													<p:inputText readonly="true"
+														value="#{historialEstudianteBean.estudianteTrabajoTitulacion.os1}" />
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</p:fieldset>
+
+								<div class="EmptyBox10"></div>
+
+								<p:fieldset legend="Calificaciones">
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="TRABAJO TITULACIÓN"
+													styleClass="FontBold" />
+											</div>
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="FECHAS" styleClass="FontBold" />
+											</div>
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox30"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="PARTE ESCRITA" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionParteEscritaFinal==0 ? '' : historialEstudianteBean.calificacionParteEscritaFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="SUSTENTACIÓN ORAL FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.estudianteTrabajoTitulacion.fechaSustentacion == null ? '' : historialEstudianteBean.estudianteTrabajoTitulacion.fechaSustentacion}"
+													readonly="true" styleClass="TexAlRight">
+													<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+														timeZone="America/Guayaquil" />
+												</p:inputText>
+
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionParteOralFinal==0 ? '' : historialEstudianteBean.calificacionParteOralFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="CALIFICACIÓN TOTAL FINAL"
+													styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionFinal==0 ? '' : historialEstudianteBean.calificacionFinal}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-8 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="URL DSPACE" styleClass="FontBold" />
+											</div>
+
+											<div class="ui-grid-col-8 UiGridCol">
+												<p:inputText
+													value="#{historialEstudianteBean.estudianteTrabajoTitulacion.urlBiblioteca == null ? '' : historialEstudianteBean.estudianteTrabajoTitulacion.urlBiblioteca}"
+													readonly="true" styleClass="TexAlRight" />
+											</div>
+
+										</div>
+									</div>
+
+								</p:fieldset>
+
+							</div>
+
+						</h:form>
+
+					</p:panel>
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

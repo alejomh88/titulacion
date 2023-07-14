@@ -1,0 +1,561 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Gestión de seminarios para la modalidad Trabajo de Titulación."
+						visible="#{gestionSeminarioTTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{gestionSeminarioTTBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{gestionSeminarioTTBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id} | #{proceso.observacion}" />
+												<p:ajax event="change"
+													listener="#{gestionSeminarioTTBean.obtenerCarreras}"
+													update="carrera" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{gestionSeminarioTTBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{gestionSeminarioTTBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.id} | #{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Seminario" />
+											<p:inputText
+												value="#{gestionSeminarioTTBean.criterioBusquedaSeminario}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{gestionSeminarioTTBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formSeminarios">
+								<p:dataTable var="semi"
+									value="#{gestionSeminarioTTBean.listadoSeminarios}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true" stickyHeader="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										<p:tooltip for="btnNuevo" value="Insertar" />
+										<p:commandButton id="btnNuevo" value="Insertar seminario"
+											disabled="#{gestionSeminarioTTBean.listadoSeminarios == null ? true : false}"
+											action="#{gestionSeminarioTTBean.insertarSeminarioPanel}"
+											update="panelPrincipal, panelInsertarSeminario, :mensaje" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Acción" style="width: 10%" />
+											<p:column headerText="Seminario" />
+											<p:column headerText="Línea investigación" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnEditarSeminario" value="Editar Seminario" />
+										<p:commandButton id="btnEditarSeminario"
+											icon="fa fa-edit white"
+											action="#{gestionSeminarioTTBean.presentarEditarSeminario}"
+											update="panelPrincipal, panelEditarSeminario, :mensaje">
+											<f:setPropertyActionListener value="#{semi}"
+												target="#{gestionSeminarioTTBean.seminario}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnEliminarSeminario"
+											value="Eliminar Seminario" />
+										<p:commandButton id="btnEliminarSeminario"
+											icon="fa fa-trash white"
+											action="#{gestionSeminarioTTBean.eliminarSeminario}"
+											update="panelPrincipal, panelEliminarSeminario, :mensaje">
+											<f:setPropertyActionListener value="#{semi}"
+												target="#{gestionSeminarioTTBean.seminario}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnDocentesAsignados"
+											value="Docentes asignados" />
+										<p:commandButton id="btnDocentesAsignados"
+											icon="fa fa-group white"
+											action="#{gestionSeminarioTTBean.presentarDocentes}"
+											update="panelPrincipal, panelPresentarDocentes, :mensaje">
+											<f:setPropertyActionListener value="#{semi}"
+												target="#{gestionSeminarioTTBean.seminario}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{semi.id} | #{semi.nombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{semi.lineaInvestigacionCarrera.lineaInvestigacion.nombre}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelInsertarSeminario" header="Ingreso de seminario"
+						visible="#{gestionSeminarioTTBean.panelInsertarSeminario}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Campos a llenar">
+
+							<h:form id="formInsertarSeminario">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Linea de investigación" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione una linea de investigación"
+												value="#{gestionSeminarioTTBean.lic}">
+												<f:selectItem itemValue="N"
+													itemLabel="Seleccione una linea de investigación" />
+												<f:selectItems
+													value="#{gestionSeminarioTTBean.listadoLineasInvestigacionCarreras}"
+													var="lic" itemValue="#{lic.id}"
+													itemLabel="#{lic.lineaInvestigacion.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Nombre del seminario" />
+											<p:inputText
+												placeholder="Escriba aquí el nombre del seminario a ingresar"
+												value="#{gestionSeminarioTTBean.seminario.nombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Importante: " styleClass="FontBold" />
+											<p:outputLabel styleClass="FontBold"
+												value="El seminario se guardará con el proceso y carrera que seleccionó previamente." />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnInsertarSeminario"
+												value="Insertar seminario" icon="fa fa-save white"
+												styleClass="GreenButton"
+												update="panelPrincipal, panelInsertarSeminario, :mensaje"
+												action="#{gestionSeminarioTTBean.insertarSeminario}" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnCancelarInsertarSeminario"
+												value="Cancelar" icon="fa fa-arrow-left white"
+												styleClass="OrangeButton"
+												update="panelPrincipal, panelInsertarSeminario, :mensaje"
+												action="#{gestionSeminarioTTBean.volverPrincipal}" />
+										</div>
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelEditarSeminario" header="Edición del seminario"
+						visible="#{gestionSeminarioTTBean.panelEditarSeminario}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Campos a llenar">
+
+							<h:form id="formEditarSeminario">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Linea de investigación" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione una linea de investigación"
+												value="#{gestionSeminarioTTBean.lic}">
+												<f:selectItem itemValue="N"
+													itemLabel="Seleccione una linea de investigación" />
+												<f:selectItems
+													value="#{gestionSeminarioTTBean.listadoLineasInvestigacionCarreras}"
+													var="lic" itemValue="#{lic.id}"
+													itemLabel="#{lic.lineaInvestigacion.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Nombre del seminario" />
+											<p:inputText
+												placeholder="Escriba aquí el nombre del seminario a ingresar"
+												value="#{gestionSeminarioTTBean.seminario.nombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEditarSeminario"
+												value="Editar seminario" icon="fa fa-save white"
+												styleClass="GreenButton"
+												update="panelPrincipal, panelEditarSeminario, :mensaje"
+												action="#{gestionSeminarioTTBean.actualizarSeminario}" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnCancelarEditarSeminario"
+												value="Cancelar" icon="fa fa-arrow-left white"
+												styleClass="OrangeButton"
+												update="panelPrincipal, panelEditarSeminario, :mensaje"
+												action="#{gestionSeminarioTTBean.volverPrincipal}" />
+										</div>
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelEliminarSeminario"
+						header="Eliminación del seminario #{gestionSeminarioTTBean.seminario.nombre}"
+						visible="#{gestionSeminarioTTBean.panelEliminarSeminario}">
+
+						<h:form id="formEliminarSeminario">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Eliminar seminario">
+											<div class="ui-grid-col-12 UiGridCol">
+												<p:outputLabel
+													value="¿Desea eliminar el seminario #{gestionSeminarioTTBean.seminario.nombre}?" />
+											</div>
+										</p:fieldset>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Eliminar"
+												actionListener="#{gestionSeminarioTTBean.eliminarSeminarioAccion}"
+												styleClass="GreenButton" icon="fa fa-trash white"
+												update="panelEliminarSeminario, panelPrincipal, :mensaje" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Cancelar" icon="fa fa-remove white"
+												action="#{gestionSeminarioTTBean.volverPrincipal}"
+												update="panelEliminarSeminario, panelPrincipal, :mensaje"
+												styleClass="RedButton" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelPresentarDocentes"
+						header="Gestionar docentes para el seminario #{gestionSeminarioTTBean.seminario.nombre}"
+						visible="#{gestionSeminarioTTBean.panelPresentarDocentes}">
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:commandButton id="btnVolverPrincipalTablaDocentes"
+										value="Volver" icon="fa fa-arrow-left white"
+										styleClass="OrangeButton"
+										action="#{gestionSeminarioTTBean.volverPrincipal}"
+										update="panelPrincipal, panelPresentarDocentes, :mensaje" />
+								</div>
+							</div>
+						</div>
+
+						<h:form id="formDocentesSeminarios">
+							<p:dataTable var="docenteSeminarioT"
+								value="#{gestionSeminarioTTBean.listadoDocenteSeminario}"
+								paginator="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" reflow="true" stickyHeader="true"
+								emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									<p:tooltip for="btnNuevoDocente" value="Asignar docente" />
+									<p:commandButton id="btnNuevoDocente"
+										value="Asignar docente al seminario"
+										action="#{gestionSeminarioTTBean.insertarDocenteSeminarioPanel}"
+										update="panelPrincipal, panelPresentarDocentes, panelInsertarDocenteSeminario, :mensaje" />
+								</f:facet>
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Acción" style="width: 15%" />
+										<p:column headerText="Docente" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+
+									<p:tooltip for="btnEliminarDocenteSeminario"
+										value="Eliminar docente" />
+									<p:commandButton id="btnEliminarDocenteSeminario"
+										icon="fa fa-trash white"
+										action="#{gestionSeminarioTTBean.eliminarDocenteSeminario}"
+										update="panelEliminarDocenteSeminario, panelPresentarDocentes, :mensaje">
+										<f:setPropertyActionListener value="#{docenteSeminarioT}"
+											target="#{gestionSeminarioTTBean.docenteSeminario}" />
+									</p:commandButton>
+
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{docenteSeminarioT.docente.apellidoNombre} - (#{docenteSeminarioT.docente.id})" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+
+						<div class="EmptyBox10"></div>
+
+					</p:panel>
+
+					<p:panel id="panelInsertarDocenteSeminario"
+						header="Asignación de docente al seminario #{gestionSeminarioTTBean.seminario.nombre}"
+						visible="#{gestionSeminarioTTBean.panelInsertarDocenteSeminario}">
+
+						<h:form id="formSeleccionDocente">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:fieldset legend="Criterio de búsqueda">
+											<div class="ui-grid-col-11 UiGridCol">
+												<p:inputText placeholder="Cédula/Apellidos y Nombres"
+													value="#{gestionSeminarioTTBean.criterioBusquedaDocente}" />
+											</div>
+											<div class="ui-grid-col-1 UiGridCol">
+												<p:commandButton icon="fa fa-search white"
+													action="#{gestionSeminarioTTBean.buscarDocente}"
+													update="panelInsertarDocenteSeminario, :mensaje" />
+											</div>
+										</p:fieldset>
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="doce" reflow="true"
+												value="#{gestionSeminarioTTBean.listadoDocentes}"
+												paginator="true" stickyHeader="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{doce.id}"
+												selection="#{gestionSeminarioTTBean.docenteSeleccionado}"
+												selectionMode="single">
+												<p:ajax event="rowSelect"
+													update="panelInsertarDocenteSeminario, :mensaje"
+													listener="#{gestionSeminarioTTBean.seleccionarDocente}" />
+
+												<p:column headerText="Docente">
+													<h:outputText value="#{doce.id} - #{doce.apellidoNombre}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<div class="ui-grid-col-12">
+											<p:outputLabel value="Docente" />
+											<p:inputText readonly="true" placeholder="() - "
+												value="( #{gestionSeminarioTTBean.docente.id} ) - #{gestionSeminarioTTBean.docente.apellidoNombre}" />
+										</div>
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:commandButton value="Guardar"
+												actionListener="#{gestionSeminarioTTBean.guardarDocente}"
+												styleClass="GreenButton"
+												update="panelInsertarDocenteSeminario, panelPresentarDocentes, :mensaje" />
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:commandButton value="Cancelar"
+												action="#{gestionSeminarioTTBean.volverPresentarDocentes}"
+												update="panelInsertarDocenteSeminario, panelPresentarDocentes, :mensaje"
+												styleClass="RedButton" />
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox10"></div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelEliminarDocenteSeminario"
+						header="Eliminación de docente asignado al seminario #{gestionSeminarioTTBean.seminario.nombre}"
+						visible="#{gestionSeminarioTTBean.panelEliminarDocenteSeminario}">
+
+						<h:form id="formEliminarDocente">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Eliminar docente asignado">
+											<div class="ui-grid-col-12 UiGridCol">
+												<p:outputLabel
+													value="¿Desea eliminar al docente (#{gestionSeminarioTTBean.docenteSeminario.docente.id}) #{gestionSeminarioTTBean.docenteSeminario.docente.apellidoNombre} del seminario #{gestionSeminarioTTBean.seminario.nombre}?" />
+											</div>
+										</p:fieldset>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Eliminar"
+												actionListener="#{gestionSeminarioTTBean.eliminarDocenteSeminarioAccion}"
+												styleClass="GreenButton" icon="fa fa-trash white"
+												update="panelEliminarDocenteSeminario, panelPresentarDocentes, :mensaje" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Cancelar" icon="fa fa-remove white"
+												action="#{gestionSeminarioTTBean.volverPresentarDocentes}"
+												update="panelEliminarDocenteSeminario, panelPresentarDocentes, :mensaje"
+												styleClass="RedButton" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+						</h:form>
+					</p:panel>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

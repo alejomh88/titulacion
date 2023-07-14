@@ -1,0 +1,144 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Administrar unidades didacticas">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+
+					<p:dataTable var="asignatura"
+						value="#{administrarUnidadesDidacticasBean.listAsignaturas}"
+						selectionMode="single"
+						selection="#{administrarUnidadesDidacticasBean.asignaturaSeleccionada}"
+						rowKey="#{asignatura.id}" reflow="true"
+						emptyMessage="No hay Información Disponible">
+
+						<f:facet name="header">
+							Escoja una asignatura
+						</f:facet>
+
+						<p:ajax event="rowSelect"
+							listener="#{administrarUnidadesDidacticasBean.onRowSelect}"
+							update=":FDTUnidadesDidacticas" />
+
+						<p:column headerText="Carrera" styleClass="Wid40">
+							<h:outputText
+								value="( #{asignatura.mallaCurricular.carrera.id} ) #{asignatura.mallaCurricular.carrera.nombre}"
+								escape="false" />
+						</p:column>
+
+						<p:column headerText="Nombre" styleClass="Wid40">
+							<h:outputText value="( #{asignatura.id} ) #{asignatura.nombre}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Unidad Curricular" styleClass="Wid40">
+							<h:outputText value="#{asignatura.unidadCurricular.nombre}"
+								escape="false" />
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<h:form id="FDTUnidadesDidacticas">
+					<p:dataTable var="unidadDidactica"
+						value="#{administrarUnidadesDidacticasBean.listUnidadesDidacticas}"
+						rowStyleClass="#{unidadDidactica.activo eq true ? null:'desactivo'}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<f:facet name="header">
+							Unidades Didácticas de #{administrarUnidadesDidacticasBean.asignaturaSeleccionada.nombre}
+							<div class="botonInsertar">
+								<p:tooltip for="btnAgregar" value="Agregar" />
+								<p:commandButton id="btnAgregar" icon="fa fa-plus-square white"
+									disabled="#{administrarUnidadesDidacticasBean.asignaturaSeleccionada!=null?'false':'true'}"
+									update=":FDTUnidadesDidacticas, :panelInsertar"
+									action="#{administrarUnidadesDidacticasBean.limpiar}"
+									oncomplete="mostarPanel('panelInsertar')">
+								</p:commandButton>
+							</div>
+						</f:facet>
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnEditar" value="Editar" />
+							<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+								update="FDTUnidadesDidacticas, :panelEditar"
+								oncomplete="mostarPanel('panelEditar')"
+								disabled="#{unidadDidactica.activo==true?'false':'true'}">
+								<f:setPropertyActionListener value="#{unidadDidactica}"
+									target="#{administrarUnidadesDidacticasBean.unidadDidactica}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnEliminar"
+								value="#{unidadDidactica.activo==true?'Desactivar':'Activar'}" />
+							<p:commandButton id="btnEliminar"
+								icon="#{unidadDidactica.activo==true?'fa fa-close white':'fa fa-check white'}"
+								update="FDTUnidadesDidacticas, :mensaje"
+								actionListener="#{administrarUnidadesDidacticasBean.eliminar(unidadDidactica)}" />
+						</p:column>
+
+						<p:column headerText="Nombre" styleClass="Wid40">
+							<p:outputLabel value="( #{unidadDidactica.id} ) #{unidadDidactica.nombre}" escape="false" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+			</div>
+		</p:panel>
+
+		<p:panel id="panelInsertar"
+			header="Insertar Unidad Didáctica en la asignatura #{administrarUnidadesDidacticasBean.asignaturaSeleccionada.nombre}"
+			styleClass="DispNone">
+			<div class="TexAlCenter">
+				<h:form id="formNuevo">
+
+					<p:inputTextarea
+						value="#{administrarUnidadesDidacticasBean.unidadDidactica.nombre}"
+						styleClass="DispBlock Wid90" />
+
+					<div class="EmptyBox10" />
+					<p:commandButton value="Guardar"
+						update=":FDTUnidadesDidacticas, :mensaje"
+						oncomplete="comprobar(xhr, status, args, 'panelInsertar')"
+						id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+						actionListener="#{administrarUnidadesDidacticasBean.insertar}"
+						styleClass="GreenButton" />
+					<p:commandButton value="Cancelar"
+						oncomplete="mostarPanel('panelInsertar')" id="btnNuevolimpiar"
+						icon="fa fa-close white" process="@this" styleClass="RedButton" />
+
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelEditar"
+			header="Editar Unidad Didáctica de la asignatura #{administrarUnidadesDidacticasBean.asignaturaSeleccionada.nombre}"
+			styleClass="DispNone">
+			<div class="TexAlCenter">
+				<h:form id="formEditar">
+
+					<p:inputTextarea
+						value="#{administrarUnidadesDidacticasBean.unidadDidactica.nombre}"
+						styleClass="DispBlock Wid90" />
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton value="Guardar"
+						update=":FDTUnidadesDidacticas, :mensaje"
+						oncomplete="comprobar(xhr, status, args, 'panelEditar')"
+						id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+						actionListener="#{administrarUnidadesDidacticasBean.actualizar}"
+						styleClass="GreenButton" />
+					<p:commandButton value="Cancelar"
+						oncomplete="mostarPanel('panelEditar')" id="btnNuevolimpiar"
+						icon="fa fa-close white" process="@this" styleClass="RedButton" />
+
+				</h:form>
+			</div>
+		</p:panel>
+
+	</ui:define>
+</ui:composition>

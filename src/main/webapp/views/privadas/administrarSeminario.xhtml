@@ -1,0 +1,232 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <p:panel id="panelPrincipal" header="Administrar seminarios">
+            <div class="TexAlCenter">
+                <h:form id="busqueda">
+                    <p:selectOneMenu id="carrera" required="true"
+                                     requiredMessage="Escoja una carrera"
+                                     value="#{administrarSeminarioBean.carrera}" filter="true"
+                                     filterMatchMode="contains"
+                                     styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+                        <f:selectItem itemValue="0" itemLabel="Escoja una carrera"/>
+                        <f:selectItems value="#{administrarSeminarioBean.listCarreras}"
+                                       var="carrera" itemValue="#{carrera.id}"
+                                       itemLabel="#{carrera.nombre}"/>
+                        <p:ajax update="busqueda" event="change"
+                                listener="#{administrarSeminarioBean.buscarLineaInvestigacionCarrera}"/>
+                    </p:selectOneMenu>
+                    <p:selectOneMenu id="asignatura" required="true"
+                                     requiredMessage="Escoja una linea de investigación"
+                                     value="#{administrarSeminarioBean.lineaInvestigacionCarrera}" filter="true"
+                                     filterMatchMode="contains"
+                                     styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+                        <f:selectItem itemValue="0"
+                                      itemLabel="Escoja una linea de investigación"/>
+                        <f:selectItems
+                                value="#{administrarSeminarioBean.listLineaInvestigacionCarrera}"
+                                var="lineaInvestigacionCarrera" itemValue="#{lineaInvestigacionCarrera.id}"
+                                itemLabel="#{lineaInvestigacionCarrera.lineaInvestigacion.nombre}"/>
+                        <p:ajax update="formDataTable" event="change"
+                                listener="#{administrarSeminarioBean.cambiarLI}"/>
+                    </p:selectOneMenu>
+                    <p:selectOneMenu required="true"
+                                     requiredMessage="Escoja un proceso"
+                                     value="#{administrarSeminarioBean.proceso}" filter="true"
+                                     filterMatchMode="contains"
+                                     styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+                        <f:selectItem itemValue="0" itemLabel="Escoja un proceso"/>
+                        <f:selectItems value="#{administrarSeminarioBean.listProceso}"
+                                       var="proceso" itemValue="#{proceso.id}"
+                                       itemLabel="#{proceso.id}"/>
+                        <p:ajax update="formDataTable" event="change"
+                                listener="#{administrarSeminarioBean.cambiarP}"/>
+                    </p:selectOneMenu>
+                    <div class="EmptyBox10"></div>
+                    <p:commandButton update="busqueda, :formDataTable, :mensaje"
+                                     icon="fa fa-search white" value="Buscar"
+                                     actionListener="#{administrarSeminarioBean.buscar}"/>
+                    <div class="EmptyBox10"></div>
+                </h:form>
+                <h:form id="formDataTable">
+                    <p:dataTable var="seminario"
+                                 value="#{administrarSeminarioBean.listSeminario}" reflow="true"
+                                 emptyMessage="No hay Información Disponible">
+
+                        <f:facet name="header">
+                            <p:commandButton update="formDataTable, :formNuevo, :mensaje"
+                                             icon="fa fa-plus white" value="Insertar seminario"
+                                             oncomplete="comprobar(xhr, status, args, 'panelInsertar')"
+                                             action="#{administrarSeminarioBean.limpiar}"/>
+                        </f:facet>
+
+                        <p:column headerText="Acción" styleClass="Wid10">
+                            <p:tooltip for="btnEditar" value="Editar"/>
+                            <p:commandButton id="btnEditar" icon="fa fa-pencil white"
+                                             update="formDataTable, :formEditar, :mensaje"
+                                             oncomplete="mostarPanel('panelEditar')">
+                                <f:setPropertyActionListener value="#{seminario}"
+                                                             target="#{administrarSeminarioBean.seminario}"/>
+                            </p:commandButton>
+                            <!-- <p:tooltip for="btnEliminar" value="Inactivar"/>
+                             <p:commandButton id="btnEliminar"
+                                              icon="#{pregunta.activo==true?'fa fa-trash white':'fa fa-check white'}"
+                                              update="formDataTable, :formEliminar, :panelEliminar, :mensaje"
+                                              oncomplete="PF('panelEliminar').show()">
+                                 <f:setPropertyActionListener value="#{seminario}"
+                                                              target="#{administrarSeminarioBean.seminario}"/>
+                             </p:commandButton>-->
+                        </p:column>
+
+                        <p:column headerText="Seminario" styleClass="Wid35">
+                            <p:outputLabel value="#{seminario.nombre}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <div class="Seperator MargTopBottom10"></div>
+
+                    <p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+                              icon="fa fa-arrow-left white" styleClass="OrangeButton"/>
+
+                    <div class="EmptyBox10"></div>
+                </h:form>
+            </div>
+        </p:panel>
+
+        <p:panel id="panelInsertar" header="Insertar seminario"
+                 styleClass="DispNone">
+            <h:form id="formNuevo">
+
+                <p:outputLabel value="Nombre" styleClass="DispBlock MargTop10"/>
+                <p:inputTextarea value="#{administrarSeminarioBean.seminario.nombre}"
+                                 styleClass="DispBlock Wid90"/>
+
+                <p:outputLabel value="Docentes" styleClass="DispBlock MargTop10"/>
+                <p:dataTable id="tablaDocentesSeminario" var="docSemi" reflow="true"
+                             value="#{administrarSeminarioBean.seminario.docentesSeminarios}"
+                             paginator="true"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                             rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+                             paginatorPosition="bottom">
+
+                    <f:facet name="header">
+                        <p:commandButton update=":formNuevo"
+                                         oncomplete="mostarPanelBusqueda('PanelBusqueda')"
+                                         action="#{administrarSeminarioBean.limpiarObjetosBusquedaEspecialista}"
+                                         icon="fa fa-search white" styleClass="BotonBuscar"/>
+                    </f:facet>
+
+                    <p:column headerText="Acción" styleClass="Wid10">
+                        <p:tooltip for="btnEliminarDocente" value="Inactivar"/>
+                        <p:commandButton id="btnEliminarDocente"
+                                         icon="fa fa-trash white"
+                                         update="tablaDocentesSeminario, :mensaje"
+                                         actionListener="#{administrarSeminarioBean.eliminarDocente(docSemi)}"/>
+                    </p:column>
+
+                    <p:column headerText="Cedula">
+                        #{docSemi.docente.id}
+                    </p:column>
+                    <p:column headerText="Docente">
+                        #{docSemi.docente.apellidoPaterno} #{docSemi.docente.apellidoMaterno} #{docSemi.docente.nombre}
+                    </p:column>
+                </p:dataTable>
+
+                <div id="PanelBusqueda" class="DispNone PanelBusqueda">
+                    <p:inputText id="txtCedula" placeholder="Cédula/Apellido-Nombre"
+                                 value="#{administrarSeminarioBean.criterioBusquedaEspecialista}"
+                                 onkeypress="if (event.keyCode == 13) { btnBuscarEspecialista1(); return false; }"
+                                 styleClass="DispBlock Wid90"/>
+                    <div class="EmptyBox10"></div>
+                    <p:remoteCommand name="btnBuscarEspecialista1"
+                                     actionListener="#{administrarSeminarioBean.buscarEspecialista}"
+                                     update="txtCedula, tablaClientes, :mensaje"/>
+                    <p:commandButton update="txtCedula, tablaClientes, :mensaje"
+                                     icon="fa fa-search white" value="Buscar"
+                                     actionListener="#{administrarSeminarioBean.buscarEspecialista}"/>
+                    <div class="EmptyBox10"></div>
+                    <p:dataTable id="tablaClientes" var="especialista" reflow="true"
+                                 value="#{administrarSeminarioBean.listEspecialista}"
+                                 paginator="true"
+                                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+                                 paginatorPosition="bottom" rowKey="#{especialista.id}"
+                                 selection="#{administrarSeminarioBean.especialista}"
+                                 selectionMode="single">
+                        <p:ajax event="rowSelect" update=":formNuevo, :mensaje"
+                                listener="#{administrarSeminarioBean.cargarEspecialista}"
+                                oncomplete="click('btnCerrarBusqueda')"/>
+                        <p:column headerText="Cedula">
+                            #{especialista.id}
+                        </p:column>
+                        <p:column headerText="Especialista">
+                            #{especialista.apellidoPaterno} #{especialista.apellidoMaterno} #{especialista.nombre}
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton id="btnCerrarBusqueda1" type="submit"
+                                     name="submit" styleClass="DispNone"
+                                     actionListener="mostarPanelBusqueda('PanelBusqueda')"/>
+                </div>
+
+                <div class="EmptyBox10"></div>
+                <p:commandButton value="Guardar"
+                                 update=":formDataTable, :mensaje, formEditar"
+                                 oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertar')"
+                                 icon="fa fa-floppy-o white"
+                                 actionListener="#{administrarSeminarioBean.insertar}"
+                                 styleClass="GreenButton"/>
+                <p:commandButton value="Cancelar" update=":formDataTable, :mensaje"
+                                 oncomplete="mostarPanel('panelInsertar')"
+                                 actionListener="#{administrarSeminarioBean.buscar}"
+                                 icon="fa fa-close white" process="@this" styleClass="RedButton"/>
+            </h:form>
+        </p:panel>
+
+        <p:panel id="panelEditar" header="Editar seminario"
+                 styleClass="DispNone">
+            <h:form id="formEditar">
+
+                <p:outputLabel value="Nombre" styleClass="DispBlock MargTop10"/>
+                <p:inputTextarea value="#{administrarSeminarioBean.seminario.nombre}"
+                                 styleClass="DispBlock Wid90"/>
+                <div class="EmptyBox10"></div>
+                <p:commandButton value="Guardar"
+                                 update=":formDataTable, :mensaje, formEditar"
+                                 oncomplete="comprobarInsertar(xhr, status, args, 'panelEditar')"
+                                 icon="fa fa-floppy-o white"
+                                 actionListener="#{administrarSeminarioBean.actualizar}"
+                                 styleClass="GreenButton"/>
+                <p:commandButton value="Cancelar" update=":formDataTable, :mensaje"
+                                 oncomplete="mostarPanel('panelEditar')"
+                                 actionListener="#{administrarSeminarioBean.buscar}"
+                                 icon="fa fa-close white" process="@this" styleClass="RedButton"/>
+            </h:form>
+        </p:panel>
+
+        <p:dialog widgetVar="panelEliminar" id="panelEliminar"
+                  severity="alert"
+                  header="Inactivar"
+                  showEffect="explode" hideEffect="explode" modal="false"
+                  resizable="false">
+            <h:form id="formEliminar">
+                <p:outputLabel
+                        value="¿Desea inactivar realmente la pregunta?"/>
+                <br/>
+                <br/>
+                <p:commandButton value="Aceptar"
+                                 update=":formDataTable ,:mensaje, formEliminar"
+                                 icon="fa fa-check white" oncomplete="PF('panelEliminar').hide()"
+                                 actionListener="#{administrarSeminarioBean.eliminarPregunta}"/>
+                <p:commandButton value="Cancelar" type="button"
+                                 onclick="PF('panelEliminar').hide()" icon="fa fa-close white"/>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,202 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Porcentaje de coincidencia"
+						visible="#{antiplagioTTBean.panelPrincipal}">
+
+						<h:form>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-2 UiGridCol">
+										<p:commandButton value="Actualizar Tabla" id="withIcon"
+											actionListener="#{antiplagioTTBean.a}"
+											update="panelPrincipal" icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<div class="EmptyBox10"></div>
+
+										<p:dataTable var="ett" id="tablaETT" stickyHeader="true"
+											value="#{antiplagioTTBean.listadoEstudianteTrabajoTitulacion}"
+											paginator="true" rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible"
+											first="#{antiplagioTTBean.paginaActual}">
+
+											<p:ajax event="page"
+												listener="#{antiplagioTTBean.onPageChange}" />
+
+											<p:column headerText="Acción" styleClass="Wid10">
+
+												<p:tooltip for="btnAntiplagio"
+													value="Porcentaje de coincidencia" />
+												<p:commandButton id="btnAntiplagio"
+													icon="fa fa-line-chart white"
+													action="#{antiplagioTTBean.insertarCoincidencia}"
+													disabled="#{(ett.especialistaSuplente1.email == calificacionesECBean.user and ett.activarSuplenteE != true) or (calificacionesECBean.user == ett.especialistaSuplantadoE.email)? true : false}"
+													update="panelPrincipal, panelCoincidencia, :mensaje">
+													<f:setPropertyActionListener value="#{ett}"
+														target="#{antiplagioTTBean.estudianteTrabajoTitulacion}" />
+												</p:commandButton>
+
+											</p:column>
+
+											<p:column headerText="Carrera">
+												<p:outputLabel value="#{ett.carrera.nombre}" />
+											</p:column>
+
+											<p:column headerText="Estudiante">
+												<p:outputLabel
+													value="#{ett.estudiante.apellidoNombre} (#{ett.estudiante.id})" />
+											</p:column>
+
+											<p:column headerText="Título">
+												<p:outputLabel value="#{ett.tituloInvestigacion}"
+													escape="false" />
+											</p:column>
+
+											<p:column headerText="Especialista">
+												<p:outputLabel
+													value="#{(ett.especialista1.email == calificacionesECBean.user ? 'Especialista 1' : (ett.especialista2.email == calificacionesECBean.user ? 'Especialista 2' : (ett.especialista3.email == calificacionesECBean.user ? 'Especialista 3' : 'Suplente 1')))}" />
+
+											</p:column>
+
+											<p:column headerText="% Coincidencia" styleClass="Wid10">
+												<p:outputLabel value="#{ett.antiplagio}" />
+											</p:column>
+
+										</p:dataTable>
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelCoincidencia" header="Porcentaje de coincidencia"
+						visible="#{antiplagioTTBean.panelCoincidencia}">
+						<h:form id="formPanelCoincidencia">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText readonly="true"
+											value="#{antiplagioTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - (#{antiplagioTTBean.estudianteTrabajoTitulacion.estudiante.id})" />
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="Subir reporte de coincidencia&lt;br/&gt;(Recuerde que el porcentaje máximo de coincidencia permitida es 10%)"
+											escape="false" />
+										<div class="EmptyBox10"></div>
+										<p:fileUpload label="Seleccionar archivo"
+											disabled="#{antiplagioTTBean.antiplagio ne null ? true : false}"
+											dragDropSupport="false" uploadLabel="Subir archivo"
+											cancelLabel="Cancelar archivo" mode="advanced" fileLimit="1"
+											fileUploadListener="#{antiplagioTTBean.subirArchivo}"
+											invalidFileMessage="Documento con extensión diferente a pdf"
+											fileLimitMessage="Puede subir unicamente 1 archivo en formato pdf"
+											allowTypes="/(\.|\/)(pdf)$/"
+											update="formPanelCoincidencia:idReporteUrkund, :mensaje" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row" style="display: none;">
+									<div class="ui-grid-col-6 UiGridCol">
+										<div class="ui-grid ui-grid-responsive">
+											<div class="EmptyBox20"></div>
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Porcentaje de coincidencia" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:inputText readonly="true"
+														value="#{antiplagioTTBean.antiplagio}" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel value="Observaciones" />
+										<p:inputTextarea
+											disabled="#{antiplagioTTBean.estudianteTrabajoTitulacion.observacionesUrkund ne null ? true:false}"
+											value="#{antiplagioTTBean.estudianteTrabajoTitulacion.observacionesUrkund}" />
+									</div>
+								</div>
+							</div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Ubicación del reporte" />
+										<p:inputText id="idReporteUrkund"
+											value="#{antiplagioTTBean.estudianteTrabajoTitulacion.reporteUrkund}"
+											readonly="true" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{antiplagioTTBean.actualizar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelCoincidencia, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{antiplagioTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelCoincidencia, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

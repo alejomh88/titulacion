@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel header="Datos del Proceso">
+			<div class="TexAlCenter">
+				<h:form id="fromCasoPractico">
+					<p:outputLabel value="Datos Generales" styleClass="SubTitulos" />
+
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Carrera"
+						value="#{consultarDatosComplexivoBean.carrera}"
+						styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+						<f:selectItem itemValue="0" itemLabel="Carrera" />
+						<f:selectItems value="#{consultarDatosComplexivoBean.carreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+						<p:ajax event="change"
+							listener="#{consultarDatosComplexivoBean.obtenerNotaAndCasoPractico}"
+							update="fromCasoPractico, :mensaje" />
+					</p:selectOneMenu>
+
+					<p:inputText readonly="true"
+						value="Proceso: #{consultarDatosComplexivoBean.temaPractico.estudiantePeriodo.periodoExamen.proceso.id}"
+						placeholder="Periodo"
+						styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel value="Calificación" styleClass="SubTitulos" />
+					<p:dataTable var="cartilla" reflow="true"
+						value="#{consultarDatosComplexivoBean.listCartillaAlumno}"
+						styleClass="Wid81 Fnone MargTop10 TexAlCenter MarAuto"
+						emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Parte" styleClass="Wid40">
+							<p:outputLabel value="#{cartilla.nombre}" />
+						</p:column>
+
+						<p:column headerText="Ordinario" styleClass="Wid20">
+							<p:outputLabel value="#{cartilla.ord}" />
+						</p:column>
+
+						<p:column headerText="Gracia" styleClass="Wid20">
+							<p:outputLabel value="#{cartilla.gra}" />
+						</p:column>
+
+						<p:column headerText="Final" styleClass="Wid20">
+							<p:outputLabel value="#{cartilla.calFinal}" />
+						</p:column>
+
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="3" footerText="Final redondeada:" />
+								<p:column footerText="#{consultarDatosComplexivoBean.calFinal}" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+					<p:outputLabel value="Parte Práctica" styleClass="SubTitulos" />
+					<p:inputText
+						value="Asignatura: #{consultarDatosComplexivoBean.temaPractico.docenteAsignatura.asignatura.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputTextarea
+						value="Título del trabajo de investigación: #{consultarDatosComplexivoBean.temaPractico.tituloInvestigacion}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel
+						value="Caso de investigación: #{consultarDatosComplexivoBean.temaPractico.casoInvestigacion}"
+						readonly="true" autoResize="true"
+						styleClass="Wid80 Fs18 MargTop10 DispBlock TexAlLeft MarAuto"
+						escape="false" />
+
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.archivoAdjunto eq null? 'Sin archivo adjunto' :consultarDatosComplexivoBean.temaPractico.archivoAdjunto}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="Docente que generó el tema: #{consultarDatosComplexivoBean.temaPractico.docenteAsignatura.docente.apellidoPaterno} #{consultarDatosComplexivoBean.temaPractico.docenteAsignatura.docente.apellidoMaterno} #{consultarDatosComplexivoBean.temaPractico.docenteAsignatura.docente.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel value="Fecha de sustentación"
+						styleClass="SubTitulos" />
+
+					<p:outputLabel value="ORDINARIA:"
+						styleClass="DispBlock TexAlCenter MargTop10" />
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.fechaSustentacionOrdinaria}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+							timeZone="America/Guayaquil" />
+					</p:inputText>
+					<p:outputLabel value="DE GRACIA:"
+						rendered="#{consultarDatosComplexivoBean.temaPractico.fechaSustentacionGracia!=null?true:false}"
+						styleClass="DispBlock TexAlCenter MargTop10" />
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.fechaSustentacionGracia}"
+						readonly="true"
+						rendered="#{consultarDatosComplexivoBean.temaPractico.fechaSustentacionGracia!=null?true:false}"
+						styleClass="Wid80 TexAlCenter Fs18">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+							timeZone="America/Guayaquil" />
+					</p:inputText>
+
+					<p:outputLabel value="Comité Evaluador" styleClass="SubTitulos" />
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.especialista1.apellidoPaterno} #{consultarDatosComplexivoBean.temaPractico.especialista1.apellidoMaterno} #{consultarDatosComplexivoBean.temaPractico.especialista1.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.especialista2.apellidoPaterno} #{consultarDatosComplexivoBean.temaPractico.especialista2.apellidoMaterno} #{consultarDatosComplexivoBean.temaPractico.especialista2.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="#{consultarDatosComplexivoBean.temaPractico.especialista3.apellidoPaterno} #{consultarDatosComplexivoBean.temaPractico.especialista3.apellidoMaterno} #{consultarDatosComplexivoBean.temaPractico.especialista3.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<p:commandButton value="Enviar al correo"
+						styleClass="Fs16 BlueButton DispNone"
+						actionListener="#{consultarDatosComplexivoBean.enviarCorreo}"
+						update=":mensaje, fromCasoPractico" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+	</ui:define>
+
+</ui:composition>

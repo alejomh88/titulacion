@@ -1,0 +1,548 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+					<p:panel header="Registro biblioteca" id="panelPrincipal"
+						visible="#{bibliotecaBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Modalidad titulación" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione una modalidad"
+												value="#{bibliotecaBean.modalidad}">
+												<f:selectItem itemValue="N"
+													itemLabel="Seleccione una modalidad" />
+												<f:selectItem itemValue="M" itemLabel="Todos" />
+												<f:selectItem itemValue="T"
+													itemLabel="Trabajo de titulación" />
+												<f:selectItem itemValue="E" itemLabel="Examen complexivo" />
+												<f:selectItem itemValue="A" itemLabel="Artículo Científico" />
+												<p:ajax event="change"
+													update="somProceso, carrera, estadistica, mostrar, formDataTable"
+													listener="#{bibliotecaBean.obtenerProcesos}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true" id="somProceso"
+												requiredMessage="Seleccione un proceso"
+												value="#{bibliotecaBean.proceso}">
+												<f:selectItem itemValue="N"
+													itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{bibliotecaBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id} (#{proceso.observacion})" />
+												<p:ajax event="change" update="carrera, estadistica"
+													listener="#{bibliotecaBean.obtenerCarreras}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Mostrar" />
+											<p:selectOneMenu id="mostrar" required="true"
+												requiredMessage="Seleccione un elemento para seleccionar"
+												value="#{bibliotecaBean.mostrar}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue="N"
+													itemLabel="Seleccione una opción" />
+												<f:selectItem itemValue="procesados" itemLabel="Procesados" />
+												<f:selectItem itemValue="porProcesar"
+													itemLabel="Por procesar" />
+												<f:selectItem itemValue="pendientes" itemLabel="Pendientes" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{bibliotecaBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue="0"
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{bibliotecaBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.id} - #{carrera.nombre}" />
+												<p:ajax event="change" update="estadistica"
+													listener="#{bibliotecaBean.obtenerEstadistica}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText placeholder="Cédula/Apellido Nombre"
+												value="#{bibliotecaBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{bibliotecaBean.buscar}"
+												update="panelPrincipal, panelTrabajoEscrito, formDataTableBuscado, :mensaje" />
+										</div>
+										<div class="ui-grid-col-1 UiGridCol">
+											<div class="EmptyBox20"></div>
+											<p:selectBooleanCheckbox id="checkBusqueda"
+												onchange="llamarModalBibliotecaBusqueda();"
+												value="#{bibliotecaBean.checkBusqueda}" />
+											<h:outputText value="General" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Estadísticas archivos subidos"
+							id="estadistica">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Archivos Procesados" />
+										<p:inputText readonly="true"
+											value="#{bibliotecaBean.numArchivosSubidos}" />
+									</div>
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Archivos Por procesar" />
+										<p:inputText readonly="true"
+											value="#{bibliotecaBean.numArchivosNoSubidos}" />
+									</div>
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Archivos sin validar UMMOG" />
+										<p:inputText readonly="true"
+											value="#{bibliotecaBean.numArchivosSinValidaroInconsistenciaUmmog}" />
+									</div>
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Total de estudiantes" />
+										<p:inputText readonly="true"
+											value="#{bibliotecaBean.totalEstudiantes}" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteBiblioteca"
+									value="#{bibliotecaBean.listadoEstudiantesBiblioteca}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="1" headerText="Acción" style="width:10%;" />
+											<p:column rowspan="1" headerText="Estudiante" />
+											<p:column rowspan="1" headerText="Título investigación" />
+											<p:column rowspan="1" headerText="Opción Titulación"
+												rendered="#{bibliotecaBean.modalidad ne 'E' ? true : false}" />
+											<p:column rowspan="1" headerText="Subido al Repositorio"
+												style="width:10%;" />
+											<p:column rowspan="1" headerText="Validado por biblioteca"
+												style="width:10%;" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnValidarTrabajoEscrito"
+											value="Información del estudiante" />
+										<p:commandButton id="btnValidarTrabajoEscrito"
+											icon="fa fa-file-pdf-o white"
+											disabled="#{(estudianteBiblioteca.validarArchivo eq null or estudianteBiblioteca.validarArchivo eq false)? true : false}"
+											action="#{bibliotecaBean.presentarPanelDocumento}"
+											update="panelPrincipal, panelTrabajoEscrito,:mensaje"
+											styleClass="#{estudianteBiblioteca.validarArchivo eq null ? 'OrangeButton' : estudianteBiblioteca.validarArchivo eq true ? 'GreenButton' : 'RedButton'}">
+											<f:setPropertyActionListener value="#{estudianteBiblioteca}"
+												target="#{bibliotecaBean.estudianteBiblioteca}" />
+										</p:commandButton>
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteBiblioteca.estudiante} - #{estudianteBiblioteca.apellidoNombre} - #{estudianteBiblioteca.email} - #{estudianteBiblioteca.telefono}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteBiblioteca.tituloInvestigacion}" />
+									</p:column>
+
+									<p:column
+										rendered="#{bibliotecaBean.modalidad ne 'E' ? true : false}">
+										<p:outputLabel value="#{estudianteBiblioteca.opcion}" />
+									</p:column>
+
+									<p:column>
+										<p:tooltip for="btnIrDocumento" value="Acceder al documento" />
+										<p:button id="btnIrDocumento"
+											styleClass="#{estudianteBiblioteca.urlBiblioteca ne null ? 'GreenButton' : 'RedButton'}"
+											disabled="#{estudianteBiblioteca.urlBiblioteca eq null ? true : false}"
+											href="#{estudianteBiblioteca.urlBiblioteca}" target="_blank"
+											icon="#{estudianteBiblioteca.urlBiblioteca ne null ? 'fa fa-check white' : 'fa fa-close white'}">
+										</p:button>
+									</p:column>
+
+									<p:column>
+										<p:tooltip for="btnValidarBiblioteca" value="Validar" />
+										<p:commandButton id="btnValidarBiblioteca"
+											icon="#{estudianteBiblioteca.validadoBiblioteca eq true ? 'fa fa-check white' : 'fa fa-close white'}"
+											disabled="#{estudianteBiblioteca.urlBiblioteca eq null or estudianteBiblioteca.validadoBiblioteca eq true ? true : false}"
+											action="#{bibliotecaBean.validarDocumento}"
+											update="panelPrincipal, panelTrabajoEscrito,:mensaje"
+											styleClass="#{estudianteBiblioteca.validadoBiblioteca eq true ? 'GreenButton' : 'RedButton'}">
+											<f:setPropertyActionListener value="#{estudianteBiblioteca}"
+												target="#{bibliotecaBean.estudianteBiblioteca}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelTrabajoEscrito" header="Trabajo escrito"
+						visible="#{bibliotecaBean.panelTrabajoEscrito}">
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-3 UiGridCol">
+									<p:commandButton value="Regresar"
+										id="btnRegresarAValidarDocumentoAqui"
+										actionListener="#{bibliotecaBean.establecerPanelPrincipal}"
+										update="panelPrincipal, panelTrabajoEscrito"
+										icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Datos del estudiante">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div
+										class="#{bibliotecaBean.esTrabajoTitulacion eq true and bibliotecaBean.estudianteTrabajoTitulacion2 ne null ? 'ui-grid-col-6 UiGridCol' : 'ui-grid-col-12 UiGridCol'}">
+										<p:fieldset legend="Estudiante 1">
+											<p:panelGrid columns="2" layout="grid">
+												<h:outputText value="Apellido y Nombre" />
+												<p:inputText value="#{bibliotecaBean.apellidoNombreE1}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Cédula/Pasaporte" />
+												<p:inputText value="#{bibliotecaBean.cedulaPasaporteE1}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Email" />
+												<p:inputText value="#{bibliotecaBean.emailE1}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Teléfono" />
+												<p:inputText value="#{bibliotecaBean.telefonoE1}"
+													readonly="true" autoResize="true" />
+											</p:panelGrid>
+										</p:fieldset>
+									</div>
+									<div
+										class="#{bibliotecaBean.esTrabajoTitulacion eq true and bibliotecaBean.estudianteTrabajoTitulacion2 ne null ? 'ui-grid-col-6 UiGridCol' : 'ui-grid-col-0 UiGridCol'}">
+										<p:fieldset legend="Estudiante 2"
+											rendered="#{bibliotecaBean.esTrabajoTitulacion eq true and bibliotecaBean.estudianteTrabajoTitulacion2 ne null ? true : false}">
+											<p:panelGrid columns="2" layout="grid">
+												<h:outputText value="Apellido y Nombre" />
+												<p:inputText value="#{bibliotecaBean.apellidoNombreE2}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Cédula/Pasaporte" />
+												<p:inputText value="#{bibliotecaBean.cedulaPasaporteE2}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Email" />
+												<p:inputText value="#{bibliotecaBean.emailE2}"
+													readonly="true" autoResize="true" />
+
+												<h:outputText value="Teléfono" />
+												<p:inputText value="#{bibliotecaBean.telefonoE2}"
+													readonly="true" autoResize="true" />
+											</p:panelGrid>
+										</p:fieldset>
+									</div>
+								</div>
+
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Validación del documento subido">
+							<h:form id="formValidacionDocumento">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Título de la investigación:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{bibliotecaBean.tituloInvestigacion}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Tutor:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{bibliotecaBean.tutor}" readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Modalidad de titulación:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{bibliotecaBean.modalidadTitulacion}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Resumen:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputTextarea
+											value="#{bibliotecaBean.estudianteBiblioteca.resumen}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Abstract:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputTextarea
+											value="#{bibliotecaBean.estudianteBiblioteca.abstract1}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Palabras claves:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText
+											value="#{bibliotecaBean.estudianteBiblioteca.palabrasClaves}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Número de páginas:" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{bibliotecaBean.numeroPaginas}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel
+											value="Link para DSPACE: (http://repositorio.utmachala.edu.ec/handle/......)" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{bibliotecaBean.urlDocumento}"
+											id="txtUrlBiblioteca" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Cita del documento" />
+									</div>
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText readonly="true"
+											value="#{bibliotecaBean.citaDocumento}" id="txtCitaDocumento" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Guardar" type="button"
+												id="btnGuardarValidarDocumento"
+												actionListener="#{bibliotecaBean.actualizar}"
+												update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+												icon="fa fa-save white" styleClass="GreenButton"
+												onclick="validarTxtUrlBiblioteca();" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Regresar"
+												id="btnRegresarAValidarDocumento"
+												actionListener="#{bibliotecaBean.establecerPanelPrincipal}"
+												update="panelPrincipal, panelTrabajoEscrito"
+												icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton ajax="false"
+												actionListener="#{bibliotecaBean.descargarArchivo}"
+												id="btnDescargarArchivo" icon="fa fa-download white"
+												update=":mensaje" value="Descargar archivo">
+												<p:fileDownload value="#{bibliotecaBean.documento}" />
+											</p:commandButton>
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Descargar portada"
+												id="btnDescargarTapaPasta" rendered="true"
+												actionListener="#{bibliotecaBean.descargarTapaPasta}"
+												update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+												icon="fa fa-print white" styleClass="GreenButton"
+												ajax="false">
+												<p:fileDownload value="#{bibliotecaBean.documento}" />
+											</p:commandButton>
+										</div>
+
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+
+					<p:dialog header="Búsqueda General" widgetVar="ventanaBusqueda"
+						modal="true" height="750px" width="75%">
+
+						<p:ajax event="close"
+							update="panelPrincipal, panelTrabajoEscrito, formDataTableBuscado, :mensaje"
+							listener="#{bibliotecaBean.cerrarModal}" />
+
+						<h:form id="formDataTableBuscado">
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-7 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText placeholder="Cédula/Apellidos Nombres"
+											value="#{bibliotecaBean.criterioBusqueda}" />
+									</div>
+
+									<div class="ui-grid-col-1 UiGridCol">
+										<p:outputLabel value="Buscar" />
+										<p:commandButton icon="fa fa-search white"
+											actionListener="#{bibliotecaBean.buscarEstudiante}"
+											update="formDataTableBuscado, :mensaje" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<p:dataTable var="estudianteBuscado"
+								value="#{bibliotecaBean.listadoEstudiantesBuscados}"
+								paginator="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" reflow="true"
+								emptyMessage="No hay Información Disponible">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="1" headerText="Modalidad" />
+										<p:column rowspan="1" headerText="Estudiante" />
+										<p:column rowspan="1" headerText="Proceso" />
+										<p:column rowspan="1" headerText="Carrera" />
+										<p:column rowspan="1" headerText="Ver" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<p:outputLabel value="#{estudianteBuscado.modalidad}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteBuscado.estudiante} - #{estudianteBuscado.apellidoNombre} - #{estudianteBuscado.email}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{estudianteBuscado.proceso}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteBuscado.carrera} - #{estudianteBuscado.carreraNombre}" />
+								</p:column>
+
+								<p:column>
+									<p:commandButton id="btnValidarBiblioteca"
+										oncomplete="PF('ventanaBusqueda').hide();"
+										icon="fa fa-eye white" action="#{bibliotecaBean.enviarDatos}"
+										update="panelPrincipal, panelTrabajoEscrito, :mensaje">
+										<f:setPropertyActionListener value="#{estudianteBuscado}"
+											target="#{bibliotecaBean.estudianteBiblioteca}" />
+									</p:commandButton>
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+					</p:dialog>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

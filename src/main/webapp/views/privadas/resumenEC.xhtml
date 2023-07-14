@@ -1,0 +1,110 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Resumen y palabras claves">
+						<h:form>
+
+							<p class="black Fs18 FontBold">
+								<strong>Tener en cuenta las siguientes normas:</strong>
+							</p>
+							<ul class="black Fs16 FontBold">
+								<li>- El resumen debe contener hasta 250 palabras</li>
+								<li>- Separe las palabras claves con comas ( , )</li>
+								<li>- Debe utilizar el acento gráfico agudo ( ´ ), mas no
+									el acento gráfico grave ( ` )</li>
+								<li>- Debe usar un solo espacio entre palabras</li>
+							</ul>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Carrera" styleClass="FontBold" />
+										<p:selectOneMenu required="true" requiredMessage="Carrera"
+											value="#{resumenECBean.ppId}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione la carrera" />
+											<f:selectItems value="#{resumenECBean.listaPP}" var="pp"
+												itemValue="#{pp.id}"
+												itemLabel="#{pp.proceso.id} | #{pp.carrera.nombre}" />
+											<p:ajax event="change" listener="#{resumenECBean.obtenerPP}"
+												update="panelPrincipal, :mensaje" />
+										</p:selectOneMenu>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Resumen" />
+										<p:inputTextarea value="#{resumenECBean.pp.resumen}"
+											placeholder="Resumen" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Abstract" />
+										<p:inputTextarea value="#{resumenECBean.pp.abstract1}"
+											placeholder="Abstract" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Palabras claves" />
+										<p:inputText value="#{resumenECBean.pp.palabrasClaves}"
+											placeholder="Palabras claves" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar" styleClass="Fs16 BlueButton"
+											actionListener="#{resumenECBean.actualizar}"
+											update=":mensaje" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

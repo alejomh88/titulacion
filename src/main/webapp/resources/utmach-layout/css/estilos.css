@@ -1,0 +1,360 @@
+.ui-format {
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+	padding: 0 10px 0 10px;
+	margin: 0 1px 0 1px;
+}
+
+.OutputLabelFormat {
+	font-size: 15px !important;
+	font-weight: bold !important;
+	color: #3B3D3F !important;
+}
+
+.InputFormat {
+	font-size: 15px !important;
+	color: #3B3D3F !important;
+}
+
+.OpcionesVP {
+	background-color: #F5F5F5;
+	border: 1px solid #dddddc;
+	border-radius: .5em;
+	color: rgb(128, 128, 128);
+	cursor: pointer;
+	font-weight: bold !important;
+	font-size: 16px;
+	padding: 1em;
+	text-align: left;
+	width: 100%;
+}
+
+.DivVP {
+	margin-bottom: 5px;
+}
+
+.ui-fileupload-buttonbar {
+	display: flex;
+}
+
+.UiGridCol {
+	padding-right: 5px;
+}
+
+.desactivo {
+	background: #F3ACA4 !important;
+}
+
+.revisado {
+	background: #1de72c !important;
+}
+
+.ocupado {
+	background: #A9F5A9 !important;
+}
+
+.botonInsertar {
+	margin-top: 5px;
+}
+
+.calendario input {
+	width: 100%;
+}
+
+.autoCompletar input {
+	width: 100%;
+}
+
+.labelCenter label {
+	text-align: center !important;
+}
+
+.ui-selectonemenu-item {
+	font-weight: normal;
+	cursor: pointer;
+	text-align: center !important;
+}
+
+.botones {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+
+.botones li {
+	display: inline-block;
+	margin: 0;
+	width: 10em;
+}
+
+.botones li a {
+	color: #FF2A35;
+}
+
+.botones li a:hover {
+	text-shadow: rgba(0, 0, 0, 0.7) 5px 5px 20px;
+}
+
+.botones li a p {
+	font-size: 18px;
+}
+
+.ui-radiobutton {
+	display: none !important;
+}
+/*****************/
+.labelFocus {
+	background: rgba(252, 199, 56, .8) !important;
+	border: 1px solid #fcc738 !important;
+	color: #814f1d !important;
+}
+
+.btns td:last-child {
+	width: 100%;
+}
+
+.btns label {
+	background-color: #F5F5F5;
+	border: 1px solid #dddddc;
+	border-radius: .5em;
+	color: rgb(128, 128, 128);
+	cursor: pointer;
+	font-weight: bold !important;
+	font-size: 16px;
+	padding: 1em;
+	text-align: left;
+	width: 90% !important;
+}
+
+.ColorExamen {
+	color: rgb(77, 77, 77) !important;
+}
+
+.Margin0 {
+	margin: 0;
+}
+
+/*****************/
+#tituloSteps {
+	color: #009CF0;
+	font-size: 2em;
+}
+
+.SubTituloSteps {
+	color: #009CF0;
+}
+
+.classA {
+	color: #00246B;
+	text-decoration: none;
+}
+
+.espacio {
+	margin: 0 0.5em;
+}
+
+.BgcWhite {
+	background-color: white;
+}
+/**********************************/
+.OverflowHidden {
+	overflow: hidden;
+}
+
+.Wid150 {
+	width: 150px
+}
+
+.Wid98 {
+	width: 98% !important;
+}
+
+.MargTop10 {
+	margin-top: 10px;
+}
+
+.MargTopBottom10 {
+	display: block;
+	height: 20px;
+	margin: 0 0 20px;
+	float: none;
+}
+
+.SubTitulos {
+	font-weight: bold !important;
+	color: #419FC3;
+	border-bottom: 1px solid #419FC3;
+	display: block;
+	margin: 0.5em auto;
+	width: 90%;
+	font-size: 1.4em;
+}
+
+.Wid81 {
+	width: 81% !important;
+}
+
+.BotonBuscar {
+	margin-left: 1em;
+	margin-right: 0;
+}
+
+.PanelBusqueda {
+	border: 1px solid #dddddc;
+	margin: 0.5em;
+	padding: 0.5em;
+}
+
+.FormReportes {
+	margin-top: 1em;
+}
+
+.MarginAuto {
+	margin: auto;
+}
+
+.Margin20BotTop {
+	margin: 20px 0;
+}
+
+.Margin1emRight {
+	margin-right: 1em;
+}
+
+.Tam95 {
+	height: 95%;
+	width: 95%;
+}
+
+.DivImagenEnunciado {
+	width: 50%;
+	margin: auto;
+	display: block;
+	border: 0px solid #33AFDE;
+	position: relative;
+}
+
+.DivImagen {
+	display: inline-block;
+	position: relative;
+	width: 48%;
+	border: 1px solid #33AFDE;
+}
+
+.DivImagen:nth-child(odd) {
+	margin-right: 1.3%;
+}
+
+.Literal {
+	color: rgb(0, 0, 0) !important;
+	font-size: 2em;
+	font-weight: bold !important;
+	position: absolute;
+	margin: 3px 0 0 3px;
+	font-weight: bold !important;
+	position: absolute;
+}
+
+.ImagenPregunta {
+	width: 100%
+}
+
+.BtnImgen {
+	position: absolute;
+	right: 0;
+}
+
+.OcultarIcono {
+	display: none;
+}
+
+.AlertInfo {
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+	color: #3a87ad;
+}
+
+.Alert {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.PMensaje {
+	margin: 0 0 10px;
+}
+
+#menuEditarPregunta li {
+	display: inline-block;
+}
+
+#menuEditarPregunta {
+	border-bottom: 1px solid #C3CCD5;
+	border-top: 1px solid #C3CCD5;
+	padding: 5px;
+}
+
+.Padding2 {
+	padding: 2%;
+}
+
+@media ( min-width : 961px) {
+	.divDatosIzq50 {
+		display: inline-block;
+		float: left;
+		margin-bottom: 10px;
+		width: 50%;
+	}
+	.divDatosDer50 {
+		display: inline-block;
+		float: right;
+		margin-bottom: 10px;
+		width: 50%;
+	}
+	.InputConButton {
+		width: calc(80% - 46px) !important;
+	}
+	.DivIzq50 {
+		display: inline-block;
+		float: left;
+		margin-bottom: 10px;
+		width: 50%;
+	}
+	.DivDer50 {
+		display: inline-block;
+		float: right;
+		margin-bottom: 10px;
+		width: 50%;
+	}
+	.FormReportes {
+		display: inline-table;
+		margin-right: 2em;
+		width: 250px;
+	}
+}
+
+@media ( max-width : 560px) {
+	#tituloSteps {
+		font-size: 1.5em;
+	}
+	.BotonBuscar {
+		margin: 1em 0;
+	}
+}
+
+.fc-event {
+	position: relative !important;
+	display: block !important;
+	font-size: .85em !important;
+	line-height: 0 !important;
+	font-weight: normal !important;
+	border-radius: 3px !important;
+	border: 1px solid #3a87ad !important;
+	background-color: #3a87ad !important;
+}
+
+.fc-today {
+	background-color: #156090 !important;
+	color: white !important;
+}

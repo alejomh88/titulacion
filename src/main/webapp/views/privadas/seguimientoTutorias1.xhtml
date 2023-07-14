@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Alumnos Tutorados">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="docenteSeminario" required="true"
+						requiredMessage="Escoja un Seminario"
+						value="#{seguimientoTutoriasBean.docenteSeminario}" filter="true"
+						filterMatchMode="contains"
+						styleClass="DispBlock Wid80 TexAlCenter MargTop10 Fs18 labelCenter MarginAuto">
+						<f:selectItem itemValue="0" itemLabel="Escoja un Seminario" />
+						<f:selectItems
+							value="#{seguimientoTutoriasBean.listDocenteSeminario}"
+							var="docenteSeminario" itemValue="#{docenteSeminario.id}"
+							itemLabel="Proceso: #{docenteSeminario.seminario.proceso.id} | Carrera: #{docenteSeminario.seminario.lineaInvestigacionCarrera.carrera.nombre} | Seminario: #{docenteSeminario.seminario.nombre}" />
+					</p:selectOneMenu>
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-refresh white" value="Actualizar"
+						actionListener="#{seguimientoTutoriasBean.actualizar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="estudianteTrabajoTitulacion"
+						value="#{seguimientoTutoriasBean.listEstudiantesTrabajosTitulaciones}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnNuevo" value="Historial de tutorías" />
+							<p:commandButton id="btnNuevo" icon="fa fa-users white"
+								update="formDataTable, :formMostrar"
+								action="#{seguimientoTutoriasBean.obtener}"
+								oncomplete="mostarPanel('panelMostrar')">
+								<f:setPropertyActionListener
+									value="#{estudianteTrabajoTitulacion}"
+									target="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion}" />
+							</p:commandButton>
+							<p:tooltip for="btnAprobado" value="Aprobar estudiante" />
+							<p:commandButton id="btnAprobado" icon="fa fa-check white"
+								update="formDataTable, :formMostrar"
+								disabled="#{estudianteTrabajoTitulacion.tutorias.size() lt seguimientoTutoriasBean.numTutoria?'true':(estudianteTrabajoTitulacion.aprobado ne null?'true':'false')}"
+								action="#{seguimientoTutoriasBean.obtener}"
+								oncomplete="PF('aprobarEstudiante').show()">
+								<f:setPropertyActionListener
+									value="#{estudianteTrabajoTitulacion}"
+									target="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Cédula" styleClass="Wid10">
+							<p:outputLabel
+								value="#{estudianteTrabajoTitulacion.estudiante.id}" />
+						</p:column>
+
+						<p:column headerText="Estudiante" styleClass="Wid30">
+							<p:outputLabel
+								value="#{estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{estudianteTrabajoTitulacion.estudiante.nombre}" />
+						</p:column>
+
+						<p:column headerText="Caso Investigación" styleClass="Wid40">
+							<p:outputLabel
+								value="#{estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+						</p:column>
+
+						<p:column headerText="Aprobado" styleClass="Wid10">
+							<p:selectBooleanButton disabled="true"
+								rendered="#{estudianteTrabajoTitulacion.aprobado ne null? true:false}"
+								value="#{estudianteTrabajoTitulacion.aprobado}" onLabel="Sí"
+								offLabel="No" style="width:60px" />
+						</p:column>
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog header="Aprobar Estudiante" widgetVar="aprobarEstudiante"
+			resizable="false" modal="false" showEffect="clip" hideEffect="fold"
+			id="dialogoAnular" width="40%">
+			<div class="TexAlCenter">
+				<h:form id="fromAnular">
+					<p:outputLabel value="Contraseña" styleClass="DispBlock" />
+					<p:password value="#{seguimientoTutoriasBean.pass}" required="true"
+						requiredMessage="Ingrese la Clave"
+						styleClass="DispBlock Wid90 MarginAuto TexAlCenter" />
+					<p:outputLabel value="Estado" styleClass="DispBlock" />
+					<p:selectOneMenu required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.aprobado}"
+						styleClass="Wid90 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="true" itemLabel="Aprobado" />
+						<f:selectItem itemValue="false" itemLabel="No Aprobado" />
+					</p:selectOneMenu>
+					<p:separator />
+					<p:commandButton value="SI"
+						actionListener="#{seguimientoTutoriasBean.aprobarEstudiante}"
+						update="fromAnular, :formDataTable, :mensaje"
+						oncomplete="PF('aprobarEstudiante').hide()"
+						icon="fa fa-check white" />
+					<p:commandButton value="NO"
+						oncomplete="PF('aprobarEstudiante').hide()"
+						icon="fa fa-close white" />
+				</h:form>
+			</div>
+		</p:dialog>
+
+		<p:panel id="panelMostrar" header="Historial de tutorías"
+			styleClass="DispNone">
+			<div class="TexAlCenter">
+				<h:form id="formMostrar">
+					<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+					<p:inputText readonly="true"
+						value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id} - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.nombre}"
+						styleClass="DispBlock Wid90 MarginAuto TexAlCenter" />
+					<p:outputLabel value="Nº de tutorías" styleClass="DispBlock" />
+					<p:inputText readonly="true"
+						value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.tutorias.size()}"
+						styleClass="DispBlock Wid90 MarginAuto TexAlCenter" />
+					<p:outputLabel value="Caso Investigación" styleClass="DispBlock" />
+					<p:inputTextarea readonly="true"
+						value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}"
+						styleClass="DispBlock Wid90 MarginAuto" />
+					<div class="EmptyBox10"></div>
+					<p:dataTable var="tutoria"
+						value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.tutorias}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<f:facet name="header">
+							<p:tooltip for="btnNuevo" value="Insertar" />
+							<p:commandButton update=":formNuevo" value="Insertar tutoría"
+								disabled="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.aprobado ne null?'true':'false'}"
+								action="#{seguimientoTutoriasBean.limpiar}"
+								oncomplete="mostarPanel1('panelMostrar', 'panelNuevo')"
+								id="btnNuevo" icon="fa fa-plus white" />
+						</f:facet>
+
+						<p:column headerText="Fecha" styleClass="Wid20">
+							<p:outputLabel value="#{tutoria.fecha}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</p:outputLabel>
+						</p:column>
+
+						<p:column headerText="Fortaleza" styleClass="Wid40">
+							<p:outputLabel value="#{tutoria.fortaleza}" />
+						</p:column>
+
+						<p:column headerText="Debilidad" styleClass="Wid40">
+							<p:outputLabel value="#{tutoria.debilidad}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:commandButton value="Regresar" id="btnAtras"
+						onclick="mostarPanel('panelMostrar')"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelNuevo" header="Insertar Tutoria"
+			styleClass="DispNone">
+			<h:form id="formNuevo">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id} - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Tutoría Nº" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.tutorias.size()+1}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel for="datetime" value="Fecha de tutoría"
+					styleClass="DispBlock" />
+				<p:calendar id="datetime"
+					value="#{seguimientoTutoriasBean.fechaTutoria}"
+					pattern="MM/dd/yyyy HH:mm" styleClass="DispBlock Wid90 calendario" />
+
+				<div class="DivIzq50">
+					<p:outputLabel value="Fortalezas" styleClass="DispBlock" />
+					<p:inputTextarea value="#{seguimientoTutoriasBean.fortaleza}"
+						styleClass="DispBlock Wid90" />
+				</div>
+				<div class="DivDer50">
+					<p:outputLabel value="Debilidades" styleClass="DispBlock" />
+					<p:inputTextarea value="#{seguimientoTutoriasBean.debilidad}"
+						styleClass="DispBlock Wid90" />
+				</div>
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar"
+					update=":formMostrar ,:mensaje, formNuevo"
+					oncomplete="comprobar1(xhr, status, args, 'panelMostrar', 'panelNuevo')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{seguimientoTutoriasBean.insertarTutoria}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel1('panelMostrar', 'panelNuevo')"
+					id="btnNuevolimpiar" icon="fa fa-close white" process="@this"
+					styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

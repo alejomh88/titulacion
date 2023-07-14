@@ -1,0 +1,356 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal"
+			header="Administrar fechas y comités de evaluación">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{fechasyComitesTemasPracticosBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{fechasyComitesTemasPracticosBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{fechasyComitesTemasPracticosBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu required="true" requiredMessage="Escoja un tipo"
+						value="#{fechasyComitesTemasPracticosBean.consultaOrdGra}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1" itemLabel="Ordinario" />
+						<f:selectItem itemValue="2" itemLabel="Gracia" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{fechasyComitesTemasPracticosBean.listTemaPracticos}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Acción" styleClass="Wid10" />
+								<p:column rowspan="2" headerText="Cédula" styleClass="Wid5" />
+								<p:column rowspan="2" headerText="Estudiante" styleClass="Wid15" />
+								<p:column rowspan="2" headerText="Fecha Sustentacion Ordinario"
+									styleClass="Wid15" />
+								<p:column rowspan="2" headerText="Fecha Sustentacion Gracia"
+									styleClass="Wid15" />
+								<p:column colspan="3" headerText="Comité Evaluador"
+									styleClass="Wid40" />
+							</p:row>
+							<p:row>
+								<p:column headerText="Especialista 1" styleClass="Wid33" />
+								<p:column headerText="Especialista 2" styleClass="Wid33" />
+								<p:column headerText="Especialista 3" styleClass="Wid33" />
+							</p:row>
+						</p:columnGroup>
+
+						<p:column>
+							<p:tooltip for="btnComiteEvaluador" value="Comité Evaluador" />
+							<p:commandButton id="btnComiteEvaluador" icon="fa fa-users white"
+								action="#{fechasyComitesTemasPracticosBean.limpiar}"
+								update="formDataTable, :formNuevo"
+								oncomplete="mostarPanel('panelInsertar')">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{fechasyComitesTemasPracticosBean.temaPractico}" />
+							</p:commandButton>
+							<p:tooltip for="btnFechaGracia"
+								value="Fecha de Sustentación de Gracia" />
+							<p:commandButton id="btnFechaGracia" icon="fa fa-calendar white"
+								action="#{fechasyComitesTemasPracticosBean.limpiar}"
+								update="formDataTable, :formNuevoGracia"
+								oncomplete="mostarPanel('panelInsertarGracia')"
+								disabled="#{fechasyComitesTemasPracticosBean.consultaOrdGra==2?false:true}">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{fechasyComitesTemasPracticosBean.temaPractico}" />
+							</p:commandButton>
+							<p:tooltip for="btnEnviarEmail" value="Enviar" />
+							<p:commandButton id="btnEnviarEmail" icon="fa fa-send white"
+								update="formDataTable, :formNuevo"
+								oncomplete="PF('enviarEmail').show()">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{fechasyComitesTemasPracticosBean.temaPractico}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column>
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.id}" />
+						</p:column>
+
+						<p:column>
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{casoPractico.estudiantePeriodo.estudiante.nombre}" />
+						</p:column>
+
+						<p:column>
+							<p:outputLabel value="#{casoPractico.fechaSustentacionOrdinaria}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</p:outputLabel>
+						</p:column>
+
+						<p:column>
+							<p:outputLabel value="#{casoPractico.fechaSustentacionGracia}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</p:outputLabel>
+						</p:column>
+
+						<p:column>
+							<p:outputLabel
+								value="#{casoPractico.especialista1.apellidoPaterno} #{casoPractico.especialista1.apellidoMaterno} #{casoPractico.especialista1.nombre}" />
+						</p:column>
+
+						<p:column>
+							<p:outputLabel
+								value="#{casoPractico.especialista2.apellidoPaterno} #{casoPractico.especialista2.apellidoMaterno} #{casoPractico.especialista2.nombre}" />
+						</p:column>
+
+						<p:column>
+							<p:outputLabel
+								value="#{casoPractico.especialista3.apellidoPaterno} #{casoPractico.especialista3.apellidoMaterno} #{casoPractico.especialista3.nombre}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelInsertar" header="Insertar Comité Evaluador"
+			styleClass="DispNone">
+			<h:form id="formNuevo">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.id} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel for="datetime" value="Fecha de Sustentación"
+					styleClass="DispBlock" />
+				<p:calendar id="datetime"
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.fechaSustentacionOrdinaria}"
+					pattern="dd/MM/yyyy HH:mm" styleClass="DispBlock Wid90 calendario" />
+
+				<p:outputLabel value="Especialista 1" styleClass="DispBlock" />
+				<p:inputText
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.especialista1.apellidoPaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista1.apellidoMaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista1.nombre}"
+					readonly="true" styleClass="Wid90 InputConButton" />
+				<p:commandButton update="txtCedula1, tablaClientes1"
+					oncomplete="mostarPanelBusqueda('PanelBusqueda1')"
+					action="#{fechasyComitesTemasPracticosBean.limpiarObjetosBusquedaEspecialista}"
+					icon="fa fa-search white" styleClass="BotonBuscar" />
+				<div id="PanaelBusqueda1" class="DispNone PanelBusqueda">
+					<p:inputText id="txtCedula1" placeholder="Cédula/Apellido-Nombre"
+						value="#{fechasyComitesTemasPracticosBean.criterioBusquedaEspecialista1}"
+						onkeypress="if (event.keyCode == 13) { btnBuscarEspecialista1(); return false; }"
+						styleClass="DispBlock Wid90" />
+					<div class="EmptyBox10"></div>
+					<p:remoteCommand name="btnBuscarEspecialista1"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista1}"
+						update="txtCedula1, tablaClientes1, :mensaje" />
+					<p:commandButton update="txtCedula1, tablaClientes1, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista1}" />
+					<div class="EmptyBox10"></div>
+					<p:dataTable id="tablaClientes1" var="especialista" reflow="true"
+						value="#{fechasyComitesTemasPracticosBean.listEspecialista}"
+						paginator="true"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+						paginatorPosition="bottom" rowKey="#{especialista.id}"
+						selection="#{fechasyComitesTemasPracticosBean.especialista1}"
+						selectionMode="single">
+						<p:ajax event="rowSelect" update=":formNuevo, :mensaje"
+							listener="#{fechasyComitesTemasPracticosBean.cargarEspecialista1}"
+							oncomplete="click('btnCerrarBusqueda1')" />
+						<p:column headerText="Cedula">
+							#{especialista.id}
+						</p:column>
+						<p:column headerText="Especialista">
+							#{especialista.apellidoPaterno} #{especialista.apellidoMaterno} #{especialista.nombre}
+						</p:column>
+					</p:dataTable>
+					<p:commandButton id="btnCerrarBusqueda1" type="submit"
+						name="submit" styleClass="DispNone"
+						actionListener="mostarPanelBusqueda('PanelBusqueda1')" />
+				</div>
+				<p:outputLabel value="Especialista 2" styleClass="DispBlock" />
+				<p:inputText
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.especialista2.apellidoPaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista2.apellidoMaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista2.nombre}"
+					readonly="true" styleClass="Wid90 InputConButton" />
+				<p:commandButton update="txtCedula2, tablaClientes2"
+					oncomplete="mostarPanelBusqueda('PanelBusqueda2')"
+					action="#{fechasyComitesTemasPracticosBean.limpiarObjetosBusquedaEspecialista}"
+					icon="fa fa-search white" styleClass="BotonBuscar" />
+				<div id="PanelBusqueda2" class="DispNone PanelBusqueda">
+					<p:inputText id="txtCedula2" placeholder="Cédula/Apellido-Nombre"
+						value="#{fechasyComitesTemasPracticosBean.criterioBusquedaEspecialista2}"
+						onkeypress="if (event.keyCode == 13) { btnBuscarEspecialista2(); return false; }"
+						styleClass="DispBlock Wid90" />
+					<div class="EmptyBox10"></div>
+					<p:remoteCommand name="btnBuscarEspecialista2"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista2}"
+						update="txtCedula2, tablaClientes2, :mensaje" />
+					<p:commandButton update="txtCedula2, tablaClientes2, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista2}" />
+					<div class="EmptyBox10"></div>
+					<p:dataTable id="tablaClientes2" var="especialista" reflow="true"
+						value="#{fechasyComitesTemasPracticosBean.listEspecialista}"
+						paginator="true"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+						paginatorPosition="bottom" rowKey="#{especialista.id}"
+						selection="#{fechasyComitesTemasPracticosBean.especialista2}"
+						selectionMode="single">
+						<p:ajax event="rowSelect" update=":formNuevo, :mensaje"
+							listener="#{fechasyComitesTemasPracticosBean.cargarEspecialista2}"
+							oncomplete="click('btnCerrarBusqueda2')" />
+						<p:column headerText="Cedula">
+							#{especialista.id}
+						</p:column>
+						<p:column headerText="Especialista">
+							#{especialista.apellidoPaterno} #{especialista.apellidoMaterno} #{especialista.nombre}
+						</p:column>
+					</p:dataTable>
+					<p:commandButton id="btnCerrarBusqueda2" type="submit"
+						name="submit" styleClass="DispNone"
+						actionListener="mostarPanelBusqueda('PanelBusqueda2')" />
+				</div>
+				<p:outputLabel value="Especialista 3" styleClass="DispBlock" />
+				<p:inputText
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.especialista3.apellidoPaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista3.apellidoMaterno} #{fechasyComitesTemasPracticosBean.temaPractico.especialista3.nombre}"
+					readonly="true" styleClass="Wid90 InputConButton" />
+				<p:commandButton update="txtCedula3, tablaClientes3"
+					oncomplete="mostarPanelBusqueda('PanelBusqueda3')"
+					action="#{fechasyComitesTemasPracticosBean.limpiarObjetosBusquedaEspecialista}"
+					icon="fa fa-search white" styleClass="BotonBuscar" />
+				<div id="PanelBusqueda3" class="DispNone PanelBusqueda">
+					<p:inputText id="txtCedula3" placeholder="Cédula/Apellido-Nombre"
+						value="#{fechasyComitesTemasPracticosBean.criterioBusquedaEspecialista3}"
+						onkeypress="if (event.keyCode == 13) { btnBuscarEspecialista3(); return false; }"
+						styleClass="DispBlock Wid90" />
+					<div class="EmptyBox10"></div>
+					<p:remoteCommand name="btnBuscarEspecialista3"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista3}"
+						update="txtCedula3, tablaClientes3, :mensaje" />
+					<p:commandButton update="txtCedula3, tablaClientes3, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{fechasyComitesTemasPracticosBean.buscarEspecialista3}" />
+					<div class="EmptyBox10"></div>
+					<p:dataTable id="tablaClientes3" var="especialista" reflow="true"
+						value="#{fechasyComitesTemasPracticosBean.listEspecialista}"
+						paginator="true"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+						paginatorPosition="bottom" rowKey="#{especialista.id}"
+						selection="#{fechasyComitesTemasPracticosBean.especialista3}"
+						selectionMode="single">
+						<p:ajax event="rowSelect" update=":formNuevo, :mensaje"
+							listener="#{fechasyComitesTemasPracticosBean.cargarEspecialista3}"
+							oncomplete="click('btnCerrarBusqueda3')" />
+						<p:column headerText="Cedula">
+							#{especialista.id}
+						</p:column>
+						<p:column headerText="Especialista">
+							#{especialista.apellidoPaterno} #{especialista.apellidoMaterno} #{especialista.nombre}
+						</p:column>
+					</p:dataTable>
+					<p:commandButton id="btnCerrarBusqueda3" type="submit"
+						name="submit" styleClass="DispNone"
+						actionListener="mostarPanelBusqueda('PanelBusqueda3')" />
+				</div>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar"
+					update=":formDataTable ,:mensaje, formNuevo"
+					oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertar')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{fechasyComitesTemasPracticosBean.insertarComiteEvaluador}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelInsertar')" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+		<p:panel id="panelInsertarGracia"
+			header="Fecha de Sustentación de Gracia" styleClass="DispNone">
+			<h:form id="formNuevoGracia">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.id} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{fechasyComitesTemasPracticosBean.temaPractico.estudiantePeriodo.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel for="datetimeGracia"
+					value="Fecha de Sustentación de Gracia" styleClass="DispBlock" />
+				<p:calendar id="datetimeGracia"
+					value="#{fechasyComitesTemasPracticosBean.temaPractico.fechaSustentacionGracia}"
+					pattern="dd/MM/yyyy HH:mm" styleClass="DispBlock Wid90 calendario" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar"
+					update=":formDataTable ,:mensaje, formNuevoGracia"
+					oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertarGracia')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{fechasyComitesTemasPracticosBean.insertarFechaGracia}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelInsertarGracia')"
+					id="btnNuevolimpiar" icon="fa fa-close white" process="@this"
+					styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+		<p:dialog widgetVar="enviarEmail" severity="alert"
+			header="Enviar Email" showEffect="explode" hideEffect="explode"
+			modal="false" resizable="false">
+			<h:form id="guardarCasoPractico">
+				<p:outputLabel value="¿Desea enviar realmente este email?" />
+				<br />
+				<br />
+				<p:commandButton value="Aceptar" icon="fa fa-check white"
+					oncomplete="PF('enviarEmail').hide()"
+					actionListener="#{fechasyComitesTemasPracticosBean.enviarCorreo}" />
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('enviarEmail').hide()" icon="fa fa-close white" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

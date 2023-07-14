@@ -1,0 +1,199 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Citas bibliográficas de artículos científicos"
+						visible="#{citaPapersECBean.panelPrincipal}">
+
+						<h:form>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-2 UiGridCol">
+										<p:commandButton value="Actualizar Tabla" id="withIcon"
+											actionListener="#{citaPapersECBean.a}"
+											update="panelPrincipal" icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<div class="EmptyBox10"></div>
+
+										<p:dataTable var="epp" stickyHeader="true"
+											value="#{citaPapersECBean.listadoEstudiantesExamenComplexivoPP}"
+											paginator="true" rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible"
+											first="#{citaPapersECBean.paginaActual}">
+
+											<p:ajax event="page"
+												listener="#{citaPapersECBean.onPageChange}" />
+
+											<p:column headerText="Acción" styleClass="Wid10">
+
+												<p:tooltip for="btnAntiplagio" value="Citas bibliográficas" />
+												<p:commandButton id="btnAntiplagio"
+													icon="fa fa-pencil-square-o white"
+													action="#{citaPapersECBean.insertarCitas}"
+													disabled="#{(epp.especialistaSuplente1.email == calificacionesECBean.user and epp.activarSuplenteE != true) or (calificacionesECBean.user == epp.especialistaSuplantadoE.email)? true : false}"
+													update="panelPrincipal, panelCitas, :mensaje">
+													<f:setPropertyActionListener value="#{epp}"
+														target="#{citaPapersECBean.estudianteExamenComplexivoPP}" />
+												</p:commandButton>
+
+											</p:column>
+
+											<p:column headerText="Carrera">
+												<p:outputLabel value="#{epp.carrera.nombre}" />
+											</p:column>
+
+											<p:column headerText="Estudiante">
+												<p:outputLabel
+													value="#{epp.estudiante.apellidoNombre} (#{epp.estudiante.id})" />
+											</p:column>
+
+											<p:column headerText="Título">
+												<p:outputLabel value="#{epp.tituloInvestigacion}" />
+											</p:column>
+
+											<p:column headerText="Aprobado Tutor">
+												<p:button readonly="true"
+													value="#{epp.aprobado eq true ? 'Aprobado por tutor' : 'Aún sin aprobar'}"
+													styleClass="#{epp.aprobado eq true ? 'GreenButton' : 'RedButton' }" />
+											</p:column>
+
+											<p:column headerText="Enlace Documento">
+												<p:button target="_blank"
+													value="#{epp.urlDrive eq null ? 'No se ha generado el documento' : 'Ir al documento de Google Drive'}"
+													styleClass="#{epp.urlDrive ne null ? 'GreenButton' : 'RedButton'}"
+													readonly="#{epp.urlDrive ne null ? 'true' : 'false' }"
+													href="https://docs.google.com/document/d/#{epp.urlDrive == null ? '' : epp.urlDrive }" />
+											</p:column>
+
+											<p:column headerText="Especialista">
+												<p:outputLabel
+													value="#{(epp.especialista1.email == calificacionesECBean.user ? 'Especialista 1' : (epp.especialista2.email == calificacionesECBean.user ? 'Especialista 2' : (epp.especialista3.email == calificacionesECBean.user ? 'Especialista 3' : 'Suplente 1')))}" />
+											</p:column>
+
+											<p:column headerText="Cantidad citas" styleClass="Wid10">
+												<p:outputLabel value="#{epp.citas1}" />
+											</p:column>
+
+										</p:dataTable>
+
+										<div class="EmptyBox10"></div>
+
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelCitas" header="Porcentaje de coincidencia"
+						visible="#{citaPapersECBean.panelCitas}">
+						<h:form id="formPanelCoincidencia">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<p:inputText readonly="true"
+											value="#{citaPapersECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - (#{citaPapersECBean.estudianteExamenComplexivoPP.estudiante.id})" />
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<div class="EmptyBox20"></div>
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel
+														value="Número de citas de artículos científicos" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:inputText
+														readonly="#{(citaPapersECBean.estudianteExamenComplexivoPP.citas1 ne null) ? true : false}"
+														value="#{citaPapersECBean.estudianteExamenComplexivoPP.citas1}" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Observaciones" />
+													<p:inputTextarea
+														readonly="#{citaPapersECBean.estudianteExamenComplexivoPP.observacionesCitas != null and  citaPapersECBean.estudianteExamenComplexivoPP.observacionesCitas != '' ? true : false}"
+														value="#{citaPapersECBean.estudianteExamenComplexivoPP.observacionesCitas}" />
+
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{citaPapersECBean.actualizar}"
+											styleClass="GreenButton"
+											update=":panelPrincipal, panelCitas, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{citaPapersECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelCitas, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

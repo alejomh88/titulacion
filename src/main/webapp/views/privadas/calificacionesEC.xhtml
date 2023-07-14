@@ -1,0 +1,344 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Calificaciones examen complexivo"
+						visible="#{calificacionesECBean.panelPrincipal}">
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-2 UiGridCol">
+									<p:commandButton value="Actualizar Tabla" id="withIcon"
+										actionListener="#{calificacionesECBean.a}"
+										update="panelPrincipal" icon="fa fa-repeat white" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<div class="EmptyBox10"></div>
+
+										<p:dataTable var="epp" stickyHeader="false	"
+											value="#{calificacionesECBean.listadoEstudiantesExamenComplexivoPP}"
+											paginator="true" rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible"
+											first="#{calificacionesECBean.paginaActual}">
+
+											<p:ajax event="page"
+												listener="#{calificacionesECBean.onPageChange}" />
+
+											<p:columnGroup type="header">
+												<p:row>
+													<p:column rowspan="2" headerText="Acción"
+														styleClass="Wid10" />
+													<p:column rowspan="2"
+														headerText="Carrera &lt;br /&gt;(Tutor)"
+														styleClass="Wid20" />
+													<p:column rowspan="2"
+														headerText="Estudiante &lt;br /&gt;Documento Drive&lt;br /&gt;Aprobado tutor"
+														styleClass="Wid20" />
+													<p:column rowspan="2" headerText="Título"
+														styleClass="Wid20" />
+													<p:column rowspan="2" headerText="Tipo especialista"
+														styleClass="Wid10" />
+													<p:column colspan="3" headerText="Calificaciones"
+														styleClass="Wid20" />
+												</p:row>
+												<p:row>
+													<p:column headerText="Teórico" styleClass="Wid5" />
+													<p:column headerText="Escrita" styleClass="Wid5" />
+													<p:column headerText="Oral ordinaria" styleClass="Wid5" />
+													<!-- 													<p:column headerText="Oral gracia" styleClass="Wid5" /> -->
+												</p:row>
+											</p:columnGroup>
+
+											<p:column>
+
+												<p:tooltip for="btnEscrita" value="Escrita" />
+												<p:commandButton id="btnEscrita"
+													disabled="#{(epp.especialistaSuplente1.email == calificacionesECBean.user and epp.activarSuplenteE != true) or (calificacionesECBean.user == epp.especialistaSuplantadoE.email)? true : false}"
+													icon="fa fa-pencil-square-o white"
+													action="#{calificacionesECBean.insertarEscrita}"
+													update="panelPrincipal, panelEscrita, panelOral, :mensaje">
+													<f:setPropertyActionListener value="#{epp}"
+														target="#{calificacionesECBean.estudianteExamenComplexivoPP}" />
+												</p:commandButton>
+
+												<p:tooltip for="btnOral" value="Oral" />
+												<p:commandButton id="btnOral"
+													disabled="#{(epp.especialistaSuplente1.email == calificacionesECBean.user and epp.activarSuplenteO != true) or (epp.fechaSustentacionOrdinaria == null) or (calificacionesECBean.user == epp.especialistaSuplantadoO.email)? true : false}"
+													icon="fa  fa-volume-up white"
+													action="#{calificacionesECBean.insertarOral}"
+													update="panelPrincipal, panelEscrita, panelOral, :mensaje">
+													<f:setPropertyActionListener value="#{epp}"
+														target="#{calificacionesECBean.estudianteExamenComplexivoPP}" />
+												</p:commandButton>
+
+											</p:column>
+
+											<p:column>
+												<p:outputLabel value="#{epp.carrera.nombre}" />
+												<br />
+												<br />
+												<p:outputLabel value="(#{epp.tutor.apellidoNombre})" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel
+													value="#{epp.estudiante.apellidoNombre} (#{epp.estudiante.id})" />
+
+												<p:panelGrid columns="2" layout="grid"
+													style="border:none;background-color:rgba(255,255,255,0);">
+													<p:button
+														href="https://docs.google.com/document/d/#{epp.urlDrive == null ? '' : epp.urlDrive }"
+														value="#{epp.urlDrive == null ? 'Aún no se genera el documento' : 'Documento Drive'}"
+														target="_blank"
+														disabled="#{epp.urlDrive == null ? true : false}" />
+
+													<p:commandButton id="btnAprobadoTutor" type="button"
+														value="#{epp.aprobado eq true ? 'Aprobado' : 'Aún no aprobado'}"
+														icon="#{epp.aprobado eq true ? 'fa fa-check white' : 'fa fa-close white'}"
+														styleClass="#{epp.aprobado eq true ? 'GreenButton' : 'RedButton'}">
+													</p:commandButton>
+												</p:panelGrid>
+
+											</p:column>
+
+											<p:column>
+												<p:outputLabel value="#{epp.tituloInvestigacion}" />
+											</p:column>
+
+
+											<p:column>
+												<p:outputLabel
+													value="#{(epp.especialista1.email == calificacionesECBean.user ? 'Especialista 1' : (epp.especialista2.email == calificacionesECBean.user ? 'Especialista 2' : (epp.especialista3.email == calificacionesECBean.user ? 'Especialista 3' : 'Suplente 1')))}" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel value="#{epp.notaTeorica}" />
+
+											</p:column>
+
+											<p:column>
+												<p:outputLabel
+													value="#{(epp.especialista1.email == calificacionesECBean.user ? epp.ee1 : (epp.especialista2.email == calificacionesECBean.user ? epp.ee2 : (epp.especialista3.email == calificacionesECBean.user ? epp.ee3 : epp.es1)))}" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel
+													value="#{(epp.especialista1.email == calificacionesECBean.user ? epp.ooe1 : (epp.especialista2.email == calificacionesECBean.user ? epp.ooe2 : (epp.especialista3.email == calificacionesECBean.user ? epp.ooe3 : epp.oos1)))}" />
+											</p:column>
+
+											<!-- 											<p:column> -->
+											<!-- 												<p:outputLabel -->
+											<!-- 													value="#{(epp.especialista1.email == calificacionesECBean.user ? epp.oge1 : (epp.especialista2.email == calificacionesECBean.user ? epp.oge2 : (epp.especialista3.email == calificacionesECBean.user ? epp.oge3 : epp.ogs1)))}" /> -->
+											<!-- 											</p:column> -->
+
+										</p:dataTable>
+
+										<div class="EmptyBox10"></div>
+
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelEscrita"
+						header="Calificación de la parte escrita del examen complexivo"
+						visible="#{calificacionesECBean.panelEscrita}">
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:inputText readonly="true"
+											value="#{calificacionesECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - (#{calificacionesECBean.estudianteExamenComplexivoPP.estudiante.id})" />
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Calificación (20 puntos)" />
+												</div>
+												<!-- disabled="true" -->
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:inputText value="#{calificacionesECBean.calificacion}"
+														readonly="#{calificacionesECBean.calificacion == null ? 'false':'true'}" />
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{calificacionesECBean.actualizar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelEscrita, panelOral, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{calificacionesECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelEscrita, panelOral, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelOral"
+						header="Calificación de la parte oral del examen complexivo"
+						visible="#{calificacionesECBean.panelOral}">
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:inputText readonly="true"
+											value="#{calificacionesECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - (#{calificacionesECBean.estudianteExamenComplexivoPP.estudiante.id})" />
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Calificación ordinaria (30 puntos)" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:inputText
+														readonly="#{(calificacionesECBean.estudianteExamenComplexivoPP.fechaSustentacionOrdinaria ne null and calificacionesECBean.calificacionOralOrdinaria eq null) ? false : true}"
+														value="#{calificacionesECBean.calificacionOralOrdinaria}" />
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+							<!-- 							<div class="EmptyBox10"></div> -->
+
+							<!-- 							<div class="ui-grid ui-grid-responsive"> -->
+							<!-- 								<div class="ui-grid-row"> -->
+
+							<!-- 									<div class="ui-grid-col-6 UiGridCol"> -->
+
+							<!-- 										<div class="ui-grid ui-grid-responsive"> -->
+							<!-- 											<div class="ui-grid-row"> -->
+
+							<!-- 												<div class="ui-grid-col-6 UiGridCol"> -->
+							<!-- 													<p:outputLabel value="Calificación de gracia (30 puntos)" /> -->
+							<!-- 												</div> -->
+
+							<!-- 												<div class="ui-grid-col-6 UiGridCol"> -->
+							<!-- 													<p:inputText -->
+							<!-- 														readonly="#{(calificacionesECBean.estudianteExamenComplexivoPP.fechaSustentacionGracia ne null and calificacionesECBean.calificacionOralGracia eq null) ? false : true}" -->
+							<!-- 														value="#{calificacionesECBean.calificacionOralGracia}" /> -->
+							<!-- 												</div> -->
+
+							<!-- 											</div> -->
+							<!-- 										</div> -->
+
+							<!-- 									</div> -->
+							<!-- 								</div> -->
+							<!-- 							</div> -->
+
+							<!-- 							<div class="EmptyBox10"></div> -->
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{calificacionesECBean.actualizar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelEscrita, panelOral, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{calificacionesECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelEscrita, panelOral, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>

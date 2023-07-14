@@ -1,0 +1,144 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Reportes">
+
+						<h:form id="formParametros">
+
+							<div class="ui-g">
+								<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+									<p:outputLabel value="Formato" />
+									<p:selectOneMenu value="#{reporteCertBean.formatoReporte}">
+										<f:selectItem itemValue="" itemLabel="Seleccione un formato" />
+										<f:selectItem itemValue="pdf" itemLabel="PDF" />
+										<f:selectItem itemValue="xlsx" itemLabel="XLS" />
+										<p:ajax event="change" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Proceso" />
+									<p:selectOneMenu value="#{reporteCertBean.proceso}">
+										<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+										<f:selectItems value="#{reporteCertBean.procesos}"
+											var="proceso" itemValue="#{proceso.id}"
+											itemLabel="#{proceso.id} | #{proceso.observacion}" />
+										<p:ajax event="change"
+											listener="#{reporteCertBean.obtenerCarreras}"
+											update="formParametros" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Carrera" />
+									<p:selectOneMenu value="#{reporteCertBean.carrera}"
+										filter="true" filterMatchMode="contains" autoWidth="false">
+										<f:selectItem itemValue="0" itemLabel="Todas" />
+										<f:selectItems value="#{reporteCertBean.carreras}"
+											var="carrera" itemValue="#{carrera.id}"
+											itemLabel="#{carrera.nombre} | #{carrera.id}" />
+										<p:ajax event="change"
+											listener="#{reporteCertBean.cargarDatosReportes}" />
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+
+						</h:form>
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Estudiantes Examen Complexivo"
+										actionListener="#{reporteCertBean.reporteExamenComplexivo}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteCertBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Estudiantes Trabajos Titulación"
+										actionListener="#{reporteCertBean.reporteTrabajoTitulacion}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteCertBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+
+						<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

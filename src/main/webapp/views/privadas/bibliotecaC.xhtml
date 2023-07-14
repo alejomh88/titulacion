@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel header="Registro biblioteca">
+			<div class="TexAlCenter">
+				<h:form id="fromCasoPractico">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Carrera" value="#{bibliotecaCBean.carrera}"
+						styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+						<f:selectItem itemValue="0" itemLabel="Seleccione la Carrera" />
+						<f:selectItems value="#{bibliotecaCBean.carreras}" var="carrera"
+							itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+						<p:ajax event="change"
+							listener="#{bibliotecaCBean.obtenerTemaPractico}"
+							update="fromCasoPractico, :mensaje" />
+					</p:selectOneMenu>
+
+					<p:inputText value="#{bibliotecaCBean.temaPractico.numPaginas}"
+						placeholder="Número de páginas sin preliminares"
+						styleClass="Wid80 Fs16 MargTop10 DispBlock TexAlLeft MarAuto" />
+
+					<p:inputTextarea value="#{bibliotecaCBean.temaPractico.resumen}"
+						placeholder="Resumen"
+						styleClass="Wid80 Fs16 MargTop10 DispBlock TexAlLeft MarAuto" />
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<p:commandButton value="Guardar" styleClass="Fs16 BlueButton"
+						actionListener="#{bibliotecaCBean.actualizar}"
+						update=":mensaje, fromCasoPractico" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+	</ui:define>
+
+</ui:composition>

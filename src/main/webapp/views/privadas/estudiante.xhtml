@@ -1,0 +1,289 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Estudiantes"
+						visible="#{estudianteBean.boolPanelPrincipal}">
+
+						<div class="EmptyBox10"></div>
+
+						<h:form id="formBusquedaEstudiante">
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText
+											value="#{estudianteBean.criterioBusquedaEstudiante}"
+											placeholder="Cédula/Apellido-Nombre" />
+									</div>
+
+									<div class="ui-grid-col-1 UiGridCol">
+										<p:commandButton icon="fa fa-search white"
+											actionListener="#{estudianteBean.buscar}"
+											update=":panelPrincipal, :mensaje" />
+
+									</div>
+
+									<div class="ui-grid-col-1 UiGridCol">
+										<div class="EmptyBox10"></div>
+										<p:selectBooleanCheckbox id="checkBusqueda"
+											onchange="llamarModalEstudianteBusqueda();"
+											value="#{estudianteBean.checkBusqueda}" />
+										<h:outputText value="General" />
+									</div>
+								</div>
+							</div>
+
+						</h:form>
+
+						<div class="EmptyBox10"></div>
+
+						<h:form>
+
+							<p:dataTable id="tablaEstudiantes" var="estudiante" reflow="true"
+								value="#{estudianteBean.estudiantes}" paginator="true"
+								stickyHeader="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+								paginatorPosition="bottom">
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnEditar" value="Editar" />
+									<p:commandButton id="btnEditar" icon="fa fa-edit white"
+										update=":panelPrincipal, :panelEditar"
+										actionListener="#{estudianteBean.prepararEditar}">
+										<f:setPropertyActionListener value="#{estudiante}"
+											target="#{estudianteBean.estudiante}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Cedula">
+									<p:outputLabel value="#{estudiante.id}" />
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<p:outputLabel value=" #{estudiante.apellidoNombre}" />
+								</p:column>
+
+								<p:column headerText="Email">
+									<p:outputLabel value="#{estudiante.email}" />
+								</p:column>
+
+								<p:column headerText="Teléfono">
+									<p:outputLabel value="#{estudiante.telefono}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+					</p:panel>
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel id="panelEditar" header="Actualizar Estudiante"
+									visible="#{estudianteBean.boolPanelEditar}">
+
+									<h:form>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Cédula o pasaporte" />
+													<p:inputText id="numeroDocumento"
+														value="#{estudianteBean.estudiante.id}"
+														placeholder="Cédula o pasaporte" readonly="true" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Apellidos y nombres" />
+													<p:inputText id="nombres" required="true"
+														requiredMessage="Ingrese sus apellidos y nombres"
+														value="#{estudianteBean.estudiante.apellidoNombre}"
+														placeholder="Nombres" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Género" />
+													<p:selectOneMenu id="genero" required="true"
+														requiredMessage="Género"
+														value="#{estudianteBean.estudiante.genero}">
+														<f:selectItem itemValue="M" itemLabel="Masculino" />
+														<f:selectItem itemValue="F" itemLabel="Femenino" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Email" />
+													<p:inputText id="email" required="true"
+														requiredMessage="Ingrese su dirección de correo electrónico"
+														value="#{estudianteBean.estudiante.email}"
+														placeholder="Dirección Correo Electrónico" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Teléfono" />
+													<p:inputText id="telefono" required="true"
+														requiredMessage="Ingrese su dirección de teléfono"
+														value="#{estudianteBean.estudiante.telefono}"
+														placeholder="Teléfono" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Guardar"
+														actionListener="#{estudianteBean.actualizar}"
+														styleClass="GreenButton"
+														update=":panelPrincipal, :panelEditar, :mensaje" />
+												</div>
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Cancelar" styleClass="RedButton"
+														actionListener="#{estudianteBean.regresar}"
+														update=":panelPrincipal, :panelEditar, :mensaje" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+									</h:form>
+
+								</p:panel>
+
+							</div>
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+						</div>
+					</div>
+
+					<p:dialog header="Búsqueda General"
+						widgetVar="ventanaBusquedaGeneral" modal="true" height="650px"
+						width="75%">
+
+						<p:ajax event="close"
+							update="panelPrincipal, panelEditar, formDataTableBuscado, :mensaje"
+							listener="#{bibliotecaBean.cerrarModal}" />
+
+						<h:form id="formDataTableBuscado">
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-7 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText placeholder="Cédula/Apellidos Nombres"
+											value="#{estudianteBean.criterioBusqueda}" />
+									</div>
+
+									<div class="ui-grid-col-1 UiGridCol">
+										<p:outputLabel value="Buscar" />
+										<p:commandButton icon="fa fa-search white"
+											actionListener="#{estudianteBean.buscarEstudiante}"
+											update="formDataTableBuscado, :mensaje" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<p:dataTable var="estudianteBuscado"
+								value="#{estudianteBean.listadoEstudiantesBuscados}"
+								paginator="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" reflow="true"
+								emptyMessage="No hay Información Disponible">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="1" headerText="Modalidad" />
+										<p:column rowspan="1" headerText="Estudiante" />
+										<p:column rowspan="1" headerText="Proceso" />
+										<p:column rowspan="1" headerText="Carrera" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<p:outputLabel value="#{estudianteBuscado.modalidad}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteBuscado.estudiante} - #{estudianteBuscado.apellidoNombre} - #{estudianteBuscado.email}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{estudianteBuscado.proceso}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{estudianteBuscado.carrera} - #{estudianteBuscado.carreraNombre}" />
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+					</p:dialog>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

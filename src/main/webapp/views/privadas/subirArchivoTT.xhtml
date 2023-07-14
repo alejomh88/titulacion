@@ -1,0 +1,170 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Subir archivo">
+						<h:form>
+
+							<p class="black Fs18 FontBold">
+								<strong>Tener en cuenta lo siguiente, antes de subir
+									los archivos:</strong>
+							</p>
+							<ul class="black Fs16 FontBold">
+								<li>- El archivo debe contener los preliminares, el cuerpo
+									del documento, los complemetarios y la parte final</li>
+								<li>- Los archivos deben estar correctamente firmadas según
+									corresponda</li>
+								<li>- Los archivos deben ser de formato pdf</li>
+								<li>- El tamaño máximo del archivo del cuerpo del documento
+									es de 10MB</li>
+							</ul>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Carrera" styleClass="FontBold" />
+										<p:selectOneMenu required="true" requiredMessage="Carrera"
+											value="#{subirArchivoTTBean.ttId}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione la carrera" />
+											<f:selectItems value="#{subirArchivoTTBean.listaTT}" var="tt"
+												itemValue="#{tt.id}"
+												itemLabel="#{tt.proceso.id} | #{tt.carrera.nombre}" />
+											<p:ajax event="change"
+												listener="#{subirArchivoTTBean.obtenerTT}"
+												update="panelPrincipal, :mensaje" />
+										</p:selectOneMenu>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Archivo" />
+										<p:inputText value="#{subirArchivoTTBean.tt.archivo}"
+											readonly="true" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<!--<div style="#{subirArchivoTTBean.sw ? 'display:block;':'display:none;'}" class="ui-grid ui-grid-responsive">-->
+							<!--<div style="display: none;'}" class="ui-grid ui-grid-responsive"> -->
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:fieldset legend="Subir Cesión Derecho Autoría"
+											rendered="#{subirArchivoTTBean.renderizarOpcionesSubida}">
+											<p:fileUpload label="Seleccionar archivo"
+												disabled="#{subirArchivoTTBean.habilitarSubirArchivo == true ? false : true}"
+												dragDropSupport="false" uploadLabel="Subir archivo"
+												cancelLabel="Cancelar archivo" mode="advanced" fileLimit="1"
+												fileUploadListener="#{subirArchivoTTBean.subirArchivoCesionDerecho}"
+												invalidFileMessage="Documento con extensión diferente a pdf"
+												fileLimitMessage="Puede subir unicamente 1 archivo en formato pdf"
+												allowTypes="/(\.|\/)(pdf)$/" update=":mensaje" />
+										</p:fieldset>
+									</div>
+
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:fieldset legend="Subir PDF Generado Google Drive">
+											<p:fileUpload label="Seleccionar archivo"
+												disabled="#{subirArchivoTTBean.habilitarSubirArchivo == true ? false : true}"
+												dragDropSupport="false" uploadLabel="Subir archivo"
+												cancelLabel="Cancelar archivo" mode="advanced" fileLimit="1"
+												fileUploadListener="#{subirArchivoTTBean.subirArchivoCuerpoDocumento}"
+												invalidFileMessage="Documento con extensión diferente a pdf"
+												fileLimitMessage="Puede subir unicamente 1 archivo en formato pdf"
+												allowTypes="/(\.|\/)(pdf)$/" update=":mensaje" />
+										</p:fieldset>
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<div class="EmptyBox40"></div>
+										<p:commandButton value="Subir y unificar archivos"
+											disabled="#{subirArchivoTTBean.habilitarSubirArchivo == true ? false : true}"
+											styleClass="Fs16 GreenButton"
+											actionListener="#{subirArchivoTTBean.actualizar}"
+											update="panelPrincipal, :mensaje" />
+									</div>
+
+								</div>
+
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Información">
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel style="font-weight:bold;">A continuación, se presenta si los archivos subidos se han unido y almacenado correctamente, presentándolo en el visualizador de archivo en la parte inferior, así se corrobora la correcta subida de archivos. Además de que si el mismo cumple con los requisitos y estándares indicados en la guía de titulación.</p:outputLabel>
+												</div>
+											</div>
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:inputText readonly="true"
+														value="#{subirArchivoTTBean.tt.validarArchivo eq null ? 'Su documento aún no ha sido evaluado para evidenciar el cumplimiento de requisitos y estándares de la guía de titulación.' : subirArchivoTTBean.tt.validarArchivo eq true ? 'Su documento cumple con los requisitos y estándares indicados en la guía de titulación.' : 'Su documento no cumple con los requisitos y estándares de la guía de titulación. Por favor vuelva a subir los archivos tal como se indica en el instructivo enviado a su correo electrónico.'}" />
+												</div>
+											</div>
+										</p:fieldset>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox10"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Visualizador del documento">
+											<p:inputText readonly="true"
+												value="#{subirArchivoTTBean.tt.archivo eq null ? 'Usted aún no ha subido sus archivos para generar el documento final' : subirArchivoTTBean.correctaRutaArchivo eq false ? 'El documento subido presenta problemas. Vuelvalo a subir por favor.': false}"
+												rendered="#{subirArchivoTTBean.tt.archivo eq null ? true : subirArchivoTTBean.correctaRutaArchivo eq false ? true: false}" />
+											<div class="EmptyBox10"></div>
+											<p:inputText
+												rendered="#{subirArchivoTTBean.tt.archivo ne null ? true : false}"
+												value="Atención: Si no se visualiza el documento. Por favor cierre y vuelva a iniciar la sesión." />
+											<div class="EmptyBox10"></div>
+											<p:media value="#{subirArchivoTTBean.streamedContent}"
+												width="100%" height="700px" player="pdf"
+												rendered="#{(subirArchivoTTBean.correctaRutaArchivo eq false) or (subirArchivoTTBean.streamedContent eq null and subirArchivoTTBean.tt.archivo eq null) ? false : true}" />
+										</p:fieldset>
+									</div>
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,312 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Administrar estudiantes y temas de investigación"
+						visible="#{asignarEstudianteTrabajoTitulacionBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+
+							<div class="TexAlCenter">
+								<p:dataTable var="docenteSeminario"
+									value="#{asignarEstudianteTrabajoTitulacionBean.docentesSeminarios}"
+									selectionMode="single"
+									selection="#{asignarEstudianteTrabajoTitulacionBean.docenteSeminarioSeleccionado}"
+									rowKey="#{docenteSeminario.id}" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										Escoja un seminario
+									</f:facet>
+
+									<p:ajax event="rowSelect"
+										listener="#{asignarEstudianteTrabajoTitulacionBean.onRowSelect}"
+										update="panelPrincipal" />
+
+									<p:column headerText="Proceso" styleClass="Wid20">
+										<h:outputText value="#{docenteSeminario.seminario.proceso.id}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Carrera" styleClass="Wid40">
+										<h:outputText
+											value="#{docenteSeminario.seminario.lineaInvestigacionCarrera.carrera.nombre}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Seminario" styleClass="Wid40">
+										<h:outputText value="#{docenteSeminario.seminario.nombre}"
+											escape="false" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</h:form>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form id="formDataTable">
+							<p:dataTable var="ett" stickyHeader="true"
+								value="#{asignarEstudianteTrabajoTitulacionBean.estudiantesTrabajosTitulacion}"
+								reflow="true" emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									Estudiantes que participan en este seminario
+									
+									<div class="EmptyBox20"></div>
+
+									<p:commandButton value="Agregar estudiante al seminario"
+										disabled="#{asignarEstudianteTrabajoTitulacionBean.disableBtnInsertarEstudiante}"
+										action="#{asignarEstudianteTrabajoTitulacionBean.prepararInsertar}"
+										update="panelPrincipal, panelInsertar, :mensaje" />
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnEliminar" value="Eliminar" />
+									<p:commandButton id="btnEliminar" icon="fa fa-trash white"
+										action="#{asignarEstudianteTrabajoTitulacionBean.prepararEliminar}"
+										update="panelPrincipal, panelEliminar, :mensaje">
+										<f:setPropertyActionListener value="#{ett}"
+											target="#{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Tema de Investigación" styleClass="Wid40">
+									<p:outputLabel
+										value="#{ett.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+								</p:column>
+
+								<p:column headerText="Estudiante" styleClass="Wid30">
+									<p:outputLabel
+										value="( #{ett.estudiante.id} ) - #{ett.estudiante.apellidoNombre}" />
+								</p:column>
+
+								<p:column headerText="Opción de Trabajo de Titulación"
+									styleClass="Wid20">
+									<p:outputLabel
+										value="( #{ett.opcionTitulacion.id} ) - #{ett.opcionTitulacion.nombre}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelInsertar" stickyHeader="true"
+						header="Insertar estudiante al Seminario #{asignarEstudianteTrabajoTitulacionBean.docenteSeminarioSeleccionado.seminario.nombre}"
+						visible="#{asignarEstudianteTrabajoTitulacionBean.panelInsertar}">
+
+						<h:form id="formNuevo">
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<div class="TexAlCenter">
+											<p:dataTable var="estudianteTrabajoTitulacion"
+												value="#{asignarEstudianteTrabajoTitulacionBean.estudiantesTrabajosTitulacionSeleccionado}"
+												selectionMode="single"
+												selection="#{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacionSeleccionado}"
+												rowKey="#{estudianteTrabajoTitulacion.id}" reflow="true"
+												paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible">
+
+												<f:facet name="header">
+													Escoja un estudiante
+												</f:facet>
+
+												<p:ajax event="rowSelect"
+													listener="#{asignarEstudianteTrabajoTitulacionBean.onRowSelectEstudiante}"
+													update="panelInsertar" />
+
+												<p:column headerText="Estudiante" styleClass="Wid100">
+													<h:outputText
+														value="( #{estudianteTrabajoTitulacion.estudiante.id} ) - #{estudianteTrabajoTitulacion.estudiante.apellidoNombre}"
+														escape="false" />
+												</p:column>
+
+											</p:dataTable>
+										</div>
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Estudiante" />
+													<p:inputText readonly="true"
+														value="( #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacionSeleccionado.estudiante.id} ) - #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacionSeleccionado.estudiante.apellidoNombre}" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Tema de investigación" />
+													<p:selectOneMenu id="comboOpcionTitulacion"
+														value="#{asignarEstudianteTrabajoTitulacionBean.seminarioTrabajoTitulacion.id}">
+														<f:selectItem itemValue="0"
+															itemLabel="Escoja una tema de investigación" />
+														<f:selectItems
+															value="#{asignarEstudianteTrabajoTitulacionBean.seminariosTrabajosTitulacion}"
+															var="seminarioTrabajoTitulacion"
+															itemValue="#{seminarioTrabajoTitulacion.id}"
+															itemLabel="#{seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+
+													<p:outputLabel value="Opción de titulacion" />
+													<p:selectOneMenu id="comboTrabajoTitulacion"
+														value="#{asignarEstudianteTrabajoTitulacionBean.opcionTitulacion.id}">
+														<f:selectItem itemValue="0"
+															itemLabel="Escoja una opción de trabajo de titulación" />
+														<f:selectItems
+															value="#{asignarEstudianteTrabajoTitulacionBean.opcionesTitulacion}"
+															var="opcionTitulacion" itemValue="#{opcionTitulacion.id}"
+															itemLabel="#{opcionTitulacion.nombre}" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Guardar"
+														actionListener="#{asignarEstudianteTrabajoTitulacionBean.insertar}"
+														styleClass="GreenButton"
+														update="panelPrincipal , panelInsertar, :mensaje" />
+												</div>
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Cancelar"
+														action="#{asignarEstudianteTrabajoTitulacionBean.establecerPanelPrincipal}"
+														update="panelPrincipal, panelInsertar, :mensaje"
+														styleClass="RedButton" />
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelEliminar"
+						header="Desvincular al estudiante del Seminario #{asignarEstudianteTrabajoTitulacionBean.docenteSeminarioSeleccionado.seminario.nombre}"
+						visible="#{asignarEstudianteTrabajoTitulacionBean.panelEliminar}">
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText readonly="true"
+											value="( #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.id} ) - #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tema de investigación" />
+										<p:inputText readonly="true"
+											value="#{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<p:outputLabel value="Opción de titulacion" />
+										<p:inputText readonly="true"
+											value="( #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion.opcionTitulacion.id} ) - #{asignarEstudianteTrabajoTitulacionBean.estudianteTrabajoTitulacion.opcionTitulacion.nombre}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Desvincular"
+											actionListener="#{asignarEstudianteTrabajoTitulacionBean.eliminar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelEliminar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{asignarEstudianteTrabajoTitulacionBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelEliminar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

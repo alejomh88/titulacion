@@ -1,0 +1,207 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Administrar reactivos teóricos">
+			<div class="TexAlCenter">
+
+				<h:form id="busqueda">
+					<p:dataTable var="mc" value="#{administrarPreguntasBean.listCMPA}"
+						sortBy="#{mc.mallaCurricular}" rowKey="#{mc.id}"
+						selectionMode="single"
+						selection="#{administrarPreguntasBean.carreraMallaProcesoAux}">
+
+						<p:ajax event="rowSelect"
+							listener="#{administrarPreguntasBean.onRowSelect}"
+							update="panelPrincipal, FDTUnidadesDidacticas" />
+
+						<p:column headerText="Malla Curricular">
+							<h:outputText value="#{mc.mallaCurricular}" />
+						</p:column>
+						<p:column headerText="Proceso">
+							<h:outputText value="#{mc.proceso}" />
+						</p:column>
+						<p:column headerText="Carrera">
+							<h:outputText value="#{mc.carrera}" />
+						</p:column>
+						<p:column headerText="Asignatura">
+							<h:outputText value="#{mc.asignatura}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<h:form id="FDTUnidadesDidacticas">
+					<p:dataTable var="unidadDidactica"
+						value="#{administrarPreguntasBean.listUnidadesDidacticas}"
+						selectionMode="single"
+						selection="#{administrarPreguntasBean.unidadDidacticaSeleccionada}"
+						rowKey="#{unidadDidactica.id}" reflow="true"
+						emptyMessage="No hay Información Disponible">
+
+						<f:facet name="header">
+							Escoja una unidad didáctica de #{administrarPreguntasBean.carreraMallaProcesoAux.asignatura}<br />
+							<br />
+							<p:tooltip for="btnAgregarUD" value="Agregar unidad didáctica" />
+							<p:commandButton id="btnAgregarUD" icon="fa fa-plus-square white"
+								type="button"
+								disabled="#{administrarPreguntasBean.listUnidadesDidacticas != null and administrarPreguntasBean.activarPreguntas eq true ? 'false' : 'true'}"
+								onclick="PF('insertarUD').show();" />
+							<span> </span>
+							<p:tooltip for="btnEditarUD" value="Editar unidad didáctica" />
+							<p:commandButton id="btnEditarUD" icon="fa fa-pencil white"
+								type="button"
+								disabled="#{administrarPreguntasBean.unidadDidacticaSeleccionada != null and administrarPreguntasBean.activarPreguntas eq true ? 'false' : 'true'}"
+								onclick="PF('editarUD').show();" />
+							<span> </span>
+							<p:tooltip for="btnEliminarUD" value="Eliminar unidad didáctica" />
+							<p:commandButton id="btnEliminarUD" icon="fa fa-trash white"
+								type="button"
+								disabled="#{administrarPreguntasBean.unidadDidacticaSeleccionada != null and administrarPreguntasBean.activarPreguntas eq true ? 'false' : 'true'}"
+								onclick="PF('eliminarUD').show();" />
+						</f:facet>
+
+						<p:ajax event="rowSelect"
+							listener="#{administrarPreguntasBean.onRowSelectUnidadDidactica}"
+							update=":FDTUnidadesDidacticas, :FDTReactivosTeoricos, :formEditarUA" />
+
+						<p:column headerText="Nombre" styleClass="Wid40">
+							<h:outputText
+								value="( #{unidadDidactica.id} ) #{unidadDidactica.nombre}"
+								escape="false" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+				<h:form id="FDTReactivosTeoricos">
+					<p:dataTable var="pregunta" stickyHeader="true"
+						value="#{administrarPreguntasBean.listPregunta}"
+						rowStyleClass="#{pregunta.activo eq true ? null : 'desactivo'}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<f:facet name="header">
+							<p:tooltip for="btnAgregar" value="Agregar" />
+							<p:commandButton id="btnAgregar" icon="fa fa-plus-square white"
+								disabled="#{administrarPreguntasBean.unidadDidacticaSeleccionada!=null and administrarPreguntasBean.activarPreguntas eq true ? 'false':'true'}"
+								actionListener="#{administrarPreguntasBean.limpiar}" />
+						</f:facet>
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnEditar" value="Editar" />
+							<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+								disabled="#{pregunta.activo==true and administrarPreguntasBean.activarPreguntas eq true ? 'false':'true'}"
+								action="#{administrarPreguntasBean.cargarEditar}">
+								<f:setPropertyActionListener value="#{pregunta}"
+									target="#{administrarPreguntasBean.pregunta}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnVisualizar" value="Visualizar" />
+							<p:commandButton id="btnVisualizar" icon="fa fa-search white"
+								disabled="#{pregunta.activo==true and administrarPreguntasBean.activarPreguntas eq true ? 'false':'true'}"
+								action="#{administrarPreguntasBean.cargarVisualizar}">
+								<f:setPropertyActionListener value="#{pregunta}"
+									target="#{administrarPreguntasBean.pregunta}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnEliminar"
+								value="#{pregunta.activo==true?'Desactivar':'Activar'}" />
+							<p:commandButton id="btnEliminar"
+								icon="#{pregunta.activo==true?'fa fa-close white':'fa fa-check white'}"
+								update="FDTReactivosTeoricos, :mensaje"
+								disabled="#{administrarPreguntasBean.activarPreguntas eq true ? 'false':'true'}"
+								actionListener="#{administrarPreguntasBean.eliminarPregunta(pregunta)}" />
+						</p:column>
+
+						<p:column headerText="Id" styleClass="Wid10">
+							<p:outputLabel value="#{pregunta.id}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Enunciado" styleClass="Wid40">
+							<p:outputLabel value="#{pregunta.enunciado}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Eje temático" styleClass="Wid30">
+							<p:outputLabel value="#{pregunta.ejeTematico}" />
+						</p:column>
+
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog widgetVar="insertarUD" header="Insertar Unidad Didáctica"
+			closable="false" closeOnEscape="true" modal="true" resizable="false"
+			width="70%" appendTo="@(body)">
+			<h:form id="formNuevo">
+				<p:outputLabel value="Unidad Didáctica" styleClass="DispBlock" />
+				<p:inputText style="width:50%;"
+					value="#{administrarPreguntasBean.unidadDidacticaIngresar.nombre}" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update="panelPrincipal, :mensaje"
+					oncomplete="PF('insertarUD').hide();" icon="fa fa-floppy-o white"
+					actionListener="#{administrarPreguntasBean.insertarUD}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('insertarUD').hide()" icon="fa fa-close white"
+					process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="editarUD" header="Editar Unidad Didáctica"
+			closable="false" closeOnEscape="true" modal="true" resizable="false"
+			width="70%" appendTo="@(body)">
+			<h:form id="formEditarUA">
+				<p:outputLabel value="Unidad Didáctica" styleClass="DispBlock" />
+				<p:inputText style="width:50%;"
+					value="#{administrarPreguntasBean.unidadDidacticaSeleccionada.nombre}" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Actualizar"
+					update="panelPrincipal, :FDTUnidadesDidacticas, :mensaje"
+					oncomplete="PF('editarUD').hide();" icon="fa fa-floppy-o white"
+					actionListener="#{administrarPreguntasBean.actualizarUD}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar" oncomplete="PF('editarUD').hide()"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="eliminarUD" header="Eliminar Unidad Didáctica"
+			closable="false" closeOnEscape="true" modal="true" resizable="false"
+			width="70%" appendTo="@(body)">
+			<h:form id="formEliminarUA">
+				<p:outputLabel value="Unidad Didáctica" styleClass="DispBlock" />
+				<p:outputLabel
+					value="¿Esta seguro de eliminar la unidad académica #{administrarPreguntasBean.unidadDidacticaSeleccionada.nombre}" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Actualizar"
+					update="panelPrincipal, :FDTUnidadesDidacticas, :FDTReactivosTeoricos, :mensaje"
+					oncomplete="PF('eliminarUD').hide();" icon="fa fa-floppy-o white"
+					actionListener="#{administrarPreguntasBean.eliminarUD}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('eliminarUD').hide()" icon="fa fa-close white"
+					process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

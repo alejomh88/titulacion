@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Entrega de documentos - EC">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{documentosECBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems value="#{documentosECBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{documentosECBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{documentosECBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{documentosECBean.listTemaPracticos}" reflow="true"
+						emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnFechaGracia" value="Entrega de documentos" />
+							<p:commandButton id="btnFechaGracia" icon="fa fa-check white"
+								action="#{documentosECBean.limpiar}"
+								update="formDataTable, :formDocumentos"
+								oncomplete="PF('panelDocumentos').show()">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{documentosECBean.temaPractico}" />
+							</p:commandButton>
+
+						</p:column>
+
+						<p:column headerText="Cédula" styleClass="Wid30">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.id}" />
+						</p:column>
+
+						<p:column headerText="Estudiante" styleClass="Wid40">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{casoPractico.estudiantePeriodo.estudiante.nombre}" />
+						</p:column>
+
+						<p:column headerText="Entrego" styleClass="Wid20">
+							<p:selectBooleanButton value="#{casoPractico.documentos}"
+								onLabel="Yes" offLabel="No" disabled="true" />
+						</p:column>
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog widgetVar="panelDocumentos" severity="alert"
+			header="Entrega de documentos" modal="false" resizable="false"
+			width="50%">
+			<h:form id="formDocumentos">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{documentosECBean.temaPractico.estudiantePeriodo.estudiante.id} #{documentosECBean.temaPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{documentosECBean.temaPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{documentosECBean.temaPractico.estudiantePeriodo.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel for="documentos" value="Entrego todos los documentos"
+					styleClass="DispBlock" />
+				<p:selectBooleanButton id="documentos"
+					value="#{documentosECBean.temaPractico.documentos}" onLabel="Yes"
+					offLabel="No" styleClass="DispBlock Wid90" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar"
+					update=":formDataTable ,:mensaje, formDocumentos"
+					oncomplete="PF('panelDocumentos').hide()" id="btnNuevoAceptar"
+					icon="fa fa-floppy-o white"
+					actionListener="#{documentosECBean.insertarDocumentos}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('panelDocumentos').hide()" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

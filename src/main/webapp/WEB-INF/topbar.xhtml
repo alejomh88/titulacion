@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<div id="layout-topbar" class="ShadowGray">
+
+		<div id="layout-topbar-indent">
+
+			<h:graphicImage name="images/LOGO.png" styleClass="Fleft"
+				library="utmach-layout" id="logo" class="Fleft" />
+
+			<a href="#" id="mobile-menu-button"
+				class="BordRad3 white ShowOnMobile"> <i class="fa fa-caret-down"></i>
+				Menú
+			</a> <a href="#" id="mobile-menu-button-gray"
+				class="BordRad3 white ShowOnMobile"> <i class="fa fa-caret-down"></i>
+				Top Menú
+			</a>
+
+			<ul id="layout-topbar-menu">
+
+				<li><a href="/titulacion/views/publicas/logout.jsf"
+					class="Animated05"> <i class="fa fa-sign-out"></i> Salir
+				</a></li>
+
+				<li class="fa fa-ellipsis-v menu-separator"></li>
+
+				<li><a class="Animated05 CursPointer"> <i
+						class="fa fa-user"></i> <h:outputText
+							value="#{loginBean.usuario.apellidoNombre}" />
+				</a></li>
+
+			</ul>
+
+		</div>
+
+	</div>
+
+</ui:composition>

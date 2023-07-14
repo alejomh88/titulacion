@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panel" header="reporteEstudiantes">
+			<h:form styleClass="TexAlCenter FormreporteEstudiantes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporteEstudiante.carreraCaratulaTrabajoTitulacion}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems
+						value="#{reporteEstudiante.listCarreraCaratulaTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporteEstudiante.reporteCaratulaTrabajoTitulacion}"
+					value="Generar Caratula Trabajo Titulación" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormreporteEstudiantes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporteEstudiante.carreraCaratulaTrabajoTitulacion}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems
+						value="#{reporteEstudiante.listCarreraCaratulaTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporteEstudiante.reportePoratadaContraportadaTrabajoTitulacion}"
+					value="Portada y contraportada" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<h:form styleClass="TexAlCenter FormreporteEstudiantes">
+				<i class="fa fa-leanpub Fs130 blue DispBlock"></i>
+				<p:selectOneMenu id="carrera" required="true"
+					requiredMessage="Carrera"
+					value="#{reporteEstudiante.carreraCaratulaTrabajoTitulacion}"
+					styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+					<f:selectItem itemValue="0" itemLabel="Carrera" />
+					<f:selectItems
+						value="#{reporteEstudiante.listCarreraCaratulaTrabajoTitulacion}"
+						var="carrera" itemValue="#{carrera.id}"
+						itemLabel="#{carrera.nombre}" />
+				</p:selectOneMenu>
+
+				<div class="EmptyBox10"></div>
+				<p:commandButton update=":mensaje"
+					actionListener="#{reporteEstudiante.reporteConstanciaEntregaTrabajoTitulacion}"
+					value="Documento Entrega-Recepción" ajax="false"
+					styleClass="DispBlock Wid90 MarAuto" />
+
+				<div class="EmptyBox10"></div>
+			</h:form>
+
+			<div class="EmptyBox10"></div>
+			<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+				icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+		</p:panel>
+	</ui:define>
+
+</ui:composition>

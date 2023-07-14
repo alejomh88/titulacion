@@ -1,0 +1,376 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Comités evaluadores del Examen Complexivo"
+						visible="#{comiteEvaluadorECBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{comiteEvaluadorECBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{comiteEvaluadorECBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{comiteEvaluadorECBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{comiteEvaluadorECBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText
+												value="#{comiteEvaluadorECBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{comiteEvaluadorECBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteExamenComplexivoPP"
+									value="#{comiteEvaluadorECBean.listadoEstudiantesExamenComplexivoPP}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 10%" />
+											<p:column rowspan="2" headerText="Estudiante" />
+											<p:column colspan="4" headerText="Comité Evaluador" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Especialista 1" />
+											<p:column headerText="Especialista 2" />
+											<p:column headerText="Especialista 3" />
+											<p:column headerText="Especialista Suplente 1" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnComiteEvaluador" value="Comité Evaluador" />
+										<p:commandButton id="btnComiteEvaluador"
+											icon="fa fa-users white"
+											action="#{comiteEvaluadorECBean.seleccionarComiteEvaluador}"
+											update="panelPrincipal, panelSeleccionar, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{comiteEvaluadorECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.estudiante.id} - #{estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value=" #{estudianteExamenComplexivoPP.especialista1.id} - #{estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista2.id} - #{estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista3.id} - #{estudianteExamenComplexivoPP.especialista3.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialistaSuplente1.id} - #{estudianteExamenComplexivoPP.especialistaSuplente1.apellidoNombre}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Seleccionar Comité Evaluador del Examen Complexivo"
+						visible="#{comiteEvaluadorECBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{comiteEvaluadorECBean.estudianteExamenComplexivoPP.estudiante.id} - #{comiteEvaluadorECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{comiteEvaluadorECBean.estudianteExamenComplexivoPP.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Criterios de búsqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-5 UiGridCol">
+											<p:inputText
+												value="#{comiteEvaluadorECBean.criterioBusquedaEspecialista}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:commandButton icon="fa fa-search white"
+												action="#{comiteEvaluadorECBean.buscarEspecialista}"
+												update=":panelSeleccionar" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="esp" reflow="true"
+												value="#{comiteEvaluadorECBean.especialistas}"
+												paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{esp.id}"
+												selection="#{comiteEvaluadorECBean.especialista}"
+												selectionMode="single">
+												<p:ajax event="rowSelect"
+													update=":panelSeleccionar, :mensaje"
+													listener="#{comiteEvaluadorECBean.seleccionarEspecialista}" />
+
+												<p:column headerText="Especialista">
+													<h:outputText value="#{esp.id} - #{esp.apellidoNombre}" />
+												</p:column>
+
+											</p:dataTable>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:fieldset legend="Conformación de comité evaluador">
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+
+														<p:selectBooleanCheckbox itemLabel="Especialista 1"
+															value="#{comiteEvaluadorECBean.boolEspecialista1}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorECBean.seleccionarE1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorECBean.especialista1.id} - #{comiteEvaluadorECBean.especialista1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 2"
+															value="#{comiteEvaluadorECBean.boolEspecialista2}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorECBean.seleccionarE2}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorECBean.especialista2.id} - #{comiteEvaluadorECBean.especialista2.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 3"
+															value="#{comiteEvaluadorECBean.boolEspecialista3}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorECBean.seleccionarE3}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorECBean.especialista3.id} - #{comiteEvaluadorECBean.especialista3.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox
+															itemLabel="Especialista Suplente 1"
+															value="#{comiteEvaluadorECBean.boolEspecialistaSuplente1}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorECBean.seleccionarS1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorECBean.especialistaSuplente1.id} - #{comiteEvaluadorECBean.especialistaSuplente1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+										</p:fieldset>
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{comiteEvaluadorECBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{comiteEvaluadorECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

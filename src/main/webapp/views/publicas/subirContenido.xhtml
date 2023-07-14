@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Subir archivo">
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Procesar" styleClass="Fs16 BlueButton"
+											disabled="false"
+											actionListener="#{subirContenidoBean.examenComplexivoPT}" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="ArreglarNotas"
+											styleClass="Fs16 BlueButton" disabled="true"
+											actionListener="#{subirContenidoBean.arreglarNotas}" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Proceso 2015"
+											styleClass="Fs16 BlueButton" disabled="true"
+											actionListener="#{subirContenidoBean.anadirPreguntasEstudiante}" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="crear Preguntas Examenes"
+											styleClass="Fs16 BlueButton" disabled="true"
+											actionListener="#{subirContenidoBean.crearPreguntasExamenes}" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

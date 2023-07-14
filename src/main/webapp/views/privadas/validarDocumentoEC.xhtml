@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Validar estructura del documento"
+						visible="#{validarDocumentoECBean.panelPrincipal}">
+
+						<h:form>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-2 UiGridCol">
+										<p:commandButton value="Actualizar Tabla" id="withIcon"
+											actionListener="#{validarDocumentoECBean.a}"
+											update="panelPrincipal, panelValidar, :mensaje"
+											icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<div class="EmptyBox10"></div>
+
+										<p:dataTable var="epp" stickyHeader="true"
+											value="#{validarDocumentoECBean.listadoEstudiantesExamenComplexivoPP}"
+											paginator="true" rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible"
+											first="#{validarDocumentoECBean.paginaActual}">
+
+											<p:ajax event="page"
+												listener="#{validarDocumentoECBean.onPageChange}" />
+
+											<p:column headerText="Acción" styleClass="Wid10">
+
+												<p:tooltip for="btnValidar"
+													value="Validar estructura del trabajo" />
+												<p:commandButton id="btnValidar"
+													disabled="#{epp.validarDocumentoE3 eq true ? 'true' : (epp.especialistaSuplente1.email == calificacionesECBean.user and epp.activarSuplenteE != true) or (calificacionesECBean.user == epp.especialistaSuplantadoE.email)? true : false}"
+													icon="fa fa-line-chart white"
+													action="#{validarDocumentoECBean.validarDocumento}"
+													update="panelPrincipal, panelValidar, :mensaje">
+													<f:setPropertyActionListener value="#{epp}"
+														target="#{validarDocumentoECBean.estudianteExamenComplexivoPP}" />
+												</p:commandButton>
+
+											</p:column>
+
+											<p:column headerText="Carrera">
+												<p:outputLabel value="#{epp.carrera.nombre}" />
+											</p:column>
+
+											<p:column headerText="Estudiante">
+												<p:outputLabel
+													value="#{epp.estudiante.apellidoNombre} (#{epp.estudiante.id})" />
+											</p:column>
+
+											<p:column headerText="Aprobado Tutor">
+												<p:button readonly="true"
+													value="#{epp.aprobado eq true ? 'Aprobado por tutor' : 'Aún sin aprobar'}"
+													styleClass="#{epp.aprobado eq true ? 'GreenButton' : 'RedButton' }" />
+											</p:column>
+
+											<p:column headerText="Enlace Documento">
+												<p:button target="_blank"
+													value="#{epp.urlDrive eq null ? 'No se ha generado el documento' : 'Ir al documento'}"
+													styleClass="#{epp.urlDrive ne null ? 'GreenButton' : 'RedButton'}"
+													readonly="#{epp.urlDrive ne null ? 'true' : 'false' }"
+													href="https://docs.google.com/document/d/#{epp.urlDrive == null ? '' : epp.urlDrive }" />
+											</p:column>
+
+											<p:column headerText="Especialista">
+												<p:outputLabel
+													value="#{(epp.especialista1.email == calificacionesECBean.user ? 'Especialista 1' : (epp.especialista2.email == calificacionesECBean.user ? 'Especialista 2' : (epp.especialista3.email == calificacionesECBean.user ? 'Especialista 3' : 'Suplente 1')))}" />
+											</p:column>
+
+											<p:column headerText="Estado" styleClass="Wid10">
+												<p:outputLabel
+													value="#{epp.validarDocumentoE3 eq null ? 'Aún no ha validado' : 'Validado'}" />
+											</p:column>
+
+										</p:dataTable>
+
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelValidar"
+						header="Validación de la estructura del documento"
+						visible="#{validarDocumentoECBean.panelValidar}">
+						<h:form id="formpanelValidar">
+							<div class="EmptyBox10"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText readonly="true"
+											value="#{validarDocumentoECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - (#{validarDocumentoECBean.estudianteExamenComplexivoPP.estudiante.id}) - #{validarDocumentoECBean.estudianteExamenComplexivoPP.estudiante.email}" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="La validación comprende el cumplimiento de la estructura del documento de la dimensión escrita detallada en el 
+&lt;strong&gt;Artículo 46 de la Guía Complementaria para la Instrumentalización del Sistema de Titulación del Sistema de Titulación de Pregrado de la Universidad Técnica de Machala
+&lt;/strong&gt;, del cual se debe encontrar a partir de las páginas
+&lt;i&gt;Dedicatoria (opcional), Agradecimiento (opcional), Resumen, Palabras Claves, Abstract, Keywords y los demás que continúan
+&lt;/i&gt; de los cuales debe estar plasmado en el documento de Google Drive, los preliminares no son necesarios ya que lo genera la plataforma de titulación una vez el estudiante apruebe el proceso. La validación que usted va a realizar comprende la revisión de la estructura correcta del documento de google drive del estudiante."
+											escape="false" />
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar"
+											actionListener="#{validarDocumentoECBean.actualizar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelValidar, :mensaje" />
+									</div>
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{validarDocumentoECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelValidar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

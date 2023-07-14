@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel header="Datos del Proceso">
+			<div class="TexAlCenter">
+				<h:form id="fromCasoPractico">
+					<p:outputLabel value="Datos Generales" styleClass="SubTitulos" />
+
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Carrera"
+						value="#{consultarDatosTitulacionBean.carrera}"
+						styleClass="DispBlock MarAuto Wid80 labelCenter MargTop10">
+						<f:selectItem itemValue="0" itemLabel="Carrera" />
+						<f:selectItems value="#{consultarDatosTitulacionBean.carreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+						<p:ajax event="change"
+							listener="#{consultarDatosTitulacionBean.obtenerTrabajoTitulacion}"
+							update="fromCasoPractico, :fromCasoPracticoh, :mensaje" />
+					</p:selectOneMenu>
+
+					<p:inputText readonly="true"
+						value="Proceso: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.seminario.proceso.id}"
+						placeholder="Periodo"
+						styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel value="Calificación" styleClass="SubTitulos" />
+					<p:dataTable var="cartilla" reflow="true"
+						value="#{consultarDatosTitulacionBean.listCartillaAlumno}"
+						styleClass="Wid81 Fnone MargTop10 TexAlCenter MarAuto"
+						emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Parte" styleClass="Wid40">
+							<p:outputLabel value="#{cartilla.nombre}" />
+						</p:column>
+
+						<p:column headerText="Final" styleClass="Wid20">
+							<p:outputLabel value="#{cartilla.calFinal}" />
+						</p:column>
+
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="1" footerText="Final redondeada:" />
+								<p:column footerText="#{consultarDatosTitulacionBean.calFinal}" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+					<p:outputLabel value="Investigación" styleClass="SubTitulos" />
+					<p:inputText
+						value="Tutor docente: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputTextarea
+						value="Título del trabajo de investigación: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.tituloInvestigacion}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel
+						value="Tema de investigación: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}"
+						readonly="true" escape="false"
+						styleClass="Wid80 TexAlCenter Fs18 MargTop10 DispBlock" />
+					<p:inputText
+						value="Seminario: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.seminario.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+					<p:inputText
+						value="Línea de investigación: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.seminario.lineaInvestigacionCarrera.lineaInvestigacion.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+					<p:inputText
+						value="Tipo de trabajo de titulación: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.opcionTitulacion.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:outputLabel value="Fecha de sustentación"
+						styleClass="SubTitulos" />
+					<p:inputText
+						value="#{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.fechaSustentacion}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+							timeZone="America/Guayaquil" />
+					</p:inputText>
+
+					<p:outputLabel value="Comité Evaluador" styleClass="SubTitulos" />
+					<p:inputText
+						value="Especialista 1: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista1.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista1.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista1.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="Especialista 2: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista2.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista2.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista2.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="Especialista 3: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista3.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista3.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialista3.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="Especialista Suplente 1: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente1.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente1.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente1.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<p:inputText
+						value="Especialista Suplente 2: #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente2.apellidoPaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente2.apellidoMaterno} #{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.especialistaSuplente2.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<p:commandButton value="Enviar al correo"
+						styleClass="Fs16 BlueButton DispNone"
+						actionListener="#{consultarDatosTitulacionBean.enviarCorreo}"
+						update=":mensaje, fromCasoPractico" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel header="Historial de tutorías">
+			<h:form id="fromCasoPracticoh">
+
+				<p:dataTable var="tutoria"
+					value="#{consultarDatosTitulacionBean.estudianteTrabajoTitulacion.tutorias}"
+					reflow="true" emptyMessage="No hay Información Disponible">
+
+					<p:column headerText="Fecha" styleClass="Wid20">
+						<p:outputLabel value="#{tutoria.fecha}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+								timeZone="America/Guayaquil" />
+						</p:outputLabel>
+					</p:column>
+
+					<p:column headerText="Observación" styleClass="Wid40">
+						<p:outputLabel value="#{tutoria.observacion}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

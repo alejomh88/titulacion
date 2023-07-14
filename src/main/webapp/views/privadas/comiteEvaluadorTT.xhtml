@@ -1,0 +1,376 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Comités evaluadores del Trabajo de Titulación"
+						visible="#{comiteEvaluadorTTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{comiteEvaluadorTTBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{comiteEvaluadorTTBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{comiteEvaluadorTTBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{comiteEvaluadorTTBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText
+												value="#{comiteEvaluadorTTBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{comiteEvaluadorTTBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteTrabajoTitulacion"
+									value="#{comiteEvaluadorTTBean.listadoEstudiantesTrabajoTitulacion}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 10%" />
+											<p:column rowspan="2" headerText="Estudiante" />
+											<p:column colspan="4" headerText="Comité Evaluador" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Especialista 1" />
+											<p:column headerText="Especialista 2" />
+											<p:column headerText="Especialista 3" />
+											<p:column headerText="Especialista Suplente 1" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnComiteEvaluador" value="Comité Evaluador" />
+										<p:commandButton id="btnComiteEvaluador"
+											icon="fa fa-users white"
+											action="#{comiteEvaluadorTTBean.seleccionarComiteEvaluador}"
+											update="panelPrincipal, panelSeleccionar, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{comiteEvaluadorTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.estudiante.id} - #{estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value=" #{estudianteTrabajoTitulacion.especialista1.id} - #{estudianteTrabajoTitulacion.especialista1.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialista2.id} - #{estudianteTrabajoTitulacion.especialista2.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialista3.id} - #{estudianteTrabajoTitulacion.especialista3.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialistaSuplente1.id} - #{estudianteTrabajoTitulacion.especialistaSuplente1.apellidoNombre}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Seleccionar Comité Evaluador del Trabajo de Titulación"
+						visible="#{comiteEvaluadorTTBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{comiteEvaluadorTTBean.estudianteTrabajoTitulacion.estudiante.id} - #{comiteEvaluadorTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{comiteEvaluadorTTBean.estudianteTrabajoTitulacion.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Criterios de búsqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-5 UiGridCol">
+											<p:inputText
+												value="#{comiteEvaluadorTTBean.criterioBusquedaEspecialista}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:commandButton icon="fa fa-search white"
+												action="#{comiteEvaluadorTTBean.buscarEspecialista}"
+												update=":panelSeleccionar" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="esp" reflow="true"
+												value="#{comiteEvaluadorTTBean.especialistas}"
+												paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{esp.id}"
+												selection="#{comiteEvaluadorTTBean.especialista}"
+												selectionMode="single">
+												<p:ajax event="rowSelect"
+													update=":panelSeleccionar, :mensaje"
+													listener="#{comiteEvaluadorTTBean.seleccionarEspecialista}" />
+
+												<p:column headerText="Especialista">
+													<h:outputText value="#{esp.id} - #{esp.apellidoNombre}" />
+												</p:column>
+
+											</p:dataTable>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+
+										<p:fieldset legend="Conformación de comité evaluador">
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+
+														<p:selectBooleanCheckbox itemLabel="Especialista 1"
+															value="#{comiteEvaluadorTTBean.boolEspecialista1}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorTTBean.seleccionarE1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorTTBean.especialista1.id} - #{comiteEvaluadorTTBean.especialista1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 2"
+															value="#{comiteEvaluadorTTBean.boolEspecialista2}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorTTBean.seleccionarE2}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorTTBean.especialista2.id} - #{comiteEvaluadorTTBean.especialista2.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 3"
+															value="#{comiteEvaluadorTTBean.boolEspecialista3}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorTTBean.seleccionarE3}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorTTBean.especialista3.id} - #{comiteEvaluadorTTBean.especialista3.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox
+															itemLabel="Especialista Suplente 1"
+															value="#{comiteEvaluadorTTBean.boolEspecialistaSuplente1}">
+															<p:ajax update=":panelSeleccionar"
+																listener="#{comiteEvaluadorTTBean.seleccionarS1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{comiteEvaluadorTTBean.especialistaSuplente1.id} - #{comiteEvaluadorTTBean.especialistaSuplente1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+										</p:fieldset>
+
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{comiteEvaluadorTTBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{comiteEvaluadorTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

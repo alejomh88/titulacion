@@ -1,0 +1,603 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Tutorías"
+						visible="#{seguimientoTutoriasBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:outputLabel value="Proceso" />
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{seguimientoTutoriasBean.procesoSeleccionado}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione un proceso" />
+											<f:selectItems value="#{seguimientoTutoriasBean.procesos}"
+												var="proceso" itemValue="#{proceso.id}"
+												itemLabel="#{proceso.id} | #{proceso.observacion}" />
+											<p:ajax event="change"
+												listener="#{seguimientoTutoriasBean.cargarSeminarios}"
+												update="seminario, formEstudiante:estudianteTrabajoTitulacion" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+
+							<div class="TexAlCenter">
+								<p:dataTable id="seminario" var="seminario"
+									value="#{seguimientoTutoriasBean.seminarios}"
+									selectionMode="single" stickyHeader="true"
+									selection="#{seguimientoTutoriasBean.seminarioSeleccionado}"
+									rowKey="#{seminario.id}" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										Escoja un seminario
+									</f:facet>
+
+									<p:ajax event="rowSelect"
+										listener="#{seguimientoTutoriasBean.onRowSelect}"
+										update="panelPrincipal" />
+
+									<p:column headerText="Proceso" styleClass="Wid20">
+										<h:outputText
+											value="#{seminario.proceso.id}  #{seminario.proceso.observacion}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Carrera" styleClass="Wid40">
+										<h:outputText
+											value="#{seminario.lineaInvestigacionCarrera.carrera.nombre} - #{seminario.lineaInvestigacionCarrera.carrera.id}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Seminario" styleClass="Wid40">
+										<h:outputText value="(#{seminario.id}) #{seminario.nombre}"
+											escape="false" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+
+						</h:form>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form id="formEstudiante">
+							<p:dataTable id="estudianteTrabajoTitulacion"
+								var="estudianteTrabajoTitulacion" stickyHeader="true"
+								value="#{seguimientoTutoriasBean.estudiantesTrabajoTitulacion}"
+								reflow="true" emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									Escoja un estudiante
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+
+									<p:tooltip for="btnNuevo" value="Historial de tutorías" />
+									<p:commandButton id="btnNuevo" icon="fa fa-users white"
+										action="#{seguimientoTutoriasBean.mostrarPanelTutoria}"
+										update=":panelPrincipal, :panelTutorias">
+
+										<f:setPropertyActionListener
+											value="#{estudianteTrabajoTitulacion}"
+											target="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion}" />
+									</p:commandButton>
+
+									<p:tooltip for="btnAprobar"
+										value="Aprobar Tutorías y Trabajo Escrito" />
+									<p:commandButton id="btnAprobar"
+										rendered="#{estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.email eq seguimientoTutoriasBean.usuarioEmail ? true : estudianteTrabajoTitulacion.cotutor.email eq seguimientoTutoriasBean.usuarioEmail ? 'Cotutor' : '' }"
+										icon="#{estudianteTrabajoTitulacion.aprobado == true ? seguimientoTutoriasBean.iconoValidarTrue : seguimientoTutoriasBean.iconoValidarFalse  }"
+										disabled="#{(estudianteTrabajoTitulacion.aprobado == null or estudianteTrabajoTitulacion.aprobado == false) ? false : true}"
+										action="#{seguimientoTutoriasBean.validarEstudiante}"
+										update=":panelPrincipal, :panelValidarEstudiante, :mensaje">
+
+										<f:setPropertyActionListener
+											value="#{estudianteTrabajoTitulacion}"
+											target="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion}" />
+									</p:commandButton>
+
+								</p:column>
+
+								<p:column headerText="Tema de investigación" styleClass="Wid25">
+									<p:outputLabel
+										value="#{estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}"
+										escape="false" />
+								</p:column>
+
+								<p:column headerText="Estudiante">
+									<p:outputLabel
+										value="(#{estudianteTrabajoTitulacion.estudiante.id}) - #{estudianteTrabajoTitulacion.estudiante.apellidoNombre} - #{estudianteTrabajoTitulacion.estudiante.email}" />
+								</p:column>
+
+								<p:column headerText="Opción Trabajo Titulación"
+									styleClass="Wid20">
+									<p:outputLabel
+										value="#{estudianteTrabajoTitulacion.opcionTitulacion.nombre}"
+										escape="false" />
+								</p:column>
+
+								<p:column headerText="Tutor / Cotutor" styleClass="Wid15">
+									<p:outputLabel
+										value="#{estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.email eq seguimientoTutoriasBean.usuarioEmail ? 'Tutor' : estudianteTrabajoTitulacion.cotutor.email eq seguimientoTutoriasBean.usuarioEmail ? 'Cotutor' : '' }"
+										escape="false" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTutorias"
+						header="Historial de tutorías de #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id} - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}"
+						visible="#{seguimientoTutoriasBean.panelTutorias}">
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas de tutorias realizadas" />
+									<p:inputText readonly="true"
+										value="#{seguimientoTutoriasBean.numeroHorasTutorias}" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Número total de horas a cumplir" />
+									<p:inputText readonly="true" value="48 horas" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas restantes" />
+									<p:inputText readonly="true"
+										value="#{seguimientoTutoriasBean.numeroTotalHorasMinutosRestantes}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="TexAlCenter">
+
+							<h:form id="formMostrar">
+
+								<div class="EmptyBox10"></div>
+
+								<p:dataTable var="tutoria" stickyHeader="true"
+									value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.tutorias}"
+									reflow="true" emptyMessage="No hay tutorías realizadas">
+
+									<f:facet name="header">
+
+										<p:tooltip for="btnNuevo" value="Insertar" />
+										<p:commandButton id="btnNuevo" value="Insertar tutoría"
+											action="#{seguimientoTutoriasBean.mostrarPanelInsertarTutoria}"
+											update=":panelTutorias, :panelInsertarTutoria, :mensaje" />
+
+									</f:facet>
+
+									<p:column headerText="Acción" styleClass="Wid10">
+
+										<p:tooltip for="btnEditarT" value="Editar" />
+										<p:commandButton id="btnEditarT" icon="fa fa-edit white"
+											action="#{seguimientoTutoriasBean.prepararEditar}"
+											disabled="#{tutoria.docente.email eq null ? false : tutoria.docente.email eq seguimientoTutoriasBean.usuarioEmail ? false : true}"
+											update=":panelTutorias, :panelEditarTutoria, :mensaje">
+											<f:setPropertyActionListener value="#{tutoria}"
+												target="#{seguimientoTutoriasBean.tutoria}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnImprimir" value="Imprimir" />
+										<p:commandButton id="btnImprimir" icon="fa fa-print white"
+											actionListener="#{seguimientoTutoriasBean.imprimir(tutoria)}"
+											ajax="false" update=":mensaje">
+											<p:fileDownload value="#{seguimientoTutoriasBean.documento}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column headerText="Fecha inicio tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fecha}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Fecha fin tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fechaFinTutoria}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Fecha proxima tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fechaProximaTutoria}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Actividades" styleClass="Wid25">
+										<p:outputLabel value="#{tutoria.actividad}" />
+									</p:column>
+
+									<p:column headerText="Tareas a realizar" styleClass="Wid25">
+										<p:outputLabel value="#{tutoria.tarea}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Regresar"
+												action="#{seguimientoTutoriasBean.regresarPanelPrincipal}"
+												update=":panelPrincipal, :panelTutorias"
+												styleClass="OrangeButton" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</div>
+
+					</p:panel>
+
+					<p:panel id="panelInsertarTutoria"
+						header="Insertar tutoría de #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id} - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}"
+						visible="#{seguimientoTutoriasBean.panelInsertarTutoria}">
+
+						<h:form id="formNuevo">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tema de investigación" />
+										<p:inputTextarea readonly="true"
+											value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha inicio de la tutoría" />
+										<p:calendar value="#{seguimientoTutoriasBean.fecha}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha fin de la tutoría" />
+										<p:calendar value="#{seguimientoTutoriasBean.fechaFinTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha inicio de la proxima tutoría" />
+										<p:calendar
+											value="#{seguimientoTutoriasBean.fechaProximaTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha fin de la proxima tutoría" />
+										<p:calendar
+											value="#{seguimientoTutoriasBean.fechaFinProximaTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="Describa que tareas realizó la o el estudiante desde la tutoría anterior" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tareasRealizadas}" />
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="En caso de que la o el estudiante no hubiera realizado las actividades, justifíquelas" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tareasNoRealizadas}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="Describa las actividades que se realizan durante las tutorías" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.actividad}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="Describa las tareas que el tutorizado debe realizar para la revisón en la proxima tutoría" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tarea}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{seguimientoTutoriasBean.insertarTutoria}"
+											update="panelTutorias, :panelInsertarTutoria, :mensaje"
+											styleClass="GreenButton" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{seguimientoTutoriasBean.regresarPanelTutorias}"
+											update=":panelTutorias, :panelInsertarTutoria"
+											styleClass="OrangeButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelEditarTutoria"
+						header="Editar tutoría de #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id} - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}"
+						visible="#{seguimientoTutoriasBean.panelEditarTutoria}">
+
+						<h:form id="formEditar">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tema de investigación" />
+										<p:inputTextarea readonly="true"
+											value="#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha inicio de la tutoría" />
+										<p:calendar value="#{seguimientoTutoriasBean.fecha}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha fin de la tutoría" />
+										<p:calendar value="#{seguimientoTutoriasBean.fechaFinTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha inicio de la proxima tutoría" />
+										<p:calendar
+											value="#{seguimientoTutoriasBean.fechaProximaTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:outputLabel value="Fecha fin de la proxima tutoría" />
+										<p:calendar
+											value="#{seguimientoTutoriasBean.fechaFinProximaTutoria}"
+											pattern="dd/MM/yyyy HH:mm" placeholder="dd/MM/yyyy HH:mm"
+											styleClass="calendario" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="Describa que tareas realizó la o el estudiante desde la tutoría anterior" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tareasRealizadas}" />
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="En caso de que la o el estudiante no hubiera realizado las actividades, justifíquelas" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tareasNoRealizadas}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="Describa las actividades que se realizan durante las tutorías" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.actividad}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="Describa las tareas que el tutorizado debe realizar para la revisón en la proxima tutoría" />
+										<p:inputTextarea
+											value="#{seguimientoTutoriasBean.tutoria.tarea}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{seguimientoTutoriasBean.actualizar}"
+											update=":panelTutorias, :panelEditarTutoria, :mensaje"
+											styleClass="GreenButton" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{seguimientoTutoriasBean.regresarPanelTutorias}"
+											update=":panelTutorias, :panelEditarTutoria"
+											styleClass="OrangeButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelValidarEstudiante"
+						visible="#{seguimientoTutoriasBean.panelValidarEstudiante}">
+
+						<h:form id="formValidarEstudiante">
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Datos del estudiante">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:inputText readonly="true"
+												value="(#{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.id}) - #{seguimientoTutoriasBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+										</div>
+									</div>
+								</div>
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Importante">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="¿Esta seguro de dar el aval al trabajo de titulacion que usted ha tutorizado en conjunto con el estudiante?" />
+										</div>
+									</div>
+								</div>
+							</p:fieldset>
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{seguimientoTutoriasBean.guardarValidacionEstudiante}"
+											update=":panelPrincipal, :panelValidarEstudiante, :mensaje"
+											styleClass="GreenButton" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{seguimientoTutoriasBean.presentarPrincipalValidarEstudiante}"
+											update=":panelPrincipal, :panelValidarEstudiante"
+											styleClass="OrangeButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

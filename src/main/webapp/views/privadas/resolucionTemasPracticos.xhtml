@@ -1,0 +1,158 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelespecialista" header="Resolucion Consejo Directivo">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{resolucionTemasPracticosBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{resolucionTemasPracticosBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{resolucionTemasPracticosBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{resolucionTemasPracticosBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{resolucionTemasPracticosBean.listTemaPracticos}"
+						reflow="true" emptyMessage="No hay Información Disponible"
+						rowKey="#{casoPractico.id}"
+						selection="#{resolucionTemasPracticosBean.listTemaPracticosSeleccionados}">
+
+						<f:facet name="header">
+							<p:commandButton id="btnPagarTodo" update=":mensaje"
+								value="Insertar Resolución"
+								actionListener="#{resolucionTemasPracticosBean.comprobar}"
+								oncomplete="comprobarAbrir(xhr, status, args, 'panelInsertar')">
+							</p:commandButton>
+						</f:facet>
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Acción" styleClass="Wid10" />
+								<p:column rowspan="2" headerText="Cédula" styleClass="Wid5" />
+								<p:column rowspan="2" headerText="Estudiante" styleClass="Wid15" />
+								<p:column rowspan="2" headerText="Fecha Resolución"
+									styleClass="Wid15" />
+								<p:column rowspan="2" headerText="Resolución" styleClass="Wid15" />
+								<p:column rowspan="2" headerText="Fecha Sustentacion"
+									styleClass="Wid15" />
+								<p:column colspan="3" headerText="Comité Evaluador"
+									styleClass="Wid40" />
+							</p:row>
+							<p:row>
+								<p:column headerText="Especialista 1" styleClass="Wid33" />
+								<p:column headerText="Especialista 2" styleClass="Wid33" />
+								<p:column headerText="Especialista 3" styleClass="Wid33" />
+							</p:row>
+						</p:columnGroup>
+
+						<p:column selectionMode="multiple" />
+
+						<p:column>
+							#{casoPractico.estudiantePeriodo.estudiante.id}
+						</p:column>
+
+						<p:column>
+							#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{casoPractico.estudiantePeriodo.estudiante.nombre}
+						</p:column>
+
+						<p:column>
+							<h:outputText value="#{casoPractico.fechaResolucion}">
+								<f:convertDateTime pattern="dd/MM/yyyy"
+									timeZone="America/Guayaquil" />
+							</h:outputText>
+						</p:column>
+
+						<p:column>
+							#{casoPractico.resolucion}
+						</p:column>
+
+						<p:column>
+							<h:outputText value="#{casoPractico.fechaSustentacionOrdinaria}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</h:outputText>
+						</p:column>
+
+						<p:column>
+							#{casoPractico.especialista1.apellidoPaterno} #{casoPractico.especialista1.apellidoMaterno} #{casoPractico.especialista1.nombre}
+						</p:column>
+
+						<p:column>
+							#{casoPractico.especialista2.apellidoPaterno} #{casoPractico.especialista2.apellidoMaterno} #{casoPractico.especialista2.nombre}
+						</p:column>
+
+						<p:column>
+							#{casoPractico.especialista3.apellidoPaterno} #{casoPractico.especialista3.apellidoMaterno} #{casoPractico.especialista3.nombre}
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog widgetVar="panelInsertar"
+			header="Insertar Resolución Consejo Directivo" closable="false"
+			closeOnEscape="true" modal="true" resizable="false"
+			styleClass="Wid50" appendTo="@(body)">
+			<h:form id="formEditar">
+
+				<p:outputLabel value="Número de Resolucion" styleClass="DispBlock" />
+				<p:inputText value="#{resolucionTemasPracticosBean.resolucion}"
+					placeholder="Ingrese la Resolución" styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Fecha de Resolucion" styleClass="DispBlock" />
+				<p:calendar id="datetime"
+					value="#{resolucionTemasPracticosBean.fechaResolucion}"
+					styleClass="DispBlock Wid90 calendario" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update=":formDataTable ,:mensaje"
+					oncomplete="comprobarCerrar(xhr, status, args, 'panelInsertar')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{resolucionTemasPracticosBean.insertarResolucion}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('panelInsertar').hide()" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,1719 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Gestión de la modalidad examen complexivo"
+						visible="#{principalECBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{principalECBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{principalECBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id} | #{proceso.observacion}" />
+												<p:ajax event="change"
+													listener="#{principalECBean.obtenerCarreras}"
+													update="carrera" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{principalECBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{principalECBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.id} | #{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText placeholder="Cédula/Apellidos y Nombres"
+												value="#{principalECBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{principalECBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteExamenComplexivoPP"
+									value="#{principalECBean.listadoEstudiantesExamenComplexivoPP}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true" stickyHeader="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 5%" />
+											<p:column rowspan="2"
+												headerText="Estudiante / Habilitado por tutor"
+												style="width: 10%" />
+											<p:column rowspan="1" colspan="3"
+												headerText="Especialista 1 y Tutor" />
+											<p:column rowspan="1" colspan="3" headerText="Especialista 2" />
+											<p:column rowspan="1" colspan="3" headerText="Especialista 3" />
+											<p:column rowspan="1" colspan="3"
+												headerText="Especialista Suplente" />
+											<p:column rowspan="2"
+												headerText="Fecha y lugar de sustentación ord."
+												style="width: 10%" />
+											<p:column rowspan="2"
+												headerText="Fecha y lugar de sustentación gra."
+												style="width: 10%" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral Ord." />
+											<p:column headerText="Oral Gra." />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral Ord." />
+											<p:column headerText="Oral Gra." />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral Ord." />
+											<p:column headerText="Oral Gra." />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral Ord." />
+											<p:column headerText="Oral Gra." />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnDashboardEstudiante"
+											value="Datos completos estudiante" />
+										<p:commandButton id="btnDashboardEstudiante"
+											icon="fa fa-user white"
+											action="#{principalECBean.presentarDashboardEstudiante}"
+											update="panelPrincipal, panelDashboard, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnTutoriasEstudiante" value="Ver Tutorias" />
+										<p:commandButton id="btnTutoriasEstudiante"
+											icon="fa fa-file-text white"
+											action="#{principalECBean.presentarTutoriasEstudiante}"
+											update="panelPrincipal, panelTutorias, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnComite" value="Especialistas" />
+										<p:commandButton id="btnComite" icon="fa fa-users white"
+											action="#{principalECBean.seleccionarComiteEvaluador}"
+											update="panelPrincipal, panelComite, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnActaCalificaciones"
+											value="Acta de Calificaciones" />
+										<p:commandButton id="btnActaCalificaciones"
+											icon="fa fa-file-text-o white"
+											disabled="#{estudianteExamenComplexivoPP.ooe1 ne null and estudianteExamenComplexivoPP.ooe2 ne null and estudianteExamenComplexivoPP.ooe3 ne null ? false : estudianteExamenComplexivoPP.ooe1 ne null and estudianteExamenComplexivoPP.ooe2 ne null and estudianteExamenComplexivoPP.oos1 ne null ? false : estudianteExamenComplexivoPP.ooe1 ne null and estudianteExamenComplexivoPP.ooe3 ne null and estudianteExamenComplexivoPP.oos1 ne null ? false : estudianteExamenComplexivoPP.ooe2 ne null and estudianteExamenComplexivoPP.ooe3 ne null and estudianteExamenComplexivoPP.oos1 ne null ? false : true}"
+											actionListener="#{principalECBean.actaCalificaciones(estudianteExamenComplexivoPP)}"
+											ajax="false" update=":mensaje">
+
+											<p:fileDownload value="#{principalECBean.documento}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnValidarTrabajoEscrito"
+											value="Validar trabajo escrito" />
+										<p:commandButton id="btnValidarTrabajoEscrito"
+											rendered="#{estudianteExamenComplexivoPP.numeroActaCalificacion ne null ? true : false}"
+											disabled="#{estudianteExamenComplexivoPP.numeroActaCalificacion eq null ? true : false}"
+											icon="fa fa-file-pdf-o white"
+											action="#{principalECBean.presentarDocumento}"
+											update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+											styleClass="#{estudianteExamenComplexivoPP.archivo eq null ? 'BlueButton' : estudianteExamenComplexivoPP.validarArchivo eq null ? 'OrangeButton' : estudianteExamenComplexivoPP.validarArchivo eq true ? 'GreenButton' : 'RedButton'}">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.estudiante.id} - #{estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+										<br />
+										<p:button
+											styleClass="#{estudianteExamenComplexivoPP.aprobado ne true  ? 'RedButton' : 'GreenButton'}"
+											disabled="true"
+											icon="#{estudianteExamenComplexivoPP.aprobado ne true ? 'fa fa-close white' : 'fa fa-check white'}">
+										</p:button>
+									</p:column>
+
+									<p:column colspan="3">
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ee1}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ooe1}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.oge1}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista1.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista1.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista1.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista1.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista1.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista1.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista1.id} - #{estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="3">
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ee2}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ooe2}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.oge2}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista2.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista2.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista2.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista2.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista2.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista2.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista2.id} - #{estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="3">
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ee3}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ooe3}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.oge3}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista3.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteE == true and estudianteExamenComplexivoPP.especialista3.id == estudianteExamenComplexivoPP.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista3.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista3.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista3.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true and estudianteExamenComplexivoPP.especialista3.id eq estudianteExamenComplexivoPP.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialista3.id} - #{estudianteExamenComplexivoPP.especialista3.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="3">
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.es1}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.oos1}" />
+											<p:outputLabel value="#{estudianteExamenComplexivoPP.ogs1}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="3" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteE == true) ? 'GreenButton' : 'RedButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteE == true) ? 'fa fa-check white': 'fa fa-close white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true) ? 'GreenButton' : 'RedButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true)  ? 'fa fa-check white' : 'fa fa-close white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteExamenComplexivoPP.activarSuplenteO == true) ? 'GreenButton' : 'RedButton'}"
+												disabled="true"
+												icon="#{(estudianteExamenComplexivoPP.activarSuplenteO == true)  ? 'fa fa-check white' : 'fa fa-close white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteExamenComplexivoPP.especialistaSuplente1.id} - #{estudianteExamenComplexivoPP.especialistaSuplente1.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column>
+
+										<p:calendar id="button" placeholder="MM/dd/yyyy HH:mm:ss"
+											mask="true" locale="es" navigator="true"
+											readonly="#{(estudianteExamenComplexivoPP.activarSuplenteE eq true) ? (estudianteExamenComplexivoPP.especialista1 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false  : true : (estudianteExamenComplexivoPP.especialista2 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : (estudianteExamenComplexivoPP.especialista3 == estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : true : (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true}"
+											value="#{estudianteExamenComplexivoPP.fechaSustentacionOrdinaria}"
+											pattern="MM/dd/yyyy HH:mm:ss">
+
+										</p:calendar>
+										<div class="EmptyBox10"></div>
+										<p:inputTextarea
+											readonly="#{(estudianteExamenComplexivoPP.activarSuplenteE eq true) ? (estudianteExamenComplexivoPP.especialista1 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false  : true : (estudianteExamenComplexivoPP.especialista2 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : (estudianteExamenComplexivoPP.especialista3 == estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : true : (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true}"
+											value="#{estudianteExamenComplexivoPP.lugarSustentacionOrdinaria}" />
+										<div class="EmptyBox10"></div>
+										<p:tooltip for="btnInsertarFechaOrdinaria"
+											value="Guardar fecha" />
+										<p:commandButton icon="fa fa-save white"
+											id="btnInsertarFechaOrdinaria"
+											action="#{principalECBean.insertarFecha}"
+											update="panelPrincipal, :mensaje"
+											disabled="#{(estudianteExamenComplexivoPP.activarSuplenteE eq true) ? (estudianteExamenComplexivoPP.especialista1 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false  : true : (estudianteExamenComplexivoPP.especialista2 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : (estudianteExamenComplexivoPP.especialista3 == estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : true : (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true}">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column>
+
+										<p:calendar id="buttonGracia"
+											placeholder="MM/dd/yyyy HH:mm:ss" mask="true" locale="es"
+											navigator="true"
+											readonly="#{(((estudianteExamenComplexivoPP.ee1 + estudianteExamenComplexivoPP.ee2 + estudianteExamenComplexivoPP.ee3 + estudianteExamenComplexivoPP.es1)/3) + estudianteExamenComplexivoPP.notaTeorica) le 39.4 ? true : estudianteExamenComplexivoPP.fechaSustentacionOrdinaria eq null ? true : estudianteExamenComplexivoPP.fechaSustentacionGracia eq null ? false : true}"
+											value="#{estudianteExamenComplexivoPP.fechaSustentacionGracia}"
+											pattern="MM/dd/yyyy HH:mm:ss">
+
+										</p:calendar>
+										<div class="EmptyBox10"></div>
+										<p:inputTextarea
+											readonly="#{(estudianteExamenComplexivoPP.activarSuplenteE eq true) ? (estudianteExamenComplexivoPP.especialista1 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false  : true : (estudianteExamenComplexivoPP.especialista2 eq estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee3 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : (estudianteExamenComplexivoPP.especialista3 == estudianteExamenComplexivoPP.especialistaSuplantadoE) ? (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.es1 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.es1)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true : true : (estudianteExamenComplexivoPP.ee1 ne null and estudianteExamenComplexivoPP.ee2 ne null and estudianteExamenComplexivoPP.ee3 ne null) ? ((estudianteExamenComplexivoPP.ee1+estudianteExamenComplexivoPP.ee2+estudianteExamenComplexivoPP.ee3)/3)+estudianteExamenComplexivoPP.notaTeorica le 39.4 ? true : false : true}"
+											value="#{estudianteExamenComplexivoPP.lugarSustentacionGracia}" />
+										<div class="EmptyBox10"></div>
+										<p:tooltip for="btnInsertarFechaGracia" value="Guardar fecha" />
+										<p:commandButton icon="fa fa-save white"
+											id="btnInsertarFechaGracia"
+											action="#{principalECBean.insertarFechaGracia}"
+											update="panelPrincipal, :mensaje"
+											disabled="#{(((estudianteExamenComplexivoPP.ee1 + estudianteExamenComplexivoPP.ee2 + estudianteExamenComplexivoPP.ee3 + estudianteExamenComplexivoPP.es1)/3) + estudianteExamenComplexivoPP.notaTeorica) le 39.4 ? true : estudianteExamenComplexivoPP.fechaSustentacionOrdinaria eq null ? true : estudianteExamenComplexivoPP.fechaSustentacionGracia eq null ? false : true}">
+											<f:setPropertyActionListener
+												value="#{estudianteExamenComplexivoPP}"
+												target="#{principalECBean.estudianteExamenComplexivoPP}" />
+										</p:commandButton>
+
+									</p:column>
+
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Validar recepción de la parte práctica, dimensión escrita del examen complexivo"
+						visible="#{principalECBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{principalECBean.estudianteExamenComplexivoPP.estudiante.id} - #{principalECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{principalECBean.estudianteExamenComplexivoPP.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar recepción"
+											actionListener="#{principalECBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{principalECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelDashboard" header="Datos del estudiante"
+						visible="#{principalECBean.panelDashboard}">
+
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Estudiante">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="#{principalECBean.estudianteExamenComplexivoPP.estudiante.id} - #{principalECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - #{principalECBean.estudianteExamenComplexivoPP.estudiante.email}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Parte práctica">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Asignatura #{principalECBean.estudianteExamenComplexivoPP.docenteAsignatura.asignatura.id}"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.docenteAsignatura.asignatura.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Reactivo práctico #{principalECBean.estudianteExamenComplexivoPP.id}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="#{principalECBean.estudianteExamenComplexivoPP.casoInvestigacion}"
+												readonly="true" autoResize="true" escape="false" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Archivo adjunto"
+												rendered="#{principalECBean.estudianteExamenComplexivoPP.archivoAdjunto==null ? false : true}"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.archivoAdjunto}"
+												readonly="true" autoResize="true"
+												rendered="#{principalECBean.estudianteExamenComplexivoPP.archivoAdjunto==null ? false : true}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.tituloInvestigacion}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Resumen" styleClass="FontBold" />
+											<p:inputTextarea
+												value="#{principalECBean.estudianteExamenComplexivoPP.resumen}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Palabras claves" styleClass="FontBold" />
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.palabrasClaves}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Comité evaluador">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 1" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista1.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista1.apellidoNombre} &lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista1.usuarioUrkund} &lt;br /&gt;  #{principalECBean.estudianteExamenComplexivoPP.especialista1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ee1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ord." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ooe1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Gra." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.oge1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+											<div class="EmptyBox10"></div>
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+
+													<p:commandButton value="Eliminar nota escrita"
+														id="btnEliminarEscrita1"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ee1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaEscrita1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOralOrdinaria1"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ooe1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralOrdinario1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota gracia"
+														id="btnEliminarOralGracia1"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.oge1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralGracia1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 2" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista2.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista2.apellidoNombre} &lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista2.usuarioUrkund} &lt;br /&gt;  #{principalECBean.estudianteExamenComplexivoPP.especialista2.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ee2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ord." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ooe2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Gra." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.oge2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+											<div class="EmptyBox10"></div>
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+
+													<p:commandButton value="Eliminar nota escrita"
+														id="btnEliminarEscrita2"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ee2 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaEscrita2}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOralOrdinaria2"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ooe2 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralOrdinario2}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota gracia"
+														id="btnEliminarOralGracia2"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.oge2 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralGracia2}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 3" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista3.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista3.apellidoNombre} &lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialista3.usuarioUrkund} &lt;br /&gt;  #{principalECBean.estudianteExamenComplexivoPP.especialista3.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ee3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ord." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ooe3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Gra." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.oge3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+											<div class="EmptyBox10"></div>
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+
+													<p:commandButton value="Eliminar nota escrita"
+														id="btnEliminarEscrita3"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ee3 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaEscrita3}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOralOrdinaria3"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ooe3 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralOrdinario3}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota gracia"
+														id="btnEliminarOralGracia3"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.oge3 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralGracia3}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+											</div>
+
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista Suplente 1"
+												styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1.id} - #{principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1.apellidoNombre} &lt;br /&gt; #{principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1.usuarioUrkund} &lt;br /&gt;  #{principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.es1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ord." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.oos1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Gra." styleClass="FontBold" />
+													<p:inputText
+														value="#{principalECBean.estudianteExamenComplexivoPP.ogs1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+											<div class="EmptyBox10"></div>
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+
+													<p:commandButton value="Eliminar nota escrita"
+														id="btnEliminarEscrita4"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.es1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaEscritaSuplente1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOralOrdinaria4"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.oos1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralOrdinarioSuplente1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Eliminar nota gracia"
+														id="btnEliminarOralGracia4"
+														rendered="#{principalECBean.esUmmog}"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.ogs1 == null ? true : false}"
+														actionListener="#{principalECBean.eliminarNotaOralGraciaSuplente1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset
+								legend="Porcentaje de coincidencia (URKUND), citas de artículos científicos y validación estructura documento">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Porcentaje de coincidencia"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.antiplagio}"
+												readonly="true" autoResize="true" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputTextarea
+												value="#{principalECBean.estudianteExamenComplexivoPP.observacionesUrkund}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Número de citas encontradas"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.citas1}"
+												readonly="true" autoResize="true" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputTextarea
+												value="#{principalECBean.estudianteExamenComplexivoPP.observacionesCitas}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Estructura documento validado"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:button disabled="true"
+												value="#{principalECBean.estudianteExamenComplexivoPP.validarDocumentoE3 eq true ? 'Aprobado' : 'Aún sin aprobar'}"
+												styleClass="#{principalECBean.estudianteExamenComplexivoPP.validarDocumentoE3 eq true ? 'GreenButton' : 'RedButton' }" />
+
+											<div class="EmptyBox10"></div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEliminarUrkund"
+												rendered="#{principalECBean.esUmmog}"
+												disabled="#{principalECBean.estudianteExamenComplexivoPP.antiplagio == null ? true : false}"
+												actionListener="#{principalECBean.eliminarPocentajeUrkund}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white"
+												value="Eliminar porcentaje coicidencia"
+												styleClass="RedButton" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEliminarCitas"
+												rendered="#{principalECBean.esUmmog}"
+												disabled="#{principalECBean.estudianteExamenComplexivoPP.citas1 == null ? true : false}"
+												actionListener="#{principalECBean.eliminarCitas}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white" value="Eliminar citas"
+												styleClass="RedButton" />
+
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEliminarValidacionEstructura"
+												rendered="#{principalECBean.esUmmog}"
+												disabled="#{principalECBean.estudianteExamenComplexivoPP.validarDocumentoE3 == null ? true : false}"
+												actionListener="#{principalECBean.desvalidarDocumentoE3}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white"
+												value="Desvalidar la estructura del documento"
+												styleClass="RedButton" />
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Calificaciones">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="EXAMEN COMPLEXIVO"
+												styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="FECHAS" styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox30"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE TEÓRICA FINAL (50 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText value="#{principalECBean.fechaParteTeorica}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.calificacionParteTeoricaFinal==0 ? '' : principalECBean.calificacionParteTeoricaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel
+												value="PARTE PRÁCTICA ESCRITA FINAL (20 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.calificacionParteEscritaFinal==0 ? '' : principalECBean.calificacionParteEscritaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE PRÁCTICA ORAL  FINAL (30 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.fechaSustentacionGracia == null ? principalECBean.estudianteExamenComplexivoPP.fechaSustentacionOrdinaria : principalECBean.estudianteExamenComplexivoPP.fechaSustentacionGracia}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.calificacionParteOralFinal==0 ? '' : principalECBean.calificacionParteOralFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIÓN TOTAL FINAL (100 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.calificacionFinal==0 ? '' : principalECBean.calificacionFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="URL DSPACE" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{principalECBean.estudianteExamenComplexivoPP.urlBiblioteca==null ? '' : principalECBean.estudianteExamenComplexivoPP.urlBiblioteca}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+						</h:form>
+
+						<div class="EmptyBox20"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol">
+									<p:commandButton value="Regresar"
+										action="#{principalECBean.establecerPanelPrincipal}"
+										update="panelPrincipal, panelSeleccionar, panelDashboard, :mensaje"
+										icon="fa fa-arrow-left white" styleClass="GreenButton" />
+								</div>
+
+							</div>
+						</div>
+
+					</p:panel>
+
+					<p:panel id="panelComite" header="Comité evaluador del estudiante"
+						visible="#{principalECBean.panelComite}">
+
+						<h:form id="formComiteEvaluador">
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{principalECBean.estudianteExamenComplexivoPP.estudiante.id} - #{principalECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<!-- 								<div class="ui-grid ui-grid-responsive"> -->
+								<!-- 									<div class="ui-grid-row"> -->
+
+								<!-- 										<div class="ui-grid-col-12 UiGridCol"> -->
+								<!-- 											<p:outputLabel value="Título de la investigación" /> -->
+								<!-- 											<p:inputText readonly="true" -->
+								<!-- 												value="#{principalECBean.estudianteExamenComplexivoPP.tituloInvestigacion}" /> -->
+								<!-- 										</div> -->
+
+								<!-- 									</div> -->
+								<!-- 								</div> -->
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Criterios de búsqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-5 UiGridCol">
+											<p:inputText placeholder="Cédula/Apellidos y Nombres"
+												value="#{principalECBean.criterioBusquedaEspecialista}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:commandButton icon="fa fa-search white"
+												action="#{principalECBean.buscarEspecialista}"
+												update=":panelComite" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="esp" reflow="true"
+												value="#{principalECBean.especialistas}" paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{esp.id}"
+												selection="#{principalECBean.especialista}"
+												selectionMode="single">
+												<p:ajax event="rowSelect" update=":panelComite, :mensaje"
+													listener="#{principalECBean.seleccionarEspecialista}" />
+
+												<p:column headerText="Especialista">
+													<h:outputText value="#{esp.id} - #{esp.apellidoNombre}" />
+												</p:column>
+
+											</p:dataTable>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+
+										<p:fieldset legend="Conformación de comité evaluador">
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+
+														<p:selectBooleanCheckbox itemLabel="Tutor"
+															value="#{principalECBean.boolTutor}">
+															<p:ajax update=":panelComite"
+																listener="#{principalECBean.seleccionarTutor}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalECBean.tutor.id} - #{principalECBean.tutor.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+
+														<p:selectBooleanCheckbox itemLabel="Especialista 1"
+															value="#{principalECBean.boolEspecialista1}">
+															<p:ajax update=":panelComite"
+																listener="#{principalECBean.seleccionarE1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalECBean.especialista1.id} - #{principalECBean.especialista1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 2"
+															value="#{principalECBean.boolEspecialista2}">
+															<p:ajax update=":panelComite"
+																listener="#{principalECBean.seleccionarE2}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalECBean.especialista2.id} - #{principalECBean.especialista2.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 3"
+															value="#{principalECBean.boolEspecialista3}">
+															<p:ajax update=":panelComite"
+																listener="#{principalECBean.seleccionarE3}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalECBean.especialista3.id} - #{principalECBean.especialista3.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox
+															itemLabel="Especialista Suplente 1"
+															value="#{principalECBean.boolEspecialistaSuplente1}">
+															<p:ajax update=":panelComite"
+																listener="#{principalECBean.seleccionarS1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalECBean.especialistaSuplente1.id} - #{principalECBean.especialistaSuplente1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:fieldset legend="Habilitación del especialista suplente">
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<p:selectBooleanCheckbox
+														itemLabel="Activar Suplente en Parte Prática Escrita"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.especialista1 == null or principalECBean.estudianteExamenComplexivoPP.especialista2 == null or principalECBean.estudianteExamenComplexivoPP.especialista3 == null or principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1 == null ? true : false}"
+														value="#{principalECBean.activarEspecialistaE}">
+														<p:ajax update=":panelComite"
+															listener="#{principalECBean.habilitarSuplenteE}" />
+													</p:selectBooleanCheckbox>
+												</div>
+												<p:outputLabel
+													value="Escoja el especialista que será reemplazado." />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectOneMenu id="especialistasEstudianteEscrita"
+															disabled="#{principalECBean.activarEspecialistaE == null or principalECBean.activarEspecialistaE == false ? true : false}"
+															value="#{principalECBean.especialistaSuplantadoInterfazE}">
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista1.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista1.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista2.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista2.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista3.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista3.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista3.apellidoNombre}" />
+														</p:selectOneMenu>
+													</div>
+												</div>
+
+												<div class="ui-grid-row">
+
+													<p:selectBooleanCheckbox
+														itemLabel="Activar Suplente en Sustentación Oral y Gracia"
+														disabled="#{principalECBean.estudianteExamenComplexivoPP.especialista1 == null or principalECBean.estudianteExamenComplexivoPP.especialista2 == null or principalECBean.estudianteExamenComplexivoPP.especialista3 == null or principalECBean.estudianteExamenComplexivoPP.especialistaSuplente1 == null ? true : false}"
+														value="#{principalECBean.activarEspecialistaO}">
+														<p:ajax update=":panelComite"
+															listener="#{principalECBean.habilitarSuplenteO}" />
+													</p:selectBooleanCheckbox>
+												</div>
+												<p:outputLabel
+													value="Escoja el especialista que será reemplazado." />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectOneMenu id="especialistasEstudiante"
+															disabled="#{principalECBean.activarEspecialistaO == null or principalECBean.activarEspecialistaO == false ? true : false}"
+															value="#{principalECBean.especialistaSuplantadoInterfazO}">
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista1.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista1.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista1.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista2.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista2.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista2.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalECBean.estudianteExamenComplexivoPP.especialista3.id}"
+																itemLabel="#{principalECBean.estudianteExamenComplexivoPP.especialista3.id} - #{principalECBean.estudianteExamenComplexivoPP.especialista3.apellidoNombre}" />
+														</p:selectOneMenu>
+													</div>
+												</div>
+
+											</div>
+										</p:fieldset>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+
+										<p:commandButton value="Guardar comité" id="btnDialogo"
+											actionListener="#{principalECBean.guardarComite}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelSeleccionar, panelDashboard, panelComite, :mensaje">
+											<p:confirm header="Confirmación"
+												message="Al momento de asignar el comite evaluador y activar un especialista suplente tanto en dimensión escrita como en la oral, se envía un email automaticamente al estudiante y especialista. ¿Desea confirmar la acción?"
+												icon="ui-icon-alert" />
+										</p:commandButton>
+
+										<p:confirmDialog global="true" showEffect="fade" width="35%"
+											hideEffect="fade">
+											<p:commandButton value="Si" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</p:confirmDialog>
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{principalECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, panelDashboard, panelComite, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTutorias"
+						header="Tutorias del estudiante (#{principalECBean.estudianteExamenComplexivoPP.estudiante.id}) - #{principalECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - #{principalECBean.estudianteExamenComplexivoPP.estudiante.email}"
+						visible="#{principalECBean.panelTutorias}">
+
+						<p:fieldset legend="Tutor"
+							rendered="#{principalECBean.estudianteExamenComplexivoPP.tutor.apellidoNombre==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{principalECBean.estudianteExamenComplexivoPP.tutor.apellidoNombre} - (#{principalECBean.estudianteExamenComplexivoPP.tutor.id}) - (#{principalECBean.estudianteExamenComplexivoPP.tutor.email})"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas de tutorias realizadas" />
+									<p:inputText readonly="true"
+										value="#{principalECBean.numeroHorasTutorias}" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Número total de horas a cumplir" />
+									<p:inputText readonly="true" value="12 horas" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas restantes" />
+									<p:inputText readonly="true"
+										value="#{principalECBean.numeroTotalHorasMinutosRestantes}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox10"></div>
+
+						<h:form id="formMostrar">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:outputLabel value="Total de tutorías:" />
+								</div>
+								<div class="ui-grid-col-3 UiGridCol">
+									<p:inputText id="numeroTutorias" readonly="true"
+										value="#{principalECBean.estudianteExamenComplexivoPP.tutorias.size()}" />
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<p:dataTable var="tutoria"
+								value="#{principalECBean.estudianteExamenComplexivoPP.tutorias}"
+								reflow="true" emptyMessage="No hay tutorías realizadas">
+
+								<p:column headerText="Fecha inicio tutoria" styleClass="Wid10">
+									<p:outputLabel value="#{tutoria.fecha}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Fecha fin tutoria" styleClass="Wid10">
+									<p:outputLabel value="#{tutoria.fechaFinTutoria}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Fecha proxima tutoría" styleClass="Wid10">
+									<p:outputLabel value="#{tutoria.fechaProximaTutoria}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Actividades" styleClass="Wid30">
+									<p:outputLabel value="#{tutoria.actividad}" />
+								</p:column>
+
+								<p:column headerText="Tareas a realizar" styleClass="Wid30">
+									<p:outputLabel value="#{tutoria.tarea}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div class="EmptyBox20"></div>
+
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:commandButton value="Regresar" id="btnRegresarDashboard"
+											actionListener="#{principalECBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelTutorias"
+											icon="fa fa-arrow-left white" styleClass="GreenButton" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTrabajoEscrito"
+						header="Trabajo escrito de Exámen Complexivo"
+						visible="#{principalECBean.panelTrabajoEscrito}">
+
+						<p:fieldset legend="Datos del estudiante">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{principalECBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre} - (#{principalECBean.estudianteExamenComplexivoPP.estudiante.id}) - (#{principalECBean.estudianteExamenComplexivoPP.estudiante.email})"
+											readonly="true" autoResize="true" />
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Validación del documento subido">
+							<h:form id="formValidacionDocumento">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											rendered="#{principalECBean.estudianteExamenComplexivoPP.validarArchivo==null ? true:false}"
+											value="#{principalECBean.estudianteExamenComplexivoPP.validarArchivo==null ? 'Nota: Aún no se ha validado el archivo del estudiante':''}" />
+									</div>
+								</div>
+								<div class="EmptyBox30"
+									hidden="#{principalECBean.estudianteExamenComplexivoPP.validarArchivo==null ? true:false}"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="El documento cumple con los lineamientos indicados en la guía de titulación" />
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:selectBooleanButton id="sbbVerificaciónArchivo"
+											value="#{principalECBean.validacionArchivo}"
+											onLabel="Si cumple" offLabel="No cumple"
+											onIcon="ui-icon-check" offIcon="ui-icon-close"
+											style="width:200px" styleClass="RedButton">
+											<p:ajax update="formValidacionDocumento"
+												listener="#{principalECBean.verificarDocumento}" />
+										</p:selectBooleanButton>
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel id="lblInconsistencia"
+											rendered="#{principalECBean.validacionArchivo==true ? false : true}"
+											value="Ingrese las inconsistencias que han encontrado en el documento" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputTextarea id="txtInconsistencia"
+											rendered="#{principalECBean.validacionArchivo==true ? false : true}"
+											value="#{principalECBean.textoInconsistencia}" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Guardar" type="button"
+												id="btnGuardarValidarDocumento"
+												actionListener="#{principalECBean.establecerPrincipalDesdeTrabajo}"
+												update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+												icon="fa fa-save white" styleClass="GreenButton"
+												onclick="validarDocumentoEC();" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Regresar"
+												id="btnRegresarValidarDocumento"
+												actionListener="#{principalECBean.establecerPanelPrincipal}"
+												update="panelPrincipal, panelTrabajoEscrito"
+												icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton ajax="false"
+												actionListener="#{principalECBean.descargarArchivo}"
+												id="btnDescargarArchivo" icon="fa fa-download white"
+												update=":mensaje" value="Descargar archivo">
+												<p:fileDownload value="#{principalECBean.documento}" />
+											</p:commandButton>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Archivo">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:outputLabel
+										rendered="#{principalECBean.estudianteExamenComplexivoPP.archivo == null ? true:false}"
+										value="El estudiante aún no sube el documento" />
+								</div>
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:media value="#{principalECBean.streamedContent}"
+										width="100%" height="700px" player="pdf" />
+								</div>
+							</div>
+						</p:fieldset>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

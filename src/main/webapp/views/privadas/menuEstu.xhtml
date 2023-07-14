@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel header="Menú Estudiante">
+		<div class="EmptyBox10"></div>
+		<ui:fragment rendered="#{loginBean.menuEstuComplexivo}">
+			<p:outputLabel value="Examen Complexivo"
+				styleClass="SubTitulos TexAlCenter" />
+			<ul class="botones">
+				<li><a href="escojerCarrera.jsf" class="fa fa-edit Fs50">
+						<p>Examen</p>
+				</a></li>
+				<li><a href="obtenerCasoPractico.jsf"
+					class="fa fa-mortar-board Fs50">
+						<p>Caso Práctico</p>
+				</a></li>
+				<li><a href="tituloReactivoPractico.jsf"
+					class="fa fa-book Fs50">
+						<p>Título</p>
+				</a></li>
+				<li><a href="consultarDatosComplexivo.jsf"
+					class="fa fa-search Fs50">
+						<p>Consultar Datos</p>
+				</a></li>
+				<li><a href="bibliotecaC.jsf" class="fa fa-database Fs50">
+						<p>Biblioteca</p>
+				</a></li>
+				<li><a href="reporteEstudianteComplexivo.jsf"
+					class="fa fa-print Fs50">
+						<p>Reportes</p>
+				</a></li>
+			</ul>
+		</ui:fragment>
+		<ui:fragment rendered="#{loginBean.menuEstuTitulacion}">
+			<p:outputLabel value="Trabajo de Titulación"
+				styleClass="SubTitulos TexAlCenter" />
+			<ul class="botones">
+				<li><a href="tituloTrabajoTitulacion.jsf"
+					class="fa fa-book Fs50">
+						<p>Título</p>
+				</a></li>
+				<li><a href="consultarDatosTitulacion.jsf"
+					class="fa fa-search Fs50">
+						<p>Consultar Datos</p>
+				</a></li>
+				<li><a href="bibliotecaTT.jsf" class="fa fa-database Fs50">
+						<p>Biblioteca</p>
+				</a></li>
+				<li><a href="reporteEstudianteTrabajoTitulacion.jsf"
+					class="fa fa-print Fs50">
+						<p>Reportes</p>
+				</a></li>
+			</ul>
+		</ui:fragment>
+	</p:panel>
+</ui:composition>

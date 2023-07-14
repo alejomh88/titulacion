@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol" />
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel header="Cambiar Contraseña">
+									<h:form id="form">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel for="contraseñaActual"
+														value="Contraseña Actual" />
+													<p:password id="contraseñaActual"
+														value="#{cambiarClaveBean.claveActual}"
+														label="Contraseña Actual">
+													</p:password>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel for="contraseñaNueva"
+														value="Contraseña Nueva" styleClass="DispBlock" />
+													<p:password id="contraseñaNueva"
+														value="#{cambiarClaveBean.claveNueva1}"
+														label="Contraseña Nueva" feedback="true" inline="true"
+														promptLabel="Nivel Bajo" weakLabel="Nivel Medio"
+														goodLabel="Nivel Alto" strongLabel="Óptimo">
+													</p:password>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel for="repitaContraseña"
+														value="Repita Contraseña" styleClass="DispBlock" />
+													<p:password id="repitaContraseña"
+														value="#{cambiarClaveBean.claveNueva2}"
+														label="Repita Contraseña" feedback="true" inline="true"
+														promptLabel="Nivel Bajo" weakLabel="Nivel Medio"
+														goodLabel="Nivel Alto" strongLabel="Óptimo">
+													</p:password>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Actualizar" update=":mensaje"
+														id="ajax" action="#{cambiarClaveBean.cambiarClave}"
+														styleClass="GreenButton" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:button value="Cancelar" outcome="home.jsf" id="btnAtras"
+														styleClass="OrangeButton" />
+												</div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</p:panel>
+
+							</div>
+
+							<div class="ui-grid-col-3 UiGridCol" />
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,671 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel header="Reportes">
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol ui-format ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de participantes en el proceso. </strong>Este
+											reporte le permite visualizar un listado por Unidad Académica
+											y Carrera de los estudiantes que están participando tanto del
+											Examen Complexivo como del Trabajo de Titulación.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una modalidad"
+											value="#{reporte.modalidad}">
+											<f:selectItem itemValue="EC" itemLabel="Examen Complexivo" />
+											<f:selectItem itemValue="TT"
+												itemLabel="Trabajo de Titulación" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.participantes}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de asignaturas para generación de
+												reactivos. </strong>Este reporte le permite visualizar un listado por
+											Unidad Académica y Carrera de las asignaturas seleccionadas
+											para la generación de reactivos teóricos y practivos y los
+											docentes responsables.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.distribucionAsignaturas}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Cumplimiento de reactivos teóricos. </strong>Este
+											reporte le permite visualizar un listado por Unidad Académica
+											y Carrera de la cantidad de reactivos por asignatura que los
+											docentes han generado hasta la fecha.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.cumplimientoReactivos}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Cantidad de reactivos teóricos por carrera y
+												eje de formación. </strong>Este reporte le permite visualizar un
+											listado por Unidad Académica y Carrera de la cantidad de
+											reactivos teóricos generados por eje de formación curricular
+											.
+										</p>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.cantidadReactivos}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Cumplimiento de reactivos prácticos. </strong>Este
+											reporte le permite visualizar un listado por Unidad Académica
+											y Carrera de la cantidad de reactivos por asignatura que los
+											docentes han generado hasta la fecha.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.cumplimientoReactivosPracticos}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Cantidad de reactivos prácticos por carrera.
+											</strong>Este reporte le permite visualizar un listado por Unidad
+											Académica y Carrera de la cantidad de reactivos prácticos
+											generados vs la cantidad de aprobados en la parte teórica.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.cantidadReactivosPracticos}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Cuestionario. </strong>Este reporte le permite
+											visualizar un cuestionario de reactivos teóricos por carrera.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.cuestionarios}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de asistencia examen complexivo
+												parte teórica. </strong>Este reporte le permite visualizar los grupos
+											de estudiantes que van a rendir el examen complexivo.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una modalidad"
+											value="#{reporte.modalidad}">
+											<f:selectItem itemValue="OR" itemLabel="Ordinario" />
+											<f:selectItem itemValue="GR" itemLabel="Gracia" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.asistencia}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de inasistencia examen complexivo
+												parte teórica. </strong>Este reporte le permite visualizar el listado
+											por carrera de estudiantes que no se presentaron a la toma
+											del examen complexivo parte teórica.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una modalidad"
+											value="#{reporte.modalidad}">
+											<f:selectItem itemValue="OR" itemLabel="Ordinario" />
+											<f:selectItem itemValue="GR" itemLabel="Gracia" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.inasistencia}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de aprobados del examen complexivo
+												parte teórica. </strong>Este reporte le permite visualizar el listado
+											por carrera de estudiantes que aprobaron el examen complexivo
+											parte teórica.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una modalidad"
+											value="#{reporte.modalidad}">
+											<f:selectItem itemValue="OR" itemLabel="Ordinario" />
+											<f:selectItem itemValue="GR" itemLabel="Gracia" />
+											<f:selectItem itemValue="OG" itemLabel="Ordinario+Gracia" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.aprobados}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de reprobados del examen complexivo
+												parte teórica. </strong>Este reporte le permite visualizar el listado
+											por carrera de estudiantes que reprobaron el examen
+											complexivo parte teórica.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una modalidad"
+											value="#{reporte.modalidad}">
+											<f:selectItem itemValue="OR" itemLabel="Ordinario" />
+											<f:selectItem itemValue="GR" itemLabel="Gracia" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.reprobados}" ajax="false"
+														update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de reactivos prácticos . </strong>Este
+											reporte le permite visualizar todos los reactivos prácticos
+											por asignatura del eje profesional para la realización del
+											examen complexivo parte práctica.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.reactivosPracticos}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de reactivos prácticos
+												seleccionados. </strong>Este reporte le permite visualizar el listado
+											por carrera de los reactivos prácticos seleccionados por los
+											estudiantes.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.reactivosPracticosEstudiante}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de estudiantes que no seleccionaron
+												reactivo práctico. </strong>Este reporte le permite visualizar el
+											listado por carrera de los estudiantes que no han
+											seleccionado el reactico práctico.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.noSeleccionReactivoPractico}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+								<div class="ui-grid-col-3 UiGridCol ui-format">
+									<h:form>
+
+										<p>
+											<strong>Listado de lineas, seminario y tutores. </strong>Este
+											reporte le permite visualizar el listado por carrera de las
+											lineas de investigación, seminarios y tutores.
+										</p>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione un proceso"
+											value="#{reporte.proceso}">
+											<f:selectItems value="#{reporte.procesos}" var="proceso"
+												itemValue="#{proceso.id}" itemLabel="#{proceso.id}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu required="true"
+											requiredMessage="Seleccione una carrera"
+											value="#{reporte.carrera}">
+											<f:selectItems value="#{reporte.carreras}" var="carrera"
+												itemValue="#{carrera.id}" itemLabel="#{carrera.nombre}" />
+										</p:selectOneMenu>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:commandButton value="Descargar"
+														actionListener="#{reporte.lineaInvestigacionSeminarioTutor}"
+														ajax="false" update=":mensaje" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol"></div>
+
+											</div>
+										</div>
+
+									</h:form>
+								</div>
+
+							</div>
+						</div>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,417 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Gestión certificados No Adeudar - Trabajos de Titulación"
+						visible="#{certificadosTTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:tabView id="tabViewBusqueda">
+							<p:tab title="Criterios de búsqueda" id="tabBusquedaTT">
+
+								<p:fieldset legend="Criterios de búsqueda">
+
+									<h:form id="busqueda">
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:outputLabel value="Proceso" />
+													<p:selectOneMenu required="true"
+														requiredMessage="Seleccione un proceso"
+														value="#{certificadosTTBean.proceso}">
+														<f:selectItem itemValue=""
+															itemLabel="Seleccione un proceso" />
+														<f:selectItems value="#{certificadosTTBean.procesos}"
+															var="proceso" itemValue="#{proceso.id}"
+															itemLabel="#{proceso.id} | #{proceso.observacion}" />
+														<p:ajax event="change"
+															listener="#{certificadosTTBean.obtenerCarreras}"
+															update="carrera" />
+													</p:selectOneMenu>
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Carrera" />
+													<p:selectOneMenu id="carrera" required="true"
+														requiredMessage="Seleccione una carrera"
+														value="#{certificadosTTBean.carrera}" filter="true"
+														filterMatchMode="contains" autoWidth="true">
+														<f:selectItem itemValue=""
+															itemLabel="Seleccione una carrera" />
+														<f:selectItems value="#{certificadosTTBean.carreras}"
+															var="carrera" itemValue="#{carrera.id}"
+															itemLabel="#{carrera.id} | #{carrera.nombre}" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-8 UiGridCol">
+													<p:outputLabel value="Estudiante" />
+													<p:inputText placeholder="Cédula/Apellidos y Nombres"
+														value="#{certificadosTTBean.criterioBusquedaEstudiante}" />
+												</div>
+
+												<div class="ui-grid-col-1 UiGridCol">
+													<p:outputLabel value="" />
+													<p:commandButton icon="fa fa-search white"
+														actionListener="#{certificadosTTBean.buscar}"
+														update="panelPrincipal, :mensaje" />
+												</div>
+
+												<div class="ui-grid-col-1 UiGridCol">
+													<div class="EmptyBox20"></div>
+													<p:selectBooleanCheckbox id="checkBusquedaCertificadosTT"
+														onchange="llamarModalCertificadoTTBusqueda();"
+														value="#{certificadosTTBean.checkBusqueda}" />
+													<h:outputText value="General" />
+												</div>
+
+											</div>
+										</div>
+
+									</h:form>
+
+								</p:fieldset>
+
+								<div class="EmptyBox20"></div>
+
+								<p:fieldset legend="Resultados de búsqueda">
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-4 UiGridCol">
+												<h:form id="formDataTable">
+													<p:dataTable var="estudianteTrabajoTitulacion"
+														value="#{certificadosTTBean.listadoEstudiantesTrabajosTitulacion}"
+														paginator="true" selectionMode="single"
+														selection="#{certificadosTTBean.estudianteETTSeleccionado}"
+														rowKey="#{estudianteTrabajoTitulacion.id}"
+														paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+														rows="20" reflow="true"
+														emptyMessage="No hay Información Disponible">
+
+														<p:ajax event="rowSelect"
+															listener="#{certificadosTTBean.onRowSelect}"
+															update="panelPrincipal" />
+
+														<p:columnGroup type="header">
+															<p:row>
+																<p:column headerText="Estudiante" />
+															</p:row>
+														</p:columnGroup>
+
+														<p:column>
+															<p:outputLabel
+																value="#{estudianteTrabajoTitulacion.estudiante.id} - #{estudianteTrabajoTitulacion.estudiante.apellidoNombre} #{estudianteTrabajoTitulacion.esProfesional eq true ? '(Profesional)':''} #{estudianteTrabajoTitulacion.creditosTotalesReprobados eq true ? '(30% Asignaturas o Créditos Reprobados)':''}" />
+															<br />
+														</p:column>
+
+													</p:dataTable>
+
+													<div class="EmptyBox10"></div>
+
+												</h:form>
+											</div>
+
+											<div class="ui-grid-col-8 UiGridCol">
+
+												<h:form id="formularioTablaCertificado">
+													<p:dataTable var="certificadoEstudiante"
+														id="tablaCertificado"
+														value="#{certificadosTTBean.certificadosEstudiantes}"
+														paginator="false"
+														paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+														rows="50" reflow="true"
+														emptyMessage="No hay Información Disponible">
+
+														<p:columnGroup type="header">
+															<p:row>
+																<p:column headerText="Dependencia" />
+																<p:column headerText="Aduedar / Descripción" />
+																<p:column headerText="Devolución / Descripcion" />
+															</p:row>
+
+														</p:columnGroup>
+
+														<p:column>
+															<p:outputLabel
+																value="#{certificadoEstudiante.certificado.dependencia.nombre}" />
+														</p:column>
+
+														<p:column>
+															<p:selectBooleanButton disabled="false"
+																id="adeuda-#{certificadoEstudiante.certificado.id}"
+																value="#{certificadoEstudiante.adeuda}" onLabel="Si"
+																offLabel="No">
+															</p:selectBooleanButton>
+															<div class="EmptyBox10"></div>
+															<p:inputTextarea id="txtDescripcionAdeuda"
+																value="#{certificadoEstudiante.descripcionAdeuda}"
+																disabled="false" />
+															<div class="EmptyBox10"></div>
+															<p:commandButton value="Guardar" type="button"
+																disabled="false" onclick="validarGuardarAdeuda(this);"
+																id="btnGuardar-#{certificadoEstudiante.id}"
+																update=":formularioTablaCertificado, :mensaje"
+																actionListener="#{certificadosTTBean.guardarAdeudar(certificadoEstudiante)}"
+																styleClass="#{certificadoEstudiante.adeuda eq null ? 'OrangeButton' : 'GreenButton' }" />
+															<div class="EmptyBox20"></div>
+														</p:column>
+
+														<p:column>
+															<p:selectBooleanButton
+																id="devolvio-#{certificadoEstudiante.certificado.id}"
+																value="#{certificadoEstudiante.devolvio}" onLabel="Si"
+																disabled="false" offLabel="No">
+															</p:selectBooleanButton>
+															<div class="EmptyBox10"></div>
+															<p:inputTextarea id="txtDescripcionDevolvio"
+																value="#{certificadoEstudiante.descripcionDevolvio}"
+																disabled="false" />
+															<div class="EmptyBox10"></div>
+															<p:commandButton value="Guardar" type="button"
+																disabled="false" onclick="validarGuardarDevolvio(this);"
+																id="btnGuardarDevolvio-#{certificadoEstudiante.id}"
+																update=":formularioTablaCertificado, :mensaje"
+																actionListener="#{certificadosTTBean.guardarDevolvio(certificadoEstudiante)}"
+																styleClass="#{certificadoEstudiante.devolvio eq null ? 'OrangeButton' : 'GreenButton' }" />
+															<div class="EmptyBox20"></div>
+														</p:column>
+
+													</p:dataTable>
+
+													<div class="EmptyBox10"></div>
+
+												</h:form>
+
+											</div>
+
+										</div>
+									</div>
+								</p:fieldset>
+
+								<div class="EmptyBox20"></div>
+
+								<p:dialog header="Búsqueda General"
+									widgetVar="ventanaBusquedaCertificadoTT" modal="true"
+									height="750px" width="75%">
+
+									<p:ajax event="close" update="panelPrincipal, :mensaje"
+										listener="#{certificadosTTBean.cerrarModal}" />
+
+									<h:form id="formDataTableBuscadoCertificadoTT">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-7 UiGridCol">
+													<p:outputLabel value="Estudiante" />
+													<p:inputText placeholder="Cédula/Apellidos Nombres"
+														value="#{certificadosTTBean.criterioBusqueda}" />
+												</div>
+
+												<div class="ui-grid-col-1 UiGridCol">
+													<p:outputLabel value="Buscar" />
+													<p:commandButton icon="fa fa-search white"
+														actionListener="#{certificadosTTBean.buscarEstudiante}"
+														update="formDataTableBuscadoCertificadoTT, :mensaje" />
+												</div>
+											</div>
+										</div>
+
+										<div class="EmptyBox20"></div>
+
+										<p:dataTable var="estudianteBuscado"
+											value="#{certificadosTTBean.listadoEstudiantesBuscados}"
+											paginator="true"
+											paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+											rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible">
+
+											<p:columnGroup type="header">
+												<p:row>
+													<p:column rowspan="1" headerText="Proceso" />
+													<p:column rowspan="1" headerText="Opción" />
+													<p:column rowspan="1" headerText="Estudiante" />
+													<p:column rowspan="1" headerText="Carrera" />
+													<p:column rowspan="1" headerText="Ver" />
+												</p:row>
+											</p:columnGroup>
+
+											<p:column>
+												<p:outputLabel value="#{estudianteBuscado.proceso}" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel value="#{estudianteBuscado.opcion}" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel
+													value="#{estudianteBuscado.estudiante} - #{estudianteBuscado.apellidoNombre} - #{estudianteBuscado.email}" />
+											</p:column>
+
+											<p:column>
+												<p:outputLabel
+													value="#{estudianteBuscado.carrera} - #{estudianteBuscado.carreraNombre}" />
+											</p:column>
+
+											<p:column>
+												<p:commandButton id="btnValidarBiblioteca"
+													oncomplete="PF('ventanaBusquedaCertificadoTT').hide();"
+													icon="fa fa-eye white"
+													action="#{certificadosTTBean.enviarDatos}"
+													update="panelPrincipal, :mensaje">
+													<f:setPropertyActionListener value="#{estudianteBuscado}"
+														target="#{certificadosTTBean.estudianteBiblioteca}" />
+												</p:commandButton>
+											</p:column>
+
+										</p:dataTable>
+									</h:form>
+								</p:dialog>
+
+							</p:tab>
+
+							<p:tab title="Generar No Adeudar">
+								<div class="ui-grid ui-grid-responsive">
+
+									<h:form id="busquedaNoAdeudar">
+
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Proceso" />
+												<p:selectOneMenu required="true"
+													requiredMessage="Seleccione un proceso"
+													value="#{certificadosTTBean.procesoNoAdeudar}">
+													<f:selectItem itemValue=""
+														itemLabel="Seleccione un proceso" />
+													<f:selectItems
+														value="#{certificadosTTBean.procesosNoAdeudar}"
+														var="procesoNoAdeudar" itemValue="#{procesoNoAdeudar.id}"
+														itemLabel="#{procesoNoAdeudar.id} | #{procesoNoAdeudar.observacion}" />
+													<p:ajax event="change"
+														listener="#{certificadosTTBean.obtenerCarrerasNoAdeudar}"
+														update="carreraNoAdeudar, botonNoAdeudar, informacionNoAdeudar, :mensaje" />
+												</p:selectOneMenu>
+											</div>
+
+											<div class="ui-grid-col-6 UiGridCol">
+												<p:outputLabel value="Carrera" />
+												<p:selectOneMenu id="carreraNoAdeudar" required="true"
+													requiredMessage="Seleccione una carrera"
+													widgetVar="carreraNoAdeudar"
+													value="#{certificadosTTBean.carreraNoAdeudar}"
+													filter="true" filterMatchMode="contains" autoWidth="true">
+													<f:selectItem itemValue=""
+														itemLabel="Seleccione una carrera" />
+													<f:selectItems
+														value="#{certificadosTTBean.carrerasNoAdeudar}"
+														var="carrera" itemValue="#{carrera.id}"
+														itemLabel="#{carrera.id} | #{carrera.nombre}" />
+													<p:ajax event="change"
+														listener="#{certificadosTTBean.obtenerDependencias}"
+														update="dependencias, botonNoAdeudar, informacionNoAdeudar, :mensaje" />
+												</p:selectOneMenu>
+											</div>
+										</div>
+
+										<div class="EmptyBox20"></div>
+
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-3 UiGridCol">
+												<p:outputLabel value="Dependencia" />
+												<p:selectOneMenu required="true" id="dependencias"
+													widgetVar="dependencias"
+													requiredMessage="Seleccione una dependencia"
+													value="#{certificadosTTBean.dependencia}">
+													<f:selectItem itemValue=""
+														itemLabel="Seleccione una dependencia" />
+													<f:selectItems value="#{certificadosTTBean.dependencias}"
+														var="dependencia" itemValue="#{dependencia.id}"
+														itemLabel="#{dependencia.nombre}" />
+													<p:ajax event="change"
+														listener="#{certificadosTTBean.obtenerCertificadosNoAdeudar}"
+														update="botonNoAdeudar, informacionNoAdeudar, :mensaje" />
+												</p:selectOneMenu>
+											</div>
+
+											<div class="ui-grid-col-1 UiGridCol">
+												<div class="EmptyBox20"></div>
+												<p:tooltip for="botonNoAdeudar"
+													value="Ubicar no adeuda/préstamo a esta dependencia" />
+												<p:commandButton icon="fa fa-sort-amount-asc white"
+													id="botonNoAdeudar" widgetVar="botonNoAdeudar"
+													disabled="#{certificadosTTBean.habilitarBotonNoAdeudar}"
+													actionListener="#{certificadosTTBean.actualizarNoAdeudar}"
+													update="informacionNoAdeudar, :mensaje">
+													<p:confirm header="Confirmación"
+														message="¿Está seguro de indicar que todos los estudiantes no adeudan? Recuerde haber realizado una búsqueda previa sobre estudiantes que si tienen préstamo o alguna deuda en su(s) dependencia(s)."
+														icon="ui-icon-alert" />
+												</p:commandButton>
+
+												<p:confirmDialog global="true" showEffect="fade"
+													hideEffect="fade">
+													<p:commandButton value="Si" type="button"
+														styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+													<p:commandButton value="No" type="button"
+														styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+												</p:confirmDialog>
+											</div>
+										</div>
+
+										<div class="EmptyBox20"></div>
+
+										<div class="ui-grid-row">
+
+											<div class="ui-grid-col-12 UiGridCol">
+												<p:fieldset legend="Información" id="informacionNoAdeudar"
+													widgetVar="informacionNoAdeudar">
+													<p:outputLabel value="#{certificadosTTBean.textoNoAdeudar}"
+														escape="false">
+													</p:outputLabel>
+												</p:fieldset>
+											</div>
+
+										</div>
+
+									</h:form>
+
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

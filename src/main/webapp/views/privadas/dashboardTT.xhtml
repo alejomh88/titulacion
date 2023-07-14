@@ -1,0 +1,704 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Trabajo de titulación"
+						visible="#{dashboardTTBean.panelPrincipal}">
+
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Clic para actualizar" id="withIconHo"
+											actionListener="#{dashboardTTBean.a}" update="panelPrincipal"
+											icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Carrera" styleClass="FontBold" />
+										<p:selectOneMenu required="true" requiredMessage="Carrera"
+											value="#{dashboardTTBean.ttId}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione la carrera" />
+											<f:selectItems value="#{dashboardTTBean.listaTT}" var="tt"
+												itemValue="#{tt.id}"
+												itemLabel="#{tt.proceso.id} | #{tt.carrera.nombre}" />
+											<p:ajax event="change"
+												listener="#{dashboardTTBean.obtenerTT}"
+												update="panelPrincipal, :mensaje" />
+										</p:selectOneMenu>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Tutor"
+								rendered="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre==null?false:true}">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre} - #{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.id} - #{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.email}"
+												readonly="true" autoResize="true" />
+										</div>
+									</div>
+									<div class="EmptyBox10"></div>
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Ver tutorías" id="btnVerTutorias"
+												actionListener="#{dashboardTTBean.activarPanelTutorias}"
+												update="panelPrincipal, panelTutorias"
+												icon="fa fa-file-text white" styleClass="GreenButton" />
+										</div>
+									</div>
+								</div>
+							</p:fieldset>
+
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Investigación">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Opción de titulación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{dashboardTTBean.tt.opcionTitulacion.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Seminario #{dashboardTTBean.tt.seminarioTrabajoTitulacion.seminario.id}"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.seminario.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Tema de Investigación #{dashboardTTBean.tt.seminarioTrabajoTitulacion.trabajoTitulacion.id}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}"
+												readonly="true" autoResize="true" escape="false" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{dashboardTTBean.tt.tituloInvestigacion}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Resumen" styleClass="FontBold" />
+											<p:inputTextarea value="#{dashboardTTBean.tt.resumen}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Abstract" styleClass="FontBold" />
+											<p:inputTextarea value="#{dashboardTTBean.tt.abstract1}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Palabras claves" styleClass="FontBold" />
+											<p:inputText value="#{dashboardTTBean.tt.palabrasClaves}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Comité evaluador">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Clic para actualizar notas"
+												id="withIcon" actionListener="#{dashboardTTBean.a}"
+												update="panelPrincipal" icon="fa fa-repeat white" />
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 1" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardTTBean.tt.especialista1.id} - #{dashboardTTBean.tt.especialista1.apellidoNombre} &lt;br /&gt; #{dashboardTTBean.tt.especialista1.usuarioUrkund} &lt;br /&gt;  #{dashboardTTBean.tt.especialista1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.ee1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.oe1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 2" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardTTBean.tt.especialista2.id} - #{dashboardTTBean.tt.especialista2.apellidoNombre} &lt;br /&gt; #{dashboardTTBean.tt.especialista2.usuarioUrkund} &lt;br /&gt;  #{dashboardTTBean.tt.especialista2.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.ee2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.oe2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 3" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardTTBean.tt.especialista3.id} - #{dashboardTTBean.tt.especialista3.apellidoNombre} &lt;br /&gt; #{dashboardTTBean.tt.especialista3.usuarioUrkund} &lt;br /&gt;  #{dashboardTTBean.tt.especialista3.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.ee3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.oe3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista Suplente 1"
+												styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardTTBean.tt.especialistaSuplente1.id} - #{dashboardTTBean.tt.especialistaSuplente1.apellidoNombre} &lt;br /&gt; #{dashboardTTBean.tt.especialistaSuplente1.usuarioUrkund} &lt;br /&gt;  #{dashboardTTBean.tt.especialistaSuplente1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.es1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardTTBean.tt.os1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset
+								legend="Porcentaje de coincidencia (URKUND) y citas de artículos científicos">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Porcentaje de coincidencia"
+												styleClass="FontBold" />
+											<p:inputText value="#{dashboardTTBean.tt.antiplagio}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Número de citas encontradas"
+												styleClass="FontBold" />
+											<p:inputText value="#{dashboardTTBean.tt.citas1}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Estructura documento validado"
+												styleClass="FontBold" />
+											<p:button disabled="true"
+												value="#{dashboardTTBean.tt.validarDocumentoE3 eq true ? 'Aprobado' : 'Aún sin aprobar'}"
+												styleClass="#{dashboardTTBean.tt.validarDocumentoE3 eq true ? 'GreenButton' : 'RedButton' }" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<p:fieldset legend="Calificaciones">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="TRABAJO TITULACIÓN"
+												styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="FECHAS" styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox30"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE ESCRITA" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.calificacionParteEscritaFinal==0 ? '' : dashboardTTBean.calificacionParteEscritaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="SUSTENTACIÓN ORAL FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.tt.fechaSustentacion == null ? '' : dashboardTTBean.tt.fechaSustentacion}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.calificacionParteOralFinal==0 ? '' : dashboardTTBean.calificacionParteOralFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIÓN TOTAL FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.calificacionFinal==0 ? '' : dashboardTTBean.calificacionFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="URL DSPACE" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{dashboardTTBean.tt.urlBiblioteca == null ? '' : dashboardTTBean.tt.urlBiblioteca}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+
+							<p:fieldset legend="Dependencias No Adeudar"
+								rendered="#{dashboardTTBean.listadoCertificados.size() ne 0}">
+
+								<div class="EmptyBox10"></div>
+
+								<p:fieldset legend="Importante Leer">
+									<h:outputText
+										value="A continuación se presenta dos tablas, la primera es para conocer que tipo de estudiante es, Irregular o Profesional, en cualquiera de las dos o las dos usted debe cancelar el valor que se le indica mediante correo electrónico y solicitar el certificado electrónico de no adeudar a las dependencias que se les indica en el mismo correo; caso contrario, si usted no es ninguno de los dos, no es necesario obtener el certificado electrónico, ya que la validación se la realiza a través de la plataforma. Cualquier información adicional por favor acercarse a las oficinas de UMMOG de su Unidad Académica." />
+									<br />
+									<br />
+									<h:outputText
+										value="La segunda tabla se indica las dependencias en la cual están vinculadas con la carrera y muestran si usted adeuda o tiene préstamos que devolver o efectuar un pago o cancelación. Esta notificación se la realizará mediante correo electrónico para que usted realice el procedimiento respectivo." />
+								</p:fieldset>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Clic para actualizar dependencias"
+												id="withIconA" actionListener="#{dashboardTTBean.a}"
+												update="panelPrincipal" icon="fa fa-repeat white" />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<p:dataTable var="certificadoTipoEstudiante"
+									value="#{dashboardTTBean.listadoCertificadosTipoEstudiante}">
+
+									<f:facet name="header">
+										<h:outputText value="Tipo de Estudiante" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+
+										<p:column headerText="Estudiante" />
+										<p:column headerText="Si / No" />
+
+									</p:columnGroup>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoTipoEstudiante.certificado.dependencia.id eq 'ESTACRED' ? '¿Es irregular (30% o más de créditos o asignaturas pérdidas)?' : '¿Es profesional?'}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoTipoEstudiante.adeuda eq true ? 'Si, por lo que debe realizar la cancelación del pago indicado mediante correo electrónico.' : certificadoTipoEstudiante.adeuda eq false ? 'No' : 'Aún no verificado'}"
+											rendered="true" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+								<p:dataTable var="certificadoEstudiante"
+									value="#{dashboardTTBean.listadoCertificados}">
+
+									<f:facet name="header">
+										<h:outputText value="Dependencias de No Adeudar" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+
+										<p:column headerText="Dependencia" />
+										<p:column headerText="(Adeuda-Préstamo) / Descripción" />
+										<p:column
+											headerText="(Devolución-Cancelación-Pago) / Descripción" />
+
+									</p:columnGroup>
+
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoEstudiante.certificado.dependencia.nombre}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoEstudiante.adeuda eq null ? 'El responsable de la dependencia aún no revisa los registros' : certificadoEstudiante.adeuda eq true ? 'Usted Adeuda en la dependencia, en la siguiente descripción el responsable indica el porqué:': 'Usted no adeuda en la dependencia.'}"
+											rendered="true" />
+										<br />
+										<p:inputTextarea
+											value="#{certificadoEstudiante.descripcionAdeuda}"
+											readonly="true"
+											rendered="#{certificadoEstudiante.adeuda eq null or certificadoEstudiante.adeuda eq false ? false : true }" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{(certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq null) ? 'Usted aún no ha cancelado/devuelto la deuda/préstamo en la dependencia indicada.': (certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq true) ? 'Usted ya ha devuelto/pagado/cancelado en la dependecia la deuda/préstamo registrada.' : (certificadoEstudiante.adeuda eq true and certificadoEstudiante.adeuda eq false) ? 'Usted aún no ha cancelado/devuleto la deuda/préstamo en la dependencia indicada, el responsable lo ha registrado con la siguiente descripción: ' : '' }"
+											rendered="#{certificadoEstudiante.adeuda eq true}" />
+										<br />
+										<p:inputTextarea
+											value="#{certificadoEstudiante.descripcionDevolvio}"
+											readonly="true"
+											rendered="#{certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq true ? true : false}" />
+									</p:column>
+
+								</p:dataTable>
+
+							</p:fieldset>
+
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTutorias" header="Tutorias del estudiante"
+						visible="#{dashboardTTBean.panelTutorias}">
+
+						<p:fieldset legend="Tutor"
+							rendered="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre} - #{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.id}- #{dashboardTTBean.tt.seminarioTrabajoTitulacion.docenteSeminario.docente.email}"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Cotutor"
+							rendered="#{dashboardTTBean.tt.cotutor==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{dashboardTTBean.tt.cotutor.apellidoNombre} - #{dashboardTTBean.tt.cotutor.id} - #{dashboardTTBean.tt.cotutor.email}"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+
+						<div class="TexAlCenter">
+
+							<h:form id="formMostrar">
+
+								<div class="EmptyBox10"></div>
+
+								<p:dataTable var="tutoria" stickyHeader="true"
+									value="#{dashboardTTBean.tt.tutorias}" reflow="true"
+									emptyMessage="No hay tutorías realizadas">
+
+									<p:column headerText="Fecha" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fecha}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Fecha proxima tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fechaProximaTutoria}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Actividades" styleClass="Wid40">
+										<p:outputLabel value="#{tutoria.actividad}" />
+									</p:column>
+
+									<p:column headerText="Tareas a realizar" styleClass="Wid40">
+										<p:outputLabel value="#{tutoria.tarea}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox20"></div>
+
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Regresar" id="btnRegresarDashboard"
+												actionListener="#{dashboardTTBean.activarPanelPrincipal}"
+												update="panelPrincipal, panelTutorias"
+												icon="fa fa-arrow-left white" styleClass="GreenButton" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+							</h:form>
+
+						</div>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

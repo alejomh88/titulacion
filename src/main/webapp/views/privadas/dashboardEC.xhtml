@@ -1,0 +1,676 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Examen Complexivo">
+
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Clic para actualizar" id="withIconHo"
+											actionListener="#{dashboardECBean.a}" update="panelPrincipal"
+											icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Carrera" styleClass="FontBold" />
+										<p:selectOneMenu required="true" requiredMessage="Carrera"
+											value="#{dashboardECBean.ptId}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione la carrera" />
+											<f:selectItems value="#{dashboardECBean.listaPT}" var="pt"
+												itemValue="#{pt.id}"
+												itemLabel="#{pt.proceso.id} | #{pt.carrera.nombre}" />
+											<p:ajax event="change"
+												listener="#{dashboardECBean.obtenerPP}"
+												update="panelPrincipal, :mensaje" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tutor"
+											rendered="#{dashboardECBean.pp.tutor ne null ? true : false}" />
+										<p:inputText
+											value="#{dashboardECBean.pp.tutor.apellidoNombre}- (#{dashboardECBean.pp.tutor.id}) - #{dashboardECBean.pp.tutor.email}"
+											rendered="#{dashboardECBean.pp.tutor ne null ? true : false}"
+											readonly="true" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Parte práctica">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Asignatura #{dashboardECBean.pp.docenteAsignatura.asignatura.id}"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{dashboardECBean.pp.docenteAsignatura.asignatura.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Reactivo práctico #{dashboardECBean.pp.id}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="#{dashboardECBean.pp.casoInvestigacion}"
+												readonly="true" autoResize="true" escape="false" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Archivo adjunto"
+												rendered="#{dashboardECBean.pp.archivoAdjunto==null ? false : true}"
+												styleClass="FontBold" />
+											<p:inputText value="#{dashboardECBean.pp.archivoAdjunto}"
+												readonly="true" autoResize="true"
+												rendered="#{dashboardECBean.pp.archivoAdjunto==null ? false : true}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{dashboardECBean.pp.tituloInvestigacion}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Resumen" styleClass="FontBold" />
+											<p:inputTextarea value="#{dashboardECBean.pp.resumen}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Abstract" styleClass="FontBold" />
+											<p:inputTextarea value="#{dashboardECBean.pp.abstract1}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Palabras claves" styleClass="FontBold" />
+											<p:inputText value="#{dashboardECBean.pp.palabrasClaves}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Comité evaluador">
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Clic para actualizar notas"
+												id="withIcon" actionListener="#{dashboardECBean.a}"
+												update="panelPrincipal" icon="fa fa-repeat white" />
+										</div>
+									</div>
+
+									<div class="EmptyBox10"></div>
+
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 1" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardECBean.pp.especialista1.id} - #{dashboardECBean.pp.especialista1.apellidoNombre} &lt;br /&gt; #{dashboardECBean.pp.especialista1.usuarioUrkund} &lt;br /&gt;  #{dashboardECBean.pp.especialista1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ee1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ooe1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral de Gracia"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.oge1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 2" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardECBean.pp.especialista2.id} - #{dashboardECBean.pp.especialista2.apellidoNombre} &lt;br /&gt; #{dashboardECBean.pp.especialista2.usuarioUrkund} &lt;br /&gt;  #{dashboardECBean.pp.especialista2.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ee2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ooe2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral de Gracia"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.oge2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 3" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardECBean.pp.especialista3.id} - #{dashboardECBean.pp.especialista3.apellidoNombre} &lt;br /&gt; #{dashboardECBean.pp.especialista3.usuarioUrkund} &lt;br /&gt;  #{dashboardECBean.pp.especialista3.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ee3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ooe3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral de Gracia"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.oge3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista Suplente 1"
+												styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{dashboardECBean.pp.especialistaSuplente1.id} - #{dashboardECBean.pp.especialistaSuplente1.apellidoNombre} &lt;br /&gt; #{dashboardECBean.pp.especialistaSuplente1.usuarioUrkund} &lt;br /&gt;  #{dashboardECBean.pp.especialistaSuplente1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.es1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.oos1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-4 UiGridCol">
+													<p:outputLabel value="Nota Oral de Gracia"
+														styleClass="FontBold" />
+													<p:inputText value="#{dashboardECBean.pp.ogs1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset
+								legend="Porcentaje de coincidencia (URKUND) y citas de artículos científicos">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Porcentaje de coincidencia"
+												styleClass="FontBold" />
+											<p:inputText value="#{dashboardECBean.pp.antiplagio}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Número de citas encontradas"
+												styleClass="FontBold" />
+											<p:inputText value="#{dashboardECBean.pp.citas1}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Estructura documento validado"
+												styleClass="FontBold" />
+											<p:button disabled="true"
+												value="#{dashboardECBean.pp.validarDocumentoE3 eq true ? 'Aprobado' : 'Aún sin aprobar'}"
+												styleClass="#{dashboardECBean.pp.validarDocumentoE3 eq true ? 'GreenButton' : 'RedButton' }" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Calificaciones">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="EXAMEN COMPLEXIVO"
+												styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="LUGAR" styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="FECHAS" styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-2 UiGridCol">
+											<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox30"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE TEÓRICA FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:inputText value="#{dashboardECBean.fechaParteTeorica}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+										</div>
+
+										<div class="ui-grid-col-2 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.calificacionParteTeoricaFinal==0 ? '' : dashboardECBean.calificacionParteTeoricaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE PRÁCTICA ESCRITA FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-2 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.calificacionParteEscritaFinal==0 ? '' : dashboardECBean.calificacionParteEscritaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE PRÁCTICA ORAL  FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.pp.fechaSustentacionGracia == null ? dashboardECBean.pp.lugarSustentacionOrdinaria : dashboardECBean.pp.lugarSustentacionGracia}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.pp.fechaSustentacionGracia == null ? dashboardECBean.pp.fechaSustentacionOrdinaria : dashboardECBean.pp.fechaSustentacionGracia}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+										</div>
+
+										<div class="ui-grid-col-2 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.calificacionParteOralFinal==0 ? '' : dashboardECBean.calificacionParteOralFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIÓN TOTAL FINAL"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-2 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.calificacionFinal==0 ? '' : dashboardECBean.calificacionFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="URL DSPACE" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{dashboardECBean.pp.urlBiblioteca==null ? '' : dashboardECBean.pp.urlBiblioteca}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Dependencias No Adeudar"
+								rendered="#{dashboardECBean.listadoCertificados.size() ne 0}">
+
+								<div class="EmptyBox10"></div>
+
+								<p:fieldset legend="Importante Leer">
+									<h:outputText
+										value="A continuación se presenta dos tablas, la primera es para conocer que tipo de estudiante es, Irregular o Profesional, en cualquiera de las dos o las dos usted debe cancelar el valor que se le indica mediante correo electrónico y solicitar el certificado electrónico de no adeudar a las dependencias que se les indica en el mismo correo; caso contrario, si usted no es ninguno de los dos, no es necesario obtener el certificado electrónico, ya que la validación se la realiza a través de la plataforma. Cualquier información adicional por favor acercarse a las oficinas de UMMOG de su Unidad Académica." />
+									<br />
+									<br />
+									<h:outputText
+										value="La segunda tabla se indica las dependencias en la cual están vinculadas con la carrera y muestran si usted adeuda o tiene préstamos que devolver o efectuar un pago o cancelación. Esta notificación se la realizará mediante correo electrónico para que usted realice el procedimiento respectivo." />
+								</p:fieldset>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Clic para actualizar dependencias"
+												id="withIconA" actionListener="#{dashboardECBean.a}"
+												update="panelPrincipal" icon="fa fa-repeat white" />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<p:dataTable var="certificadoTipoEstudiante"
+									value="#{dashboardECBean.listadoCertificadosTipoEstudiante}">
+
+									<f:facet name="header">
+										<h:outputText value="Tipo de Estudiante" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+
+										<p:column headerText="Estudiante" />
+										<p:column headerText="Si / No" />
+
+									</p:columnGroup>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoTipoEstudiante.certificado.dependencia.id eq 'ESTACRED' ? '¿Es irregular (30% o más de créditos o asignaturas pérdidas)?' : '¿Es profesional?'}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoTipoEstudiante.adeuda eq true ? 'Si, por lo que debe realizar la cancelación del pago indicado mediante correo electrónico.' : certificadoTipoEstudiante.adeuda eq false ? 'No' : 'Aún no verificado'}"
+											rendered="true" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+								<p:dataTable var="certificadoEstudiante"
+									value="#{dashboardECBean.listadoCertificados}">
+
+									<f:facet name="header">
+										<h:outputText value="Dependencias de No Adeudar" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+
+										<p:column headerText="Dependencia" />
+										<p:column headerText="(Adeuda-Préstamo) / Descripción" />
+										<p:column
+											headerText="(Devolución-Cancelación-Pago) / Descripción" />
+
+									</p:columnGroup>
+
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoEstudiante.certificado.dependencia.nombre}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{certificadoEstudiante.adeuda eq null ? 'El responsable de la dependencia aún no revisa los registros' : certificadoEstudiante.adeuda eq true ? 'Usted Adeuda en la dependencia, en la siguiente descripción el responsable indica el porqué:': 'Usted no adeuda en la dependencia.'}"
+											rendered="true" />
+										<br />
+										<p:inputTextarea
+											value="#{certificadoEstudiante.descripcionAdeuda}"
+											readonly="true"
+											rendered="#{certificadoEstudiante.adeuda eq null or certificadoEstudiante.adeuda eq false ? false : true }" />
+									</p:column>
+
+									<p:column>
+										<h:outputText
+											value="#{(certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq null) ? 'Usted aún no ha cancelado/devuelto la deuda/préstamo en la dependencia indicada.': (certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq true) ? 'Usted ya ha devuelto/pagado/cancelado en la dependecia la deuda/préstamo registrada.' : (certificadoEstudiante.adeuda eq true and certificadoEstudiante.adeuda eq false) ? 'Usted aún no ha cancelado/devuleto la deuda/préstamo en la dependencia indicada, el responsable lo ha registrado con la siguiente descripción: ' : '' }"
+											rendered="#{certificadoEstudiante.adeuda eq true}" />
+										<br />
+										<p:inputTextarea
+											value="#{certificadoEstudiante.descripcionDevolvio}"
+											readonly="true"
+											rendered="#{certificadoEstudiante.adeuda eq true and certificadoEstudiante.devolvio eq true ? true : false}" />
+									</p:column>
+
+								</p:dataTable>
+
+							</p:fieldset>
+
+						</h:form>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

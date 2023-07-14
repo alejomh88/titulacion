@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Administrar reactivos teóricos">
+			<div class="TexAlCenter">
+
+				<h:form id="busqueda">
+					<p:inputText placeholder="Ingrese el ID de la Pregunta"
+						value="#{administrarPreguntasIdBean.idPregunta}"
+						styleClass="Wid90 black Fs14 FontBold" />
+					<p:commandButton id="btnAgregar" icon="fa fa-search white"
+						style="margin: 3px;"
+						actionListener="#{administrarPreguntasIdBean.buscarReactivosTeoricos}"
+						update=":FDTReactivosTeoricos, :mensaje" />
+				</h:form>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<h:form id="FDTReactivosTeoricos">
+					<p:dataTable var="pregunta"
+						value="#{administrarPreguntasIdBean.listaPreguntas}"
+						paginator="true" rows="10"
+						rowStyleClass="#{pregunta.revisado eq true ? 'revisado' : null}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnEditar" value="Editar" />
+							<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+								disabled="#{pregunta.activo==true?'false':'true'}"
+								action="#{administrarPreguntasIdBean.cargarEditar}">
+								<f:setPropertyActionListener value="#{pregunta}"
+									target="#{administrarPreguntasIdBean.pregunta}" />
+							</p:commandButton>
+
+							<p:tooltip for="btnEliminar"
+								value="#{pregunta.activo==true?'Desactivar':'Activar'}" />
+							<p:commandButton id="btnEliminar"
+								icon="#{pregunta.activo==true?'fa fa-close white':'fa fa-check white'}"
+								update="FDTReactivosTeoricos, :mensaje"
+								actionListener="#{administrarPreguntasIdBean.eliminarPregunta(pregunta)}" />
+						</p:column>
+
+						<p:column headerText="Id" styleClass="Wid10">
+							<p:outputLabel value="#{pregunta.id}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Enunciado" styleClass="Wid40">
+							<p:outputLabel value="#{pregunta.enunciado}" escape="false" />
+						</p:column>
+
+						<p:column headerText="Eje temático" styleClass="Wid35">
+							<p:outputLabel value="#{pregunta.ejeTematico}" />
+						</p:column>
+
+						<p:column headerText="Nivel de dificultad" styleClass="Wid5">
+							<p:outputLabel value="#{pregunta.nivelDificultad.nombre}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+				</h:form>
+			</div>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

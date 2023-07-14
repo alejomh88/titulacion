@@ -1,0 +1,157 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelespecialista" header="Acta de incorporación">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{incorporacionTemasPracticosBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{incorporacionTemasPracticosBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{incorporacionTemasPracticosBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{incorporacionTemasPracticosBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{incorporacionTemasPracticosBean.listTemaPracticos}"
+						reflow="true" emptyMessage="No hay Información Disponible"
+						rowKey="#{casoPractico.id}"
+						selection="#{incorporacionTemasPracticosBean.listTemaPracticosSeleccionados}">
+
+						<f:facet name="header">
+							<p:commandButton id="btnPagarTodo" update=":mensaje"
+								value="Insertar acta de incorporación"
+								actionListener="#{incorporacionTemasPracticosBean.comprobar}"
+								oncomplete="comprobarAbrir(xhr, status, args, 'panelInsertar')">
+							</p:commandButton>
+						</f:facet>
+
+						<p:column selectionMode="multiple" headerText="Acción"
+							styleClass="Wid10" />
+
+						<p:column headerText="Borrar Acta" styleClass="Wid10">
+							<p:tooltip for="btnEliminar" value="Borrar acta incorporación" />
+							<p:commandButton id="btnEliminar" icon="fa fa-trash white"
+								update="formDataTable"
+								oncomplete="PF('eliminarActaIncorporacion').show()">
+								<f:setPropertyActionListener value="#{casoPractico}"
+									target="#{incorporacionTemasPracticosBean.temaPractico}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Cédula" styleClass="Wid5">
+							#{casoPractico.estudiantePeriodo.estudiante.id}
+						</p:column>
+
+						<p:column headerText="Estudiante" styleClass="Wid35">
+							#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{casoPractico.estudiantePeriodo.estudiante.nombre}
+						</p:column>
+
+						<p:column headerText="Fecha acta incorporación" styleClass="Wid15">
+							<h:outputText value="#{casoPractico.fechaActaIncorporacion}">
+								<f:convertDateTime pattern="dd/MM/yyyy"
+									timeZone="America/Guayaquil" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Número acta incorporación"
+							styleClass="Wid15"> 
+							#{casoPractico.numeroActaIncorporacion}
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog widgetVar="panelInsertar"
+			header="Insertar acta de incorporación" closable="false"
+			closeOnEscape="true" modal="true" resizable="false"
+			styleClass="Wid50" appendTo="@(body)">
+			<h:form id="formEditar">
+
+				<p:outputLabel value="Número del acta de incorporación"
+					styleClass="DispBlock" />
+				<p:inputText
+					value="#{incorporacionTemasPracticosBean.numeroActaIncorporacion}"
+					placeholder="Ingrese el número del acta de incorporación"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Fecha del acta de incorporación"
+					styleClass="DispBlock" />
+				<p:calendar id="datetime"
+					value="#{incorporacionTemasPracticosBean.fechaActaIncorporacion}"
+					styleClass="DispBlock Wid90 calendario" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update=":formDataTable ,:mensaje"
+					oncomplete="comprobarCerrar(xhr, status, args, 'panelInsertar')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{incorporacionTemasPracticosBean.insertarResolucion}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('panelInsertar').hide()" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Borrar acta incorporación"
+			widgetVar="eliminarActaIncorporacion" resizable="false" modal="false"
+			showEffect="clip" hideEffect="fold" id="dialogoEliminar" width="40%">
+			<div class="TexAlCenter">
+				<h:form id="fromEliminar">
+					<p:outputLabel
+						value="Desea realmente borrar el acta de incorporación"
+						styleClass="DispBlock" />
+					<p:separator />
+					<p:commandButton value="SI"
+						actionListener="#{incorporacionTemasPracticosBean.eliminar}"
+						update=":formDataTable, :mensaje"
+						oncomplete="PF('eliminarActaIncorporacion').hide()"
+						icon="fa fa-check white" />
+					<p:commandButton value="NO"
+						oncomplete="PF('eliminarActaIncorporacion').hide()"
+						icon="fa fa-close white" />
+				</h:form>
+			</div>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

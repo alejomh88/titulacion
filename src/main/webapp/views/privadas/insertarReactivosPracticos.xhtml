@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="formMain">
+
+			<strong style="color: #000">INSERTAR REACTIVOS PRÁCTICOS</strong>
+			<p class="Alert AlertInfo PMensaje">
+				<strong style="color: #000">RECUERDE QUE EL ESTUDIANTE
+					TIENE 30 DÍAS PARA RESOLVER EL REACTIVO QUE VA A PLANTEAR</strong><br /> <br />
+				<strong>Estructura de reactivo práctico:</strong> <br /> <br /> <strong>Contexto
+					o situación del problema:</strong><br />En un salón de clases del primer
+				grado de educación básica, se observa un alto índice de competencias
+				no consolidadas en el área de lectoescritura. Los estudiantes no
+				logran alcanzar el estándar mínimo exigido para aprobar el grado.<br />
+				<br /> <strong>Fuente de consulta:</strong><br />En base a la
+				revisión de artículos científicos, normas internacionales,
+				reglamentos y/o demás documentos jurídicos describa<br /> <br /> <strong>Pregunta
+					a resolver:</strong><br />¿Cuáles serían los factores potenciales que
+				estarían incidiendo en la no consolidación de las competencias
+				lectoescritoras?” <br />
+			</p>
+
+			<p align="left" style="background-color: #000;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">Importante:</strong><br /> <strong
+					style="color: #FFF;">Si copia texto (desde cualquier hoja
+					de cálculo, procesador de texto, etc.), para pegarlo NO LO HAGA
+					mediante el submenú que se despliega con el botón derecho del
+					dispositivo apuntador (ratón), mas bien UTILICE la opción "Paste as
+					Text" de la barra de herramientas del editor (tercer botón de
+					derecha a izquierda).</strong>
+			</p>
+
+			<p:editor id="editor" widgetVar="editorWidget"
+				value="#{administrarReactivosPracticosBean.temaPractico.casoInvestigacion}" />
+
+			<br />
+			<strong style="color: #000">Archivo adjunto:</strong>
+			<p class="Alert AlertInfo PMensaje">
+				<strong>Para adjuntar un archivo:</strong> <br /> 1. Agregue el
+				archivo al google drive de su cuenta institucional. <br /> 2. Dele
+				permisos públicos al archivo. <br /> 3. Copie el enlace del
+				archivo. <br /> 4. Pegue el enlace en el cuadro de abajo.
+			</p>
+			<p:inputText
+				value="#{administrarReactivosPracticosBean.temaPractico.archivoAdjunto}"
+				placeholder="Dirección de archivo en Google Drive"
+				styleClass="Wid90 TexAlCenter Fs18 MargTop10" />
+
+			<div class="Seperator MargTopBottom5"></div>
+
+			<p:commandButton value="Guardar" icon="fa fa-floppy-o white"
+				actionListener="#{administrarReactivosPracticosBean.insertar}"
+				styleClass="GreenButton" outcome="administrarReactivosPracticos.jsf" />
+			<p:button value="Cancelar" icon="fa fa-close white" process="@this"
+				styleClass="RedButton" outcome="administrarReactivosPracticos.jsf" />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

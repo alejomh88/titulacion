@@ -1,0 +1,1598 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Gestión trabajos de titulación"
+						visible="#{principalTTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{principalTTBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{principalTTBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id} | #{proceso.observacion}" />
+												<p:ajax event="change"
+													listener="#{principalTTBean.obtenerCarreras}"
+													update="carrera" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{principalTTBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{principalTTBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.id} | #{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText placeholder="Cédula/Apellidos y Nombres"
+												value="#{principalTTBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{principalTTBean.buscar}"
+												update="panelPrincipal, panelTrabajoEscrito, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudianteTrabajoTitulacion"
+									value="#{principalTTBean.listadoEstudiantesTrabajoTitulacion}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true" stickyHeader="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 5%" />
+											<p:column rowspan="2" headerText="Estudiante" />
+											<p:column rowspan="2" headerText="Habilitado por tutor"
+												style="width: 5%" />
+											<p:column rowspan="1" colspan="2" headerText="Especialista 1" />
+											<p:column rowspan="1" colspan="2" headerText="Especialista 2" />
+											<p:column rowspan="1" colspan="2" headerText="Especialista 3" />
+											<p:column rowspan="1" colspan="2"
+												headerText="Especialista Suplente" />
+											<p:column rowspan="2" style="width: 15%"
+												headerText="Fecha y lugar de sustentación" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral" />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral" />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral" />
+											<p:column headerText="Escrita" />
+											<p:column headerText="Oral" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnDashboardEstudiante"
+											value="Datos completos estudiante" />
+										<p:commandButton id="btnDashboardEstudiante"
+											icon="fa fa-user white"
+											action="#{principalTTBean.presentarDashboardEstudiante}"
+											update="panelPrincipal, panelDashboard, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnTutoriasEstudiante" value="Ver Tutorias" />
+										<p:commandButton id="btnTutoriasEstudiante"
+											icon="fa fa-file-text white"
+											action="#{principalTTBean.presentarTutoriasEstudiante}"
+											update="panelPrincipal, panelTutorias, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnComite" value="Especialistas" />
+										<p:commandButton id="btnComite" icon="fa fa-users white"
+											action="#{principalTTBean.seleccionarComiteEvaluador}"
+											update="panelPrincipal, panelComite, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnArticulo" value="Recepción Artículo" />
+										<p:commandButton id="btnArticulo"
+											icon="fa fa-stack-overflow white"
+											disabled="#{estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null ? true : false}"
+											action="#{principalTTBean.mostrarpanelArticulo}"
+											styleClass="#{estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null ? 'GreenButton' : 'BlueButton'}"
+											rendered="#{estudianteTrabajoTitulacion.opcionTitulacion.nombre eq 'ENSAYOS O ÁRTICULOS ACADÉMICOS' ? true : false}"
+											update="panelPrincipal, panelArticulo, :mensaje">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnActaCalificaciones"
+											value="Acta de Calificaciones" />
+										<p:commandButton id="btnActaCalificaciones"
+											icon="fa fa-file-text-o white"
+											actionListener="#{principalTTBean.actaCalificaciones(estudianteTrabajoTitulacion)}"
+											ajax="false" update=":mensaje">
+
+											<p:fileDownload value="#{principalTTBean.documento}" />
+										</p:commandButton>
+										<p:tooltip for="btnValidarTrabajoEscrito"
+											value="Validar trabajo escrito" />
+										<p:commandButton id="btnValidarTrabajoEscrito"
+											rendered="#{estudianteTrabajoTitulacion.numeroActaCalificacion ne null ? true : false}"
+											disabled="#{estudianteTrabajoTitulacion.numeroActaCalificacion eq null ? true : false}"
+											icon="fa fa-file-pdf-o white"
+											action="#{principalTTBean.presentarDocumento}"
+											update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+											styleClass="#{estudianteTrabajoTitulacion.archivo eq null ? 'BlueButton' : estudianteTrabajoTitulacion.validarArchivo eq null ? 'OrangeButton' : estudianteTrabajoTitulacion.validarArchivo eq true ? 'GreenButton' : 'RedButton'}">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.estudiante.id} - #{estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:button
+											styleClass="#{estudianteTrabajoTitulacion.aprobado == true ? 'GreenButton' : 'RedButton'}"
+											disabled="true"
+											icon="#{estudianteTrabajoTitulacion.aprobado == true ? 'fa fa-check white' : 'fa fa-close white'}">
+										</p:button>
+									</p:column>
+
+									<p:column colspan="2">
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.ee1}" />
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.oe1}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista1.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista1.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista1.id eq estudianteTrabajoTitulacion.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista1.id eq estudianteTrabajoTitulacion.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialista1.id} - #{estudianteTrabajoTitulacion.especialista1.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="2">
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.ee2}" />
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.oe2}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista2.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista2.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista2.id == estudianteTrabajoTitulacion.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista2.id == estudianteTrabajoTitulacion.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialista2.id} - #{estudianteTrabajoTitulacion.especialista2.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="2">
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.ee3}" />
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.oe3}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista3.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteE == true and estudianteTrabajoTitulacion.especialista3.id == estudianteTrabajoTitulacion.especialistaSuplantadoE.id) ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista3.id == estudianteTrabajoTitulacion.especialistaSuplantadoO.id) ? 'RedButton' : 'GreenButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteO == true and estudianteTrabajoTitulacion.especialista3.id == estudianteTrabajoTitulacion.especialistaSuplantadoO.id)  ? 'fa fa-close white' : 'fa fa-check white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialista3.id} - #{estudianteTrabajoTitulacion.especialista3.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column colspan="2">
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.es1}" />
+											<p:outputLabel value="#{estudianteTrabajoTitulacion.os1}" />
+										</p:panelGrid>
+
+										<p:panelGrid columns="2" layout="grid"
+											style="border:none;background-color:rgba(255,255,255,0);">
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteE == true) ? 'GreenButton' : 'RedButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteE == true) ? 'fa fa-check white': 'fa fa-close white'}">
+											</p:button>
+											<p:button
+												styleClass="#{(estudianteTrabajoTitulacion.activarSuplenteO == true) ? 'GreenButton' : 'RedButton'}"
+												disabled="true"
+												icon="#{(estudianteTrabajoTitulacion.activarSuplenteO == true)  ? 'fa fa-check white' : 'fa fa-close white'}">
+											</p:button>
+										</p:panelGrid>
+
+										<p:outputLabel
+											value="#{estudianteTrabajoTitulacion.especialistaSuplente1.id} - #{estudianteTrabajoTitulacion.especialistaSuplente1.apellidoNombre}" />
+
+									</p:column>
+
+									<p:column>
+										<p:calendar id="button" placeholder="MM/dd/yyyy HH:mm:ss"
+											pattern="MM/dd/yyyy HH:mm:ss" mask="true" locale="es"
+											navigator="true"
+											value="#{estudianteTrabajoTitulacion.fechaSustentacion}"
+											readonly="#{(estudianteTrabajoTitulacion.activarSuplenteE eq true) ? (estudianteTrabajoTitulacion.especialista1 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false  : true : (estudianteTrabajoTitulacion.especialista2 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : (estudianteTrabajoTitulacion.especialista3 == estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : true : (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3)/3) le 39.4 ? true : false : true}">
+										</p:calendar>
+
+										<div class="EmptyBox10"></div>
+
+										<p:inputTextarea
+											value="#{estudianteTrabajoTitulacion.lugarSustentacion}"
+											readonly="#{(estudianteTrabajoTitulacion.activarSuplenteE eq true) ? (estudianteTrabajoTitulacion.especialista1 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false  : true : (estudianteTrabajoTitulacion.especialista2 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : (estudianteTrabajoTitulacion.especialista3 == estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : true : (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3)/3) le 39.4 ? true : false : true}" />
+
+										<div class="EmptyBox10"></div>
+
+										<p:tooltip for="btnInsertarFecha" value="Guardar fecha" />
+										<p:commandButton icon="fa fa-save white" id="btnInsertarFecha"
+											action="#{principalTTBean.insertarFecha}"
+											update="panelPrincipal, :mensaje"
+											disabled="#{(estudianteTrabajoTitulacion.activarSuplenteE eq true) ? (estudianteTrabajoTitulacion.especialista1 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false  : true : (estudianteTrabajoTitulacion.especialista2 eq estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee3 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : (estudianteTrabajoTitulacion.especialista3 == estudianteTrabajoTitulacion.especialistaSuplantadoE) ? (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.es1 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.es1)/3) le 39.4 ? true : false : true : true : (estudianteTrabajoTitulacion.ee1 ne null and estudianteTrabajoTitulacion.ee2 ne null and estudianteTrabajoTitulacion.ee3 ne null) ? ((estudianteTrabajoTitulacion.ee1+estudianteTrabajoTitulacion.ee2+estudianteTrabajoTitulacion.ee3)/3) le 39.4 ? true : false : true}">
+											<f:setPropertyActionListener
+												value="#{estudianteTrabajoTitulacion}"
+												target="#{principalTTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Datos generales del estudiante del trabajo de titulación"
+						visible="#{principalTTBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{principalTTBean.estudianteTrabajoTitulacion.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar recepción"
+											actionListener="#{principalTTBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{principalTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelDashboard" header="Datos del estudiante"
+						visible="#{principalTTBean.panelDashboard}">
+
+						<h:form>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Estudiante">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.email}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Investigación">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Opción de titulación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.opcionTitulacion.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Seminario #{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.seminario.id}"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.seminario.nombre}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="Tema de Investigación #{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.id}"
+												styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.trabajoTitulacion.casoInvestigacion}"
+												readonly="true" autoResize="true" escape="false" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación"
+												styleClass="FontBold" />
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.tituloInvestigacion}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Resumen" styleClass="FontBold" />
+											<p:inputTextarea
+												value="#{principalTTBean.estudianteTrabajoTitulacion.resumen}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Palabras claves" styleClass="FontBold" />
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.palabrasClaves}"
+												readonly="true" autoResize="true" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Comité evaluador">
+
+								<div class="ui-grid ui-grid-responsive">
+
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 1" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista1.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista1.apellidoNombre} &lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista1.usuarioUrkund} &lt;br /&gt;  #{principalTTBean.estudianteTrabajoTitulacion.especialista1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.ee1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.oe1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota escrita"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.ee1 == null ? true : false}"
+														id="btnEliminarEscrita1"
+														rendered="#{principalTTBean.esUmmog}"
+														actionListener="#{principalTTBean.eliminarNotaEscrita1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOral1"
+														rendered="#{principalTTBean.esUmmog}"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.oe1 == null ? true : false}"
+														actionListener="#{principalTTBean.eliminarNotaOral1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 2" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista2.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista2.apellidoNombre} &lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista2.usuarioUrkund} &lt;br /&gt;  #{principalTTBean.estudianteTrabajoTitulacion.especialista2.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.ee2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.oe2}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota escrita"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.ee2 == null ? true : false}"
+														id="btnEliminarEscrita2"
+														rendered="#{principalTTBean.esUmmog}"
+														actionListener="#{principalTTBean.eliminarNotaEscrita2}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOral2"
+														rendered="#{principalTTBean.esUmmog}"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.oe2 == null ? true : false}"
+														actionListener="#{principalTTBean.eliminarNotaOral2}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista 3" styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista3.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista3.apellidoNombre} &lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialista3.usuarioUrkund} &lt;br /&gt;  #{principalTTBean.estudianteTrabajoTitulacion.especialista3.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.ee3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.oe3}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota escrita"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.ee3 == null ? true : false}"
+														id="btnEliminarEscrita3"
+														rendered="#{principalTTBean.esUmmog}"
+														actionListener="#{principalTTBean.eliminarNotaEscrita3}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOral3"
+														rendered="#{principalTTBean.esUmmog}"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.oe3 == null ? true : false}"
+														actionListener="#{principalTTBean.eliminarNotaOral3}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+											</div>
+
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Especialista Suplente 1"
+												styleClass="FontBold" />
+											<p:outputLabel
+												value="&lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1.apellidoNombre} &lt;br /&gt; #{principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1.usuarioUrkund} &lt;br /&gt;  #{principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1.email}"
+												readonly="true" autoResize="true" escape="false" />
+
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Escrita" styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.es1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:outputLabel value="Nota Oral Ordinaria"
+														styleClass="FontBold" />
+													<p:inputText
+														value="#{principalTTBean.estudianteTrabajoTitulacion.os1}"
+														readonly="true" autoResize="true" />
+												</div>
+
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota escrita"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.es1 == null ? true : false}"
+														id="btnEliminarEscrita4"
+														rendered="#{principalTTBean.esUmmog}"
+														actionListener="#{principalTTBean.eliminarNotaEscritaSuplente1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton value="Eliminar nota oral"
+														id="btnEliminarOral4"
+														rendered="#{principalTTBean.esUmmog}"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.os1 == null ? true : false}"
+														actionListener="#{principalTTBean.eliminarNotaOralSuplente1}"
+														update="panelPrincipal, panelDashboard"
+														icon="fa fa-repeat white" styleClass="RedButton" />
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset
+								legend="Porcentaje de coincidencia (URKUND) y citas de artículos científicos">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Porcentaje de coincidencia"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.antiplagio}"
+												readonly="true" autoResize="true" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputTextarea
+												value="#{principalTTBean.estudianteTrabajoTitulacion.observacionesUrkund}"
+												readonly="true" autoResize="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Número de citas encontradas"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.citas1}"
+												readonly="true" autoResize="true" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:inputTextarea
+												value="#{principalTTBean.estudianteTrabajoTitulacion.observacionesCitas}"
+												readonly="true" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Estructura documento validado"
+												styleClass="FontBold" />
+
+											<div class="EmptyBox10"></div>
+
+											<p:button disabled="true"
+												value="#{principalTTBean.estudianteTrabajoTitulacion.validarDocumentoE3 eq true ? 'Aprobado' : 'Aún sin aprobar'}"
+												styleClass="#{principalTTBean.estudianteTrabajoTitulacion.validarDocumentoE3 eq true ? 'GreenButton' : 'RedButton' }" />
+
+											<div class="EmptyBox10"></div>
+
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+
+											<p:commandButton id="btnEliminarUrkund"
+												rendered="#{principalTTBean.esUmmog}"
+												disabled="#{principalTTBean.estudianteTrabajoTitulacion.antiplagio == null ? true : false}"
+												actionListener="#{principalTTBean.eliminarPocentajeUrkund}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white"
+												value="Eliminar porcentaje coicidencia"
+												styleClass="RedButton" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEliminarCitas"
+												rendered="#{principalTTBean.esUmmog}"
+												disabled="#{principalTTBean.estudianteTrabajoTitulacion.citas1 == null ? true : false}"
+												actionListener="#{principalTTBean.eliminarCitas}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white" value="Eliminar número de citas"
+												styleClass="RedButton" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEliminarValidacionEstructura"
+												rendered="#{principalTTBean.esUmmog}"
+												disabled="#{principalTTBean.estudianteTrabajoTitulacion.validarDocumentoE3 == null ? true : false}"
+												actionListener="#{principalTTBean.desvalidarDocumentoE3}"
+												update="panelPrincipal, panelDashboard, :mensaje"
+												icon="fa fa-trash white"
+												value="Desvalidar la estructura del documento"
+												styleClass="RedButton" />
+
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<p:fieldset legend="Calificaciones">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="TRABAJO TITULACIÓN"
+												styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="FECHAS" styleClass="FontBold" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIONES" styleClass="FontBold" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox30"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="PARTE ESCRITA (70 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.calificacionParteEscritaFinal==0 ? '' : principalTTBean.calificacionParteEscritaFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="SUSTENTACIÓN ORAL FINAL (30 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.fechaSustentacion == null ? '' : principalTTBean.estudianteTrabajoTitulacion.fechaSustentacion}"
+												readonly="true" styleClass="TexAlRight">
+												<f:convertDateTime pattern="EEEE dd MMMM yyyy HH:mm"
+													timeZone="America/Guayaquil" />
+											</p:inputText>
+
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.calificacionParteOralFinal==0 ? '' : principalTTBean.calificacionParteOralFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="CALIFICACIÓN TOTAL FINAL (100 puntos)"
+												styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.calificacionFinal==0 ? '' : principalTTBean.calificacionFinal}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="MENSAJE FINAL" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.calificacionFinal ge 69.5 ? 'El estudiante ha aprobado su proceso de titulación.' : 'El estudiante ha reprobado el proceso de titulación o faltan calificaciones de parte de los especialistas.'}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="URL DSPACE" styleClass="FontBold" />
+										</div>
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputText
+												value="#{principalTTBean.estudianteTrabajoTitulacion.urlBiblioteca == null ? '' : principalTTBean.estudianteTrabajoTitulacion.urlBiblioteca}"
+												readonly="true" styleClass="TexAlRight" />
+										</div>
+
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+						</h:form>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-3 UiGridCol">
+									<p:commandButton value="Regresar"
+										action="#{principalTTBean.establecerPanelPrincipal}"
+										update="panelPrincipal, panelSeleccionar, panelDashboard, :mensaje"
+										icon="fa fa-arrow-left white" styleClass="GreenButton" />
+								</div>
+
+							</div>
+						</div>
+
+					</p:panel>
+
+					<p:panel id="panelComite" header="Comité evaluador del estudiante"
+						visible="#{principalTTBean.panelComite}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<!-- 								<div class="ui-grid ui-grid-responsive"> -->
+								<!-- 									<div class="ui-grid-row"> -->
+
+								<!-- 										<div class="ui-grid-col-12 UiGridCol"> -->
+								<!-- 											<p:outputLabel value="Título de la investigación" /> -->
+								<!-- 											<p:inputText readonly="true" -->
+								<!-- 												value="#{principalTTBean.estudianteTrabajoTitulacion.tituloInvestigacion}" /> -->
+								<!-- 										</div> -->
+
+								<!-- 									</div> -->
+								<!-- 								</div> -->
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Criterios de búsqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-5 UiGridCol">
+											<p:inputText placeholder="Cédula/Apellidos y Nombres"
+												value="#{principalTTBean.criterioBusquedaEspecialista}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:commandButton icon="fa fa-search white"
+												action="#{principalTTBean.buscarEspecialista}"
+												update=":panelComite" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="esp" reflow="true"
+												value="#{principalTTBean.especialistas}" paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{esp.id}"
+												selection="#{principalTTBean.especialista}"
+												selectionMode="single">
+												<p:ajax event="rowSelect" update=":panelComite, :mensaje"
+													listener="#{principalTTBean.seleccionarEspecialista}" />
+
+												<p:column headerText="Especialista">
+													<h:outputText value="#{esp.id} - #{esp.apellidoNombre}" />
+												</p:column>
+
+											</p:dataTable>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+
+										<p:fieldset legend="Conformación de comité evaluador">
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+
+														<p:selectBooleanCheckbox
+															itemLabel="Especialista 1 (Recuerde: el tutor será Especialista 1)"
+															value="#{principalTTBean.boolEspecialista1}">
+															<p:ajax update=":panelComite"
+																listener="#{principalTTBean.seleccionarE1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalTTBean.especialista1.id} - #{principalTTBean.especialista1.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 2"
+															value="#{principalTTBean.boolEspecialista2}">
+															<p:ajax update=":panelComite"
+																listener="#{principalTTBean.seleccionarE2}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalTTBean.especialista2.id} - #{principalTTBean.especialista2.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox itemLabel="Especialista 3"
+															value="#{principalTTBean.boolEspecialista3}">
+															<p:ajax update=":panelComite"
+																listener="#{principalTTBean.seleccionarE3}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalTTBean.especialista3.id} - #{principalTTBean.especialista3.apellidoNombre}"
+															readonly="true" />
+
+													</div>
+
+												</div>
+											</div>
+
+											<div class="EmptyBox20"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectBooleanCheckbox
+															itemLabel="Especialista Suplente 1"
+															value="#{principalTTBean.boolEspecialistaSuplente1}">
+															<p:ajax update=":panelComite"
+																listener="#{principalTTBean.seleccionarS1}" />
+														</p:selectBooleanCheckbox>
+
+														<p:inputText
+															value="#{principalTTBean.especialistaSuplente1.id} - #{principalTTBean.especialistaSuplente1.apellidoNombre}"
+															readonly="true" />
+													</div>
+
+												</div>
+											</div>
+
+										</p:fieldset>
+
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:fieldset legend="Habilitación del especialista suplente">
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+
+													<p:selectBooleanCheckbox
+														itemLabel="Activar Suplente en Trabajo Escrita"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.especialista1 == null or principalTTBean.estudianteTrabajoTitulacion.especialista2 == null or principalTTBean.estudianteTrabajoTitulacion.especialista3 == null or principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1 == null ? true : false}"
+														value="#{principalTTBean.activarEspecialistaE}">
+														<p:ajax update=":panelComite"
+															listener="#{principalTTBean.habilitarSuplenteE}" />
+													</p:selectBooleanCheckbox>
+												</div>
+												<p:outputLabel
+													value="Escoja el especialista que será reemplazado." />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectOneMenu id="especialistasEstudianteEscrita"
+															disabled="#{principalTTBean.activarEspecialistaE == null or principalTTBean.activarEspecialistaE == false ? true : false}"
+															value="#{principalTTBean.especialistaSuplantadoInterfazE}">
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista1.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista1.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista1.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista2.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista2.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista2.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista3.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista3.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista3.apellidoNombre}" />
+														</p:selectOneMenu>
+													</div>
+												</div>
+
+												<div class="ui-grid-row">
+
+													<p:selectBooleanCheckbox
+														itemLabel="Activar Suplente en Sustentación Oral"
+														disabled="#{principalTTBean.estudianteTrabajoTitulacion.especialista1 == null or principalTTBean.estudianteTrabajoTitulacion.especialista2 == null or principalTTBean.estudianteTrabajoTitulacion.especialista3 == null or principalTTBean.estudianteTrabajoTitulacion.especialistaSuplente1 == null ? true : false}"
+														value="#{principalTTBean.activarEspecialistaO}">
+														<p:ajax update=":panelComite"
+															listener="#{principalTTBean.habilitarSuplenteO}" />
+													</p:selectBooleanCheckbox>
+												</div>
+												<p:outputLabel
+													value="Escoja el especialista que será reemplazado." />
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:selectOneMenu id="especialistasEstudiante"
+															disabled="#{principalTTBean.activarEspecialistaO == null or principalTTBean.activarEspecialistaO == false ? true : false}"
+															value="#{principalTTBean.especialistaSuplantadoInterfazO}">
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista1.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista1.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista1.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista2.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista2.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista2.apellidoNombre}" />
+															<f:selectItem
+																itemValue="#{principalTTBean.estudianteTrabajoTitulacion.especialista3.id}"
+																itemLabel="#{principalTTBean.estudianteTrabajoTitulacion.especialista3.id} - #{principalTTBean.estudianteTrabajoTitulacion.especialista3.apellidoNombre}" />
+														</p:selectOneMenu>
+													</div>
+												</div>
+
+											</div>
+										</p:fieldset>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{principalTTBean.guardarComite}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelSeleccionar, panelDashboard, panelComite, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{principalTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, panelDashboard, panelComite, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTutorias"
+						header="Tutorias del estudiante (#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id}) - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.email}"
+						visible="#{principalTTBean.panelTutorias}">
+
+						<p:fieldset legend="Tutor"
+							rendered="#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.apellidoNombre} - (#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.id}) - (#{principalTTBean.estudianteTrabajoTitulacion.seminarioTrabajoTitulacion.docenteSeminario.docente.email})"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Cotutor"
+							rendered="#{principalTTBean.estudianteTrabajoTitulacion.cotutor==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{principalTTBean.estudianteTrabajoTitulacion.cotutor.apellidoNombre} - (#{principalTTBean.estudianteTrabajoTitulacion.cotutor.id}) - (#{principalTTBean.estudianteTrabajoTitulacion.cotutor.email})"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas de tutorias realizadas" />
+									<p:inputText readonly="true"
+										value="#{principalTTBean.numeroHorasTutorias}" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Número total de horas a cumplir" />
+									<p:inputText readonly="true" value="48 horas" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas restantes" />
+									<p:inputText readonly="true"
+										value="#{principalTTBean.numeroTotalHorasMinutosRestantes}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox10"></div>
+
+						<h:form id="formMostrar">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:outputLabel value="Total de tutorías:" />
+								</div>
+								<div class="ui-grid-col-3 UiGridCol">
+									<p:inputText id="numeroTutorias" readonly="true"
+										value="#{principalTTBean.estudianteTrabajoTitulacion.tutorias.size()}" />
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<p:dataTable var="tutoria"
+								value="#{principalTTBean.estudianteTrabajoTitulacion.tutorias}"
+								reflow="true" emptyMessage="No hay tutorías realizadas">
+
+								<p:column headerText="Fecha inicio tutoría" styleClass="Wid15">
+									<p:outputLabel value="#{tutoria.fecha}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Fecha fin tutoría" styleClass="Wid15">
+									<p:outputLabel value="#{tutoria.fechaFinTutoria}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Fecha proxima tutoría" styleClass="Wid20">
+									<p:outputLabel value="#{tutoria.fechaProximaTutoria}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+											timeZone="America/Guayaquil" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Actividades" styleClass="Wid25">
+									<p:outputLabel value="#{tutoria.actividad}" />
+								</p:column>
+
+								<p:column headerText="Tareas a realizar" styleClass="Wid25">
+									<p:outputLabel value="#{tutoria.tarea}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div class="EmptyBox20"></div>
+
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:commandButton value="Regresar" id="btnRegresarDashboard"
+											actionListener="#{principalTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelTutorias"
+											icon="fa fa-arrow-left white" styleClass="GreenButton" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelTrabajoEscrito"
+						header="Trabajo escrito de Trabajo de Titulación"
+						visible="#{principalTTBean.panelTrabajoEscrito}">
+
+						<p:fieldset legend="Datos del estudiante">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - (#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id}) - (#{principalTTBean.estudianteTrabajoTitulacion.estudiante.email})"
+											readonly="true" autoResize="true" />
+										<div class="EmptyBox10"></div>
+										<p:inputText
+											rendered="#{principalTTBean.estudianteTrabajoTitulacion2 == null ? false : true}"
+											value="#{principalTTBean.estudianteTrabajoTitulacion2.estudiante.apellidoNombre} - (#{principalTTBean.estudianteTrabajoTitulacion2.estudiante.id}) - (#{principalTTBean.estudianteTrabajoTitulacion2.estudiante.email})"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<p:fieldset legend="Validación del documento subido">
+							<h:form id="formValidacionDocumento">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											rendered="#{principalTTBean.estudianteTrabajoTitulacion.validarArchivo==null ? true:false}"
+											value="#{principalTTBean.estudianteTrabajoTitulacion.validarArchivo==null ? 'Nota: Aún no se ha validado el archivo del estudiante':''}" />
+									</div>
+								</div>
+								<div class="EmptyBox30"
+									hidden="#{principalTTBean.estudianteTrabajoTitulacion.validarArchivo==null ? true:false}"></div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel
+											value="El documento cumple con los lineamientos indicados en la guía de titulación" />
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:selectBooleanButton id="sbbVerificaciónArchivo"
+											value="#{principalTTBean.validacionArchivo}"
+											onLabel="Si cumple" offLabel="No cumple"
+											onIcon="ui-icon-check" offIcon="ui-icon-close"
+											style="width:200px" styleClass="RedButton">
+											<p:ajax update="formValidacionDocumento"
+												listener="#{principalTTBean.verificarDocumento}" />
+										</p:selectBooleanButton>
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel id="lblInconsistencia"
+											rendered="#{principalTTBean.validacionArchivo==true ? false : true}"
+											value="Ingrese las inconsistencias que han encontrado en el documento" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputTextarea id="txtInconsistencia"
+											rendered="#{principalTTBean.validacionArchivo==true ? false : true}"
+											value="#{principalTTBean.textoInconsistencia}" />
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Guardar"
+												id="btnGuardarValidarDocumento" type="button"
+												actionListener="#{principalTTBean.establecerPrincipalDesdeTrabajo}"
+												update="panelPrincipal, panelTrabajoEscrito, :mensaje"
+												icon="fa fa-save white" styleClass="GreenButton"
+												onclick="validarDocumentoTT();" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Regresar"
+												id="btnRegresarAValidarDocumento"
+												actionListener="#{principalTTBean.establecerPanelPrincipal}"
+												update="panelPrincipal, panelTrabajoEscrito"
+												icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton ajax="false"
+												actionListener="#{principalTTBean.descargarArchivo}"
+												id="btnDescargarArchivo" icon="fa fa-download white"
+												update=":mensaje" value="Descargar archivo">
+												<p:fileDownload value="#{principalTTBean.documento}" />
+											</p:commandButton>
+										</div>
+
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+							</h:form>
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Archivo">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:outputLabel
+										rendered="#{principalTTBean.estudianteTrabajoTitulacion.archivo == null ? true:false}"
+										value="El estudiante aún no sube el documento" />
+								</div>
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:media value="#{principalTTBean.streamedContent}"
+										width="100%" height="700px" player="pdf" />
+								</div>
+							</div>
+						</p:fieldset>
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelArticulo"
+						header="Validar entrega de Artículo Cientifico del estudiante (#{principalTTBean.estudianteTrabajoTitulacion.estudiante.id}) - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - #{principalTTBean.estudianteTrabajoTitulacion.estudiante.email}"
+						visible="#{principalTTBean.panelArticulo}">
+
+						<h:form>
+							<p:fieldset legend="Descripción de la validación">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel escape="false"
+												value="El estudiante #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} ha entregado y evidenciado el cumplimiento de la opción de titulación artículos o ensayos académicos indicado en el &lt;strong&gt; artículo 30 de la guía complementaria para la instrumentalización del sistema de titulación de la UTMACH&lt;/strong&gt;. &lt;br /&gt; &lt;br /&gt;¿Desea validar el cumplimiento de entrega del artículo o ensayo académico del estudiante #{principalTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}?, recuerde que esta validación efectuará lo indicado en el artículo 30 de la guía antes mencionada, con respecto a la asignación de la calificación (70 puntos) de la parte escrita." />
+										</div>
+									</div>
+								</div>
+							</p:fieldset>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:commandButton value="Validar Artículo"
+											id="btnValidarArticulo"
+											actionListener="#{principalTTBean.validarArticuloEnsayoAcademico}"
+											update="panelPrincipal, panelArticulo, :mensaje"
+											icon="fa fa-check-circle white" styleClass="GreenButton" />
+									</div>
+
+									<div class="ui-grid-col-4 UiGridCol">
+										<p:commandButton value="Regresar" id="btnRegresarDashboard"
+											actionListener="#{principalTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelArticulo, :mensaje"
+											icon="fa fa-arrow-left white" styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+						</h:form>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

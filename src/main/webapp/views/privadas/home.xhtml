@@ -1,0 +1,184 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+
+			<div class="ContainerIndent">
+
+				<p:panel id="panelPrincipal" header="Información Proceso titulación"
+					rendered="#{homeBean.mostrarCalendario}">
+
+					<h:form>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-8 UiGridCol">
+									<p:fieldset rendered="#{homeBean.mostrarCalendario}"
+										legend="Calendario del proceso de titulación #{homeBean.infoProceso1}">
+										<p:schedule id="schedule" value="#{homeBean.eventModel}"
+											widgetVar="myschedule" timeZone="GMT-5">
+											<p:ajax event="eventSelect"
+												listener="#{homeBean.onEventSelect}" update="eventDetails"
+												oncomplete="PF('eventDialog').show();" />
+										</p:schedule>
+									</p:fieldset>
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:fieldset legend="Información sobre el calendario"
+										rendered="#{homeBean.mostrarCalendario}">
+										<p>El presente calendario muestra las actividades de las
+											cuales forman parte del proceso de titulación. A continuación
+											se brinda algunas indicaciones.</p>
+										<ul>
+											<li>- Las actividades se muestran en una franja de color
+												azul, empieza desde la fecha inicial y se extiende hasta la
+												fecha final.<br /> <br />
+											</li>
+											<li>- A lado de cada actividad muestra la opción de
+												titulación en la cual usted este participando.<br /> <br />
+											</li>
+											<li>- Al dar clic en una de las actividades, le muestra
+												información detallada tales como la actividad, fecha inicio,
+												fecha cierre y la descripción de la actividad.</li>
+										</ul>
+									</p:fieldset>
+
+									<div class="EmptyBox20"></div>
+
+									<p:fieldset
+										legend="Novedades de la plataforma de titulación!!!"
+										rendered="false">
+										<ul>
+											<li>- <b>Usuario: Responsables de dependencias de la
+													UTMACH</b> <br /> <b>Descripción:</b> Implementación de la
+												opción Reportes en el menú Certificados (a partir del
+												15/09/2017).<br /> <br />
+											</li>
+											<li>- <b>Usuario: Responsables de dependencias de la
+													UTMACH</b> <br /> <b>Descripción:</b> Implementación de la
+												gestión de Certificados de No Adeudar (a partir de 5 de
+												septiembre de 2017).<br /> <br />
+											</li>
+											<li>- <b>Usuario: Estudiantes aprobados con 70
+													puntos o más de las opciones Examen Complexivo y Trabajo
+													Titulación</b> <br /> <b>Descripción:</b> Generación del
+												documento final (Estudiante --> Examen Complexivo o Trabajo
+												Titulación --> Subir trabajo) utilizando el documento del
+												google drive que contiene la dimensión escrita, es decir el
+												informe de la parte escrita (a partir de 21 de agosto de
+												2017).<br />.<br /> <br />
+											</li>
+										</ul>
+									</p:fieldset>
+
+									<div class="EmptyBox20"></div>
+
+									<p:fieldset
+										legend="Próximamente en la plataforma de titulación!!!"
+										rendered="false">
+										<ul>
+											<li>- <b>Usuario: Jefes de UMMOG</b> <br /> <b>Descripción:</b>
+												Visualización de los registros No Aduedar de estudiantes
+												aprobados del actual proceso de titulación .<br />
+											</li>
+										</ul>
+									</p:fieldset>
+								</div>
+							</div>
+						</div>
+					</h:form>
+
+				</p:panel>
+
+				<p:dialog header="Importante!!!! " widgetVar="dlg" modal="true"
+					width="50%" resizable="false" rendered="#{homeBean.esEstudiante}">
+					<p>Estimado estudiante del actual proceso de titulación 2017-1
+						(PT-010517)</p>
+					<p></p>
+					<p>El presente mensaje es para recordarle que debe ir
+						trabajando en el documento del google drive conforme vaya
+						avanzando en las tutorías y siguiendo la estructura del artículo
+						46 de la guía de titulación, con ello se benefician de los
+						comentarios y sugerencias por parte de los miembros del comité
+						evaluador y de su tutor/a.</p>
+					<p>El enlace al documento del google drive lo encuentra en la
+						opción de menú Estudiante --> Trabajo Titulación o Examen
+						Complexivo --> Tutorías.</p>
+					<p>Al momento de acceder al documento le solicita iniciar
+						sesión en gmail, debe ingresar el correo electrónico institucional
+						y la contraseña del SIUTMACH. Si presenta inconvenientes con el
+						acceso, acercarse a Dirección Académica - Sección Titulación de
+						Administración Central que con gusto solucionaremos el
+						inconveniente que se le pueda suscitar.</p>
+
+				</p:dialog>
+				<p:dialog widgetVar="eventDialog" header="Detalles de la actividad"
+					showEffect="clip" hideEffect="clip" width="65%" modal="true">
+					<h:form id="eventDetails">
+						<div class="Container100 ui-fluid">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel for="title" value="Actividad:" />
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputText id="title" value="#{homeBean.event.title}"
+											required="true" readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel for="from" value="Fecha Inicio:" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputText id="from" value="#{homeBean.event.startDate}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel for="to" value="Fecha Cierre:" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputText id="to" value="#{homeBean.event.endDate}"
+											readonly="true" />
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:outputLabel for="description" value="Descripción:" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputTextarea id="description" readonly="true"
+											value="#{homeBean.descripcion}" />
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton id="addButton" value="Salir"
+											oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</p:dialog>
+			</div>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>

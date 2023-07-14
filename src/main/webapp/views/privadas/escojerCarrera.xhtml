@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel header="Examen Complexivo - Parte
+						Teórica">
+			<div class="TexAlCenter">
+				<h:form>
+					<div class="EmptyBox10"></div>
+					<p:selectOneMenu id="comboCarreras"
+						value="#{escojerCarreraBean.carrera}"
+						styleClass="DispBlock MarAuto Wid80 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems value="#{escojerCarreraBean.listCarrera}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+					<div class="EmptyBox40"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<p:commandButton value="Iniciar Examen"
+						actionListener="#{escojerCarreraBean.iniciarExamen}"
+						update=":mensaje" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+	</ui:define>
+
+</ui:composition>

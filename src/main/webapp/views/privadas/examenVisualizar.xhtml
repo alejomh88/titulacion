@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100">
+				<div class="ContainerIndent">
+					<p class="TexAlCenter Fs24 FontBold ColorExamen Margin0">Examen
+						Complexivo - Parte Teórica</p>
+					<div class="EmptyBox20"></div>
+					<h:form id="formTimer">
+						<div id="datosIngreso" class="divDatosIzq50">
+							<p:fragment autoUpdate="true">
+								<ul class="Margin0 TexAlCenter">
+									<li class="fa fa-history DispInlBlock Fs22 ColorExamen"></li>
+									<li class="DispInlBlock Fs22 ColorExamen">Tiempo Restante:
+										100 S</li>
+								</ul>
+							</p:fragment>
+						</div>
+						<div id="tablaIngreso" class="divDatosDer50">
+							<ul class="Margin0 TexAlCenter">
+								<li class="fa fa-th-list DispInlBlock Fs22 ColorExamen"></li>
+								<li class="DispInlBlock Fs22 ColorExamen">Pregunta 1 de 50
+									preguntas sin contestar</li>
+							</ul>
+						</div>
+
+						<div class="TexAlCenter Margin20BotTop">
+							<p:commandButton value="Saltar Pregunta"
+								icon="fa fa-repeat black" styleClass="Margin1emRight GrayButton" />
+
+							<p:commandButton value="Siguiente Pregunta"
+								icon="fa fa-check-square-o black" styleClass="GrayButton" />
+						</div>
+					</h:form>
+					<div class="Seperator"></div>
+					<div class="divDatosIzq100">
+						<h:form id="formPregunta">
+							<p:outputLabel
+								value="#{administrarPreguntasBean.cadenaOriginal}"
+								styleClass="DispBlock Fs18 FontBold ColorExamen" escape="false" />
+						</h:form>
+					</div>
+					<div class="divDatosDer100">
+						<h:form id="formImgEnunciado">
+							<ui:fragment id="fragEnunciado"
+								rendered="#{examenBean.muetraImagenEnunciado}">
+								<div class="DivImagenEnunciado">
+									<p:graphicImage id="imgEnunciado" cache="false"
+										styleClass="ImagenPregunta"
+										value="#{examenBean.imagenEnunciado}" />
+								</div>
+							</ui:fragment>
+						</h:form>
+					</div>
+					<div class="EmptyBox5"></div>
+					<h:form id="formImgRespuestas">
+						<ui:fragment rendered="#{examenBean.muetraImagenesPregunta}">
+							<div class="divDatosIzq50">
+								<div class="DivImagen">
+									<p:outputLabel
+										value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[0].descripcion}"
+										styleClass="Literal" />
+									<p:graphicImage id="img1" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen1}" />
+								</div>
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal2}"
+										styleClass="Literal" />
+									<p:graphicImage id="img2" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen2}" />
+								</div>
+							</div>
+							<div class="divDatosDer50">
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal3}"
+										styleClass="Literal" />
+									<p:graphicImage id="img3" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen3}" />
+								</div>
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal4}"
+										styleClass="Literal" />
+									<p:graphicImage id="img4" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen4}" />
+								</div>
+							</div>
+						</ui:fragment>
+					</h:form>
+					<div class="EmptyBox20"></div>
+					<h:form id="formRespuesta">
+						<p:selectOneRadio id="btns" layout="grid" columns="1"
+							onchange="focusBtn()" styleClass="Wid100 btns">
+							<f:selectItems
+								value="#{administrarPreguntasBean.pregunta.posiblesRespuestas}"
+								var="pr" itemValue="#{pr.literal}"
+								itemLabel="#{pr.literal}. - #{pr.descripcion}" />
+						</p:selectOneRadio>
+						<div class="EmptyBox20"></div>
+					</h:form>
+
+					<p:commandButton value="Regresar"
+						actionListener="#{administrarPreguntasBean.regresarReactivosTeoricos}"
+						icon="fa fa-arrow-left white" styleClass="GreenButton" />
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,256 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol" />
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel
+									header="Documentos e Instructivos del proceso de titulación">
+									<h:form>
+
+										<p:fieldset legend="Documentos">
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn0"
+															value="Plataforma Universidad Técnica de Machala - Sección titulación"
+															href="https://www.utmachala.edu.ec/portalwp/index.php/proceso-de-titulacion/"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn" value="Líneas de investigación."
+															rendered="#{documentosBean.esAutoridad}"
+															href="http://investigacion.utmachala.edu.ec/es/lineas-de-investigacion/"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn1"
+															value="Reglamento del sistema de titulación"
+															href="https://drive.google.com/file/d/1NGYe_N-9X25ev9QdnHGnpHx4rtc4GDWm/view?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn2"
+															value="Guía complementaria para la instrumentalización del sistema de titulación"
+															href="https://drive.google.com/file/d/1iFCSK9IpZH1qpMEie_gWLNBLBxDLymIj/view?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn9" value="Normas NTN INEN 2 402:2010"
+															href="https://drive.google.com/file/d/0B7koeB_H4tegNjN1UjR2OHRNbDA/view"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn3" value="Anexo a la guía de titulación"
+															href="https://drive.google.com/file/d/1JHQq9U8L0VXqvH-P8udpYulQt75b6cNW/view?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn24"
+															value="Cronograma del proceso PT-010419	(2019-1) (En Proceso)"
+															href="https://docs.google.com/spreadsheets/d/1S3Q03zp7IR_8bz5IWg2shgt19QonTnbF_6-inL-k180/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn23"
+															value="Cronograma del proceso PT-011018	(2018-2)"
+															href="https://docs.google.com/spreadsheets/d/1d6jt9rsnRyuXBznd9l6OcpifZ4bbukz27LaZR46UKgU/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn22"
+															value="Cronograma del proceso PT-010518	(2018-1)"
+															href="https://docs.google.com/spreadsheets/d/1QdRV8SxVbMjd7XDQ8kbkU6hg9ix-Bq12svriULQhiDA/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn00"
+															value="Cronograma del proceso PT-011017 (2017-2)"
+															href="https://docs.google.com/spreadsheets/d/1v7PHSU4NU5nMmuHaJBaRGg6LYneXJiN-52kKcE2RsAI/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn01"
+															value="Cronograma del proceso PT-010517 (2017-1)"
+															href="https://docs.google.com/spreadsheets/d/1ybgKnpi0Brvwqz3xQYTsqHrJxpkxAY2PPO2DXWCFj3Y/edit"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn4"
+															value="Hoja de ruta proceso PT-031016 (2016-2) Examen Complexivo"
+															href="https://docs.google.com/spreadsheets/d/1uO58kn08081dvgSQLgc7JEoxd-BC0qGamPpqyg8cy18/edit"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btn5"
+															value="Hoja de ruta proceso PT-031016 (2016-2) Trabajo TItulación"
+															href="https://docs.google.com/spreadsheets/d/18QwIy_XHtPaRgtUViztv18HU_N6uaZgNpnV5BQU0TAs/edit"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+
+												</div>
+											</div>
+										</p:fieldset>
+
+										<div class="EmptyBox10"></div>
+
+										<p:fieldset legend="Manuales">
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btnI0"
+															value="Manual del Procedimiento de Titulación"
+															rendered="true"
+															href="https://docs.google.com/document/d/1a-UIPjaEcwycPT1YR9RvTXCji_KPWuyzxnLJwsLCbiA/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btnI-1"
+															value="Manual de la Plataforma de Titulación"
+															rendered="true"
+															href="https://docs.google.com/document/d/1v2zxmlngygLj9kjpfPNVI8l9CGizH58JBYcxMLXBX_8/edit?usp=sharing"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+											<div class="ui-grid ui-grid-responsive">
+												<div class="ui-grid-row">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:button id="btnI2"
+															value="Asignación del tutor y comité evaluador en examen complexivo."
+															href="https://drive.google.com/file/d/0By5kMbcBRG1oWV9ISkkxeHVKdGM/view"
+															rendered="#{(documentosBean.esCoordinador or documentosBean.esUMMOG) ? true : false}"
+															target="_blank" styleClass="GreenButton" />
+													</div>
+												</div>
+											</div>
+
+											<div class="EmptyBox10"></div>
+
+										</p:fieldset>
+									</h:form>
+								</p:panel>
+
+							</div>
+
+							<div class="ui-grid-col-3 UiGridCol" />
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel header="#{obtenerCasoPracticoBean.tituloPanel}"
+						id="panelPrincipal">
+
+						<h:form id="formCasoPractico">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Reactivos prácticos faltantes"
+											rendered="#{obtenerCasoPracticoBean.mostrarMensajeFaltaReactivos}">
+											<p:outputLabel>En el único caso de que no existan reactivos prácticos disponibles, es decir que a usted no se le presente un listado con los mismos en la tabla inferior, acercarse inmediatamente con el coordinador de carrera para que le asignen un reactivo práctico.</p:outputLabel>
+										</p:fieldset>
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton id="btnActualizarTabla"
+											actionListener="#{obtenerCasoPracticoBean.a}"
+											icon="fa fa-refresh white" value="Actualizar Tabla"
+											update="panelPrincipal" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<p:dataTable var="casoPractico" reflow="true"
+								value="#{obtenerCasoPracticoBean.temasPracticos}"
+								emptyMessage="#{obtenerCasoPracticoBean.tituloTabla}">
+
+								<p:column headerText="Acción">
+									<p:tooltip for="btnEscojer" value="Seleccionar" />
+									<p:commandButton id="btnEscojer" icon="fa fa-check white"
+										disabled="#{casoPractico.estudiante eq null ? false : true}"
+										oncomplete="PF('aceptarTemaPractico').show()">
+										<f:setPropertyActionListener value="#{casoPractico}"
+											target="#{obtenerCasoPracticoBean.temaPractico}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Id">
+									<h:outputText value="#{casoPractico.id}" />
+								</p:column>
+
+								<p:column headerText="Asignatura" styleClass="Wid10">
+									<h:outputText
+										value="#{casoPractico.docenteAsignatura.asignatura.nombre}" />
+								</p:column>
+
+								<p:column headerText="Caso práctico" styleClass="Wid60">
+									<h:outputText value="#{casoPractico.casoInvestigacion}"
+										escape="false" />
+								</p:column>
+
+								<p:column headerText="Adjunto">
+									<p:link value="Ver" target="_new"
+										href="#{casoPractico.archivoAdjunto}"
+										rendered="#{casoPractico.archivoAdjunto ne null ? true : false}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+					</p:panel>
+
+					<p:dialog widgetVar="aceptarTemaPractico" severity="alert"
+						header="Caso Práctico" showEffect="explode" hideEffect="explode"
+						modal="false" resizable="false">
+						<h:form id="guardarCasoPractico">
+							<p:outputLabel
+								value="¿Desea seleccionar realmente este caso práctico?" />
+							<br />
+							<br />
+							<p:commandButton value="Aceptar" icon="fa fa-check white"
+								oncomplete="PF('aceptarTemaPractico').hide()"
+								actionListener="#{obtenerCasoPracticoBean.obtenerCasoPractico}"
+								update=":formCasoPractico, :mensaje" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('aceptarTemaPractico').hide()"
+								icon="fa fa-close white" />
+						</h:form>
+					</p:dialog>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

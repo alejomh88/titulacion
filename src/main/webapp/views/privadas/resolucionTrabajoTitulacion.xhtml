@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelespecialista" header="Resolucion Consejo Directivo">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{resolucionTrabajoTitulacionBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{resolucionTrabajoTitulacionBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{resolucionTrabajoTitulacionBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{resolucionTrabajoTitulacionBean.buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="estudianteTemaPratico"
+						value="#{resolucionTrabajoTitulacionBean.listEstudiantesTrabajosTitulaciones}"
+						reflow="true" emptyMessage="No hay Información Disponible"
+						rowKey="#{estudianteTemaPratico.id}"
+						selection="#{resolucionTrabajoTitulacionBean.listEstudiantesTrabajosTitulacionesSeleccionados}">
+
+						<f:facet name="header">
+							<p:commandButton id="btnPagarTodo" update=":mensaje"
+								value="Insertar Resolución"
+								actionListener="#{resolucionTrabajoTitulacionBean.comprobar}"
+								oncomplete="comprobarAbrir(xhr, status, args, 'panelInsertar')">
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Acción" styleClass="Wid10"
+							selectionMode="multiple" />
+
+						<p:column headerText="Cédula" styleClass="Wid5">
+							#{estudianteTemaPratico.estudiante.id}
+						</p:column>
+
+						<p:column headerText="Estudiante" styleClass="Wid15">
+							#{estudianteTemaPratico.estudiante.apellidoPaterno} #{estudianteTemaPratico.estudiante.apellidoMaterno} #{estudianteTemaPratico.estudiante.nombre}
+						</p:column>
+
+						<p:column headerText="Fecha Resolución" styleClass="Wid15">
+							<h:outputText value="#{estudianteTemaPratico.fechaResolucion}">
+								<f:convertDateTime pattern="dd/MM/yyyy"
+									timeZone="America/Guayaquil" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Resolución" styleClass="Wid15">
+							#{estudianteTemaPratico.resolucion}
+						</p:column>
+
+						<p:column headerText="Fecha Sustentación" styleClass="Wid15">
+							<h:outputText value="#{estudianteTemaPratico.fechaSustentacion}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</h:outputText>
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:dialog widgetVar="panelInsertar"
+			header="Insertar Resolución Consejo Directivo" closable="false"
+			closeOnEscape="true" modal="true" resizable="false"
+			styleClass="Wid50" appendTo="@(body)">
+			<h:form id="formEditar">
+
+				<p:outputLabel value="Número de Resolucion" styleClass="DispBlock" />
+				<p:inputText value="#{resolucionTrabajoTitulacionBean.resolucion}"
+					placeholder="Ingrese la Resolución" styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Fecha de Resolucion" styleClass="DispBlock" />
+				<p:calendar id="datetime"
+					value="#{resolucionTrabajoTitulacionBean.fechaResolucion}"
+					styleClass="DispBlock Wid90 calendario" />
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update=":formDataTable ,:mensaje"
+					oncomplete="comprobarCerrar(xhr, status, args, 'panelInsertar')"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					actionListener="#{resolucionTrabajoTitulacionBean.insertarResolucion}"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('panelInsertar').hide()" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

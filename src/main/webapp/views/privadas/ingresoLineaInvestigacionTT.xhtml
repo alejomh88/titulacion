@@ -1,0 +1,368 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Gestión de líneas de investigación para la modalidad Trabajo de Titulación."
+						visible="#{ingresoLineaInvestigacionTTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true" 
+												requiredMessage="Seleccione un proceso"
+												value="#{ingresoLineaInvestigacionTTBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems
+													value="#{ingresoLineaInvestigacionTTBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id} | #{proceso.observacion}" />
+												<p:ajax event="change"
+													listener="#{ingresoLineaInvestigacionTTBean.obtenerCarreras}"
+													update="carrera" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{ingresoLineaInvestigacionTTBean.carrera}"
+												filter="true" filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems
+													value="#{ingresoLineaInvestigacionTTBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.id} | #{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Línea de investigación." />
+											<p:inputText
+												value="#{ingresoLineaInvestigacionTTBean.criterioBusquedaLinea}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{ingresoLineaInvestigacionTTBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formLineaInvestigacion">
+								<p:dataTable var="lineaInvestigacionCarrera"
+									value="#{ingresoLineaInvestigacionTTBean.listadoListasInvestigacionCarrera}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true" stickyHeader="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										<p:tooltip for="btnNuevo" value="Insertar" />
+										<p:commandButton id="btnNuevo"
+											disabled="#{ingresoLineaInvestigacionTTBean.listadoListasInvestigacionCarrera==null? true : false}"
+											value="Insertar línea investigación"
+											action="#{ingresoLineaInvestigacionTTBean.insertarLineaInvestigacionPanel}"
+											update="panelPrincipal, panelInsertarLineaInvestigacion" />
+									</f:facet>
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Acción" style="width: 8%" />
+											<p:column headerText="Linea Investigación" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnEditarLineaInvestigacion"
+											value="Editar nombre línea" />
+										<p:commandButton id="btnEditarLineaInvestigacion"
+											icon="fa fa-edit white"
+											action="#{ingresoLineaInvestigacionTTBean.presentarEditarLineaInvestigacion}"
+											update="panelPrincipal, panelEditarLineaInvestigacion,:mensaje">
+											<f:setPropertyActionListener
+												value="#{lineaInvestigacionCarrera}"
+												target="#{ingresoLineaInvestigacionTTBean.lineaInvestigacionCarrera}" />
+										</p:commandButton>
+
+										<p:tooltip for="btnEliminarLíneaInvestigacion"
+											value="Eliminar Linea Investigacion" />
+										<p:commandButton id="btnEliminarLíneaInvestigacion"
+											icon="fa fa-trash white"
+											action="#{ingresoLineaInvestigacionTTBean.eliminarLineaInvestigacion}"
+											update="panelPrincipal, panelEliminarLineaInvestigacion, :mensaje">
+											<f:setPropertyActionListener
+												value="#{lineaInvestigacionCarrera}"
+												target="#{ingresoLineaInvestigacionTTBean.lineaInvestigacionCarrera}" />
+										</p:commandButton>
+
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{lineaInvestigacionCarrera.lineaInvestigacion.id} | #{lineaInvestigacionCarrera.lineaInvestigacion.nombre}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelInsertarLineaInvestigacion"
+						header="Ingreso de línea de investigación."
+						visible="#{ingresoLineaInvestigacionTTBean.panelInsertarLineaInvestigacion}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Campos a llenar">
+
+							<h:form id="formInsertarLinea">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Nombre de la línea de investigación." />
+											<p:inputText
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.nombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Resolución" />
+											<p:inputText placeholder="Escriba aquí la resolución"
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.resolucion}" />
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Fecha de resolución." />
+											<p:calendar id="caFechaResolucionEdit"
+												placeholder="dd/mm/aaaa" locale="es" navigator="true"
+												pattern="MM/dd/yyyy"
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.fechaResolucion}">
+											</p:calendar>
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Importante: " styleClass="FontBold" />
+											<p:outputLabel styleClass="FontBold"
+												value="La línea de investigación guardará con el proceso y carrera que seleccionó previamente." />
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnInsertarLinea" value="Insertar línea"
+												icon="fa fa-save white" styleClass="GreenButton"
+												update="panelPrincipal, panelInsertarLineaInvestigacion, :mensaje"
+												action="#{ingresoLineaInvestigacionTTBean.insertarLinea}" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnCancelarInsertarLinea"
+												value="Cancelar" icon="fa fa-arrow-left white"
+												styleClass="OrangeButton"
+												update="panelPrincipal, panelInsertarLineaInvestigacion, :mensaje"
+												action="#{ingresoLineaInvestigacionTTBean.volverPrincipal}" />
+										</div>
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelEditarLineaInvestigacion" stickyHeader="true"
+						header="Edición de línea de investigación."
+						visible="#{ingresoLineaInvestigacionTTBean.panelEditarLineaInvestigacion}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Campos a editar">
+
+							<h:form id="formEditarLinea">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Nombre de la línea de investigación." />
+											<p:inputText
+												placeholder="Escriba aquí el nombre de la línea de investigación."
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.nombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Resolución" />
+											<p:inputText placeholder="Escriba aquí la resolución"
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.resolucion}" />
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Fecha de resolución." />
+											<p:calendar id="caFechaResolucion" locale="es"
+												placeholder="dd/mm/aaaa" navigator="true"
+												pattern="MM/dd/yyyy"
+												value="#{ingresoLineaInvestigacionTTBean.lineaInvestigacion.fechaResolucion}">
+											</p:calendar>
+										</div>
+									</div>
+								</div>
+
+								<div class="EmptyBox20"></div>
+
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnEditarLinea" value="Actualizar línea"
+												icon="fa fa-save white" styleClass="GreenButton"
+												update="panelPrincipal, panelEditarLineaInvestigacion, :mensaje"
+												action="#{ingresoLineaInvestigacionTTBean.actualizarLinea}" />
+										</div>
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton id="btnCancelarEditarLinea" value="Cancelar"
+												icon="fa fa-arrow-left white" styleClass="OrangeButton"
+												update="panelPrincipal, panelEditarLineaInvestigacion, :mensaje"
+												action="#{ingresoLineaInvestigacionTTBean.volverPrincipal}" />
+										</div>
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+						<div class="EmptyBox20"></div>
+					</p:panel>
+
+					<p:panel id="panelEliminarLineaInvestigacion"
+						header="Eliminación de la linea de investigación #{ingresoLineaInvestigacionTTBean.lineaInvestigacionCarrera.lineaInvestigacion.nombre}"
+						visible="#{ingresoLineaInvestigacionTTBean.panelEliminarLineaInvestigacion}">
+
+						<h:form id="formEliminarLineaInvestigacion">
+
+							<div class="EmptyBox10"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:fieldset legend="Eliminar docente asignado">
+											<div class="ui-grid-col-12 UiGridCol">
+												<p:outputLabel
+													value="¿Desea eliminar la linea de investigación #{ingresoLineaInvestigacionTTBean.lineaInvestigacionCarrera.lineaInvestigacion.nombre} ?" />
+											</div>
+										</p:fieldset>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Eliminar"
+												actionListener="#{ingresoLineaInvestigacionTTBean.eliminarLineaInvestigacionAccion}"
+												styleClass="GreenButton" icon="fa fa-trash white"
+												update="panelEliminarLineaInvestigacion, panelPrincipal, :mensaje" />
+										</div>
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Cancelar" icon="fa fa-remove white"
+												action="#{ingresoLineaInvestigacionTTBean.volverPrincipal}"
+												update="panelEliminarLineaInvestigacion, panelPrincipal, :mensaje"
+												styleClass="RedButton" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox20"></div>
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

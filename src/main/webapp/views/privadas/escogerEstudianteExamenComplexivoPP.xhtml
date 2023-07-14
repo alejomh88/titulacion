@@ -1,0 +1,156 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Temas de Casos Prácticos Examen de Complexivo"
+						visible="#{escogerEstudianteExamenComplexivoPPBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+
+							<div class="TexAlCenter">
+								<p:dataTable var="carrera"
+									value="#{escogerEstudianteExamenComplexivoPPBean.carreras}"
+									selectionMode="single"
+									selection="#{escogerEstudianteExamenComplexivoPPBean.carreraSeleccionada}"
+									rowKey="#{carrera.id}" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										Escoja una carrera
+									</f:facet>
+
+									<p:ajax event="rowSelect"
+										listener="#{escogerEstudianteExamenComplexivoPPBean.onRowSelect}"
+										update="panelPrincipal" />
+
+									<p:column headerText="Proceso" styleClass="Wid20">
+										<h:outputText value="PT-031016" escape="false" />
+									</p:column>
+
+									<p:column headerText="Carrera" styleClass="Wid40">
+										<h:outputText value="(#{carrera.id}) #{carrera.nombre}"
+											escape="false" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</h:form>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form id="formDataTable">
+							<p:dataTable var="epp"
+								value="#{escogerEstudianteExamenComplexivoPPBean.estudiantesExamenComplexivoPP}"
+								reflow="true" emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									Estudiantes de Examen Complexivo que participan en la carrera seleccionada
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnSeleccionar"
+										value="Seleccionar Estudiante a tutorizar" />
+									<p:commandButton id="btnSeleccionar"
+										icon="fa fa-check-square-o white"
+										disabled="#{epp.tutor ne null ? true : false}"
+										action="#{escogerEstudianteExamenComplexivoPPBean.presentarPanelEscoger}"
+										update="panelPrincipal, panelSeleccion, :mensaje">
+										<f:setPropertyActionListener value="#{epp}"
+											target="#{escogerEstudianteExamenComplexivoPPBean.estudianteExamenComplexivoPP}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Tema de Investigación" styleClass="Wid40">
+									<p:outputLabel value="#{epp.casoInvestigacion}" escape="false" />
+								</p:column>
+
+								<p:column headerText="Estudiante" styleClass="Wid30">
+									<p:outputLabel
+										value="( #{epp.estudiante.id} ) - #{epp.estudiante.apellidoNombre}" />
+								</p:column>
+
+								<p:column headerText="Tutor" styleClass="Wid20">
+									<p:outputLabel
+										value="#{epp.tutor eq null ? 'Disponible para selección' : epp.tutor.apellidoNombre}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccion"
+						header="Selección de estudiante examen complexivo"
+						visible="#{escogerEstudianteExamenComplexivoPPBean.panelSeleccion}">
+
+						<h:form id="formNuevo">
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText readonly="true"
+											value="( #{escogerEstudianteExamenComplexivoPPBean.estudianteExamenComplexivoPP.estudiante.id} ) - #{escogerEstudianteExamenComplexivoPPBean.estudianteExamenComplexivoPP.estudiante.apellidoNombre}" />
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Caso Investigación" />
+											<div class="EmptyBox10"></div>
+											<p:outputLabel
+												value="#{escogerEstudianteExamenComplexivoPPBean.estudianteExamenComplexivoPP.casoInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Escoger"
+												actionListener="#{escogerEstudianteExamenComplexivoPPBean.escoger}"
+												styleClass="GreenButton"
+												update="panelPrincipal , panelSeleccion, :mensaje" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Cancelar"
+												action="#{escogerEstudianteExamenComplexivoPPBean.establecerPanelPrincipal}"
+												update="panelPrincipal, panelSeleccion, :mensaje"
+												styleClass="RedButton" />
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+
+						</h:form>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,352 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Docentes"
+						visible="#{docenteBean.boolPanelPrincipal}">
+
+						<div class="EmptyBox10"></div>
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-9 UiGridCol">
+										<p:inputText value="#{docenteBean.criterioBusquedaDocente}"
+											placeholder="Cédula/Apellido-Nombre" />
+									</div>
+
+									<div class="ui-grid-col-1 UiGridCol">
+										<p:commandButton icon="fa fa-search white"
+											actionListener="#{docenteBean.buscar}"
+											update=":panelPrincipal, :mensaje" />
+
+									</div>
+								</div>
+							</div>
+
+						</h:form>
+
+						<div class="EmptyBox10"></div>
+
+						<h:form>
+
+							<p:dataTable id="tablaDocente" var="docente" reflow="true"
+								value="#{docenteBean.listDocente}" paginator="true"
+								stickyHeader="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" emptyMessage="#{msg['lbl.mensajeTabla']}"
+								paginatorPosition="bottom">
+
+
+								<f:facet name="header">
+									<p:tooltip for="btnNuevo" value="Insertar" />
+									<p:commandButton id="btnNuevo" icon="fa fa-plus white"
+										action="#{docenteBean.prepararInsertar}"
+										update=":panelPrincipal, :panelInsertar" style="width:5%" />
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnEditar" value="Editar" />
+									<p:commandButton id="btnEditar" icon="fa fa-edit white"
+										update=":panelPrincipal, :panelEditar"
+										actionListener="#{docenteBean.prepararEditar}">
+										<f:setPropertyActionListener value="#{docente}"
+											target="#{docenteBean.docente}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Cedula">
+									<p:outputLabel value="#{docente.id}" />
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<p:outputLabel value=" #{docente.apellidoNombre}" />
+								</p:column>
+
+								<p:column headerText="Email">
+									<p:outputLabel value="#{docente.email}" />
+								</p:column>
+
+								<p:column headerText="Teléfono">
+									<p:outputLabel value="#{docente.telefono}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</h:form>
+					</p:panel>
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel id="panelInsertar" header="Insertar Docentes"
+									visible="#{docenteBean.boolPanelInsertar}">
+
+									<h:form>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Cédula o pasaporte" />
+													<p:inputText id="numeroDocumento"
+														value="#{docenteBean.docente.id}" required="true"
+														requiredMessage="Ingrese el número de cédula o pasaporte"
+														placeholder="Cédula o pasaporte" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Apellidos y nombres" />
+													<p:inputText id="nombres" required="true"
+														requiredMessage="Ingrese sus apellidos y nombres"
+														value="#{docenteBean.docente.apellidoNombre}"
+														placeholder="Nombres" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Género" />
+													<p:selectOneMenu id="genero" required="true"
+														requiredMessage="Seleccione el género"
+														value="#{docenteBean.docente.genero}">
+														<f:selectItem itemValue=""
+															itemLabel="Seleccione el género" />
+														<f:selectItem itemValue="M" itemLabel="Masculino" />
+														<f:selectItem itemValue="F" itemLabel="Femenino" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Email" />
+													<p:inputText id="email" required="true"
+														requiredMessage="Ingrese su dirección de correo electrónico"
+														value="#{docenteBean.docente.email}"
+														placeholder="Dirección Correo Electrónico" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Teléfono" />
+													<p:inputText id="telefono" required="true"
+														requiredMessage="Ingrese su dirección de teléfono"
+														value="#{docenteBean.docente.telefono}"
+														placeholder="Teléfono" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Guardar"
+														actionListener="#{docenteBean.insertar}"
+														styleClass="GreenButton"
+														update=":panelPrincipal, :panelInsertar, :mensaje" />
+												</div>
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Cancelar" process="@this"
+														actionListener="#{docenteBean.regresar}"
+														styleClass="RedButton"
+														update=":panelPrincipal, :panelInsertar, :mensaje" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+									</h:form>
+
+								</p:panel>
+
+							</div>
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+						</div>
+					</div>
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel id="panelEditar" header="Actualizar Docentes"
+									visible="#{docenteBean.boolPanelEditar}">
+
+									<h:form>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Cédula o pasaporte" />
+													<p:inputText id="numeroDocumento"
+														value="#{docenteBean.docente.id}"
+														placeholder="Cédula o pasaporte" readonly="true" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Apellidos y nombres" />
+													<p:inputText id="nombres" required="true"
+														requiredMessage="Ingrese sus apellidos y nombres"
+														value="#{docenteBean.docente.apellidoNombre}"
+														placeholder="Nombres" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Género" />
+													<p:selectOneMenu id="genero" required="true"
+														requiredMessage="Género"
+														value="#{docenteBean.docente.genero}">
+														<f:selectItem itemValue="M" itemLabel="Masculino" />
+														<f:selectItem itemValue="F" itemLabel="Femenino" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Email" />
+													<p:inputText id="email" required="true"
+														requiredMessage="Ingrese su dirección de correo electrónico"
+														value="#{docenteBean.docente.email}"
+														placeholder="Dirección Correo Electrónico" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Teléfono" />
+													<p:inputText id="telefono" required="true"
+														requiredMessage="Ingrese su dirección de teléfono"
+														value="#{docenteBean.docente.telefono}"
+														placeholder="Teléfono" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Guardar"
+														actionListener="#{docenteBean.actualizar}"
+														styleClass="GreenButton"
+														update=":panelPrincipal, :panelEditar, :mensaje" />
+												</div>
+
+												<div class="ui-grid-col-3 UiGridCol">
+													<p:commandButton value="Cancelar" styleClass="RedButton"
+														actionListener="#{docenteBean.regresar}"
+														update=":panelPrincipal, :panelEditar, :mensaje" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+									</h:form>
+
+								</p:panel>
+
+							</div>
+
+							<div class="ui-grid-col-3 UiGridCol"></div>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

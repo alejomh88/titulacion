@@ -1,0 +1,277 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ps="http://primefaces.org/spark"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form>
+		<ps:menu>
+
+			<p:menuitem value="Inicio" url="home.jsf" />
+			<p:separator rendered="true" />
+			<p:submenu label="Estudiante"
+				rendered="#{loginBean.permisos[6] || loginBean.permisos[7]}">
+
+				<p:submenu label="Examen Complexivo"
+					rendered="#{loginBean.permisos[6]}">
+
+					<p:menuitem value="Dashboard" icon="fa fa-dashboard"
+						url="dashboardEC.jsf" />
+
+					<p:menuitem value="Reactivo Práctico" icon="fa fa-pencil"
+						url="obtenerCasoPractico.jsf" />
+
+					<p:menuitem value="Título" icon="fa fa-pencil"
+						url="tituloInvestigacionEC.jsf" />
+
+					<p:menuitem value="Resumen" icon="fa fa-pencil" url="resumenEC.jsf" />
+
+					<p:menuitem value="Tutorías" icon="fa fa-users"
+						url="verTutoriasEC.jsf" />
+
+					<p:menuitem value="Reportes" icon="fa fa-pencil"
+						url="reporteEstudianteEC.jsf" />
+
+					<p:menuitem value="Subir trabajo" icon="fa fa-pencil"
+						url="subirArchivoEC.jsf" />
+
+				</p:submenu>
+
+				<p:submenu label="Trabajo de Titulación"
+					rendered="#{loginBean.permisos[7]}">
+
+					<p:menuitem value="Dashboard" icon="fa fa-dashboard"
+						url="dashboardTT.jsf" />
+
+					<p:menuitem value="Título" icon="fa fa-pencil"
+						url="tituloInvestigacionTT.jsf" />
+
+					<p:menuitem value="Resumen" icon="fa fa-pencil" url="resumenTT.jsf" />
+
+					<p:menuitem value="Tutorías" icon="fa fa-users"
+						url="verTutoriasTT.jsf" />
+
+					<p:menuitem value="Reportes" icon="fa fa-pencil"
+						url="reporteEstudianteTT.jsf" />
+
+					<p:menuitem value="Subir trabajo" icon="fa fa-pencil"
+						url="subirArchivoTT.jsf" />
+
+				</p:submenu>
+
+			</p:submenu>
+
+			<p:separator
+				rendered="#{loginBean.permisos[6] || loginBean.permisos[7]}" />
+
+			<p:submenu label="UMMOG" rendered="#{loginBean.permisos[8]}">
+
+				<p:submenu label="Examen Complexivo">
+
+					<p:menuitem value="Asignatura-Docente" icon="fa fa-university"
+						url="administrarAsignatura.jsf" />
+
+					<p:menuitem value="Gestión" icon="fa fa-user" url="principalEC.jsf" />
+
+
+				</p:submenu>
+
+				<p:submenu label="Trabajo de Titulación">
+
+					<p:menuitem value="Gestión" icon="fa fa-user" url="principalTT.jsf" />
+
+					<p:menuitem value="Líneas investigación" icon="fa fa-flask "
+						url="ingresoLineaInvestigacionTT.jsf" />
+
+					<p:menuitem value="Seminarios" icon="fa fa-male "
+						url="gestionSeminarioTT.jsf" />
+
+				</p:submenu>
+
+				<p:menuitem value="Docentes" icon="fa fa-list-ul" url="docente.jsf" />
+
+				<p:menuitem value="Estudiantes" icon="fa fa-list-ul"
+					url="estudiante.jsf" />
+
+				<p:menuitem value="Historial Estudiantes" icon="fa fa-user"
+					url="historialEstudiante.jsf" />
+
+				<p:menuitem value="Reportes" icon="fa fa-print" url="reporte.jsf" />
+
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[8]}" />
+
+			<p:submenu label="Analista" rendered="#{loginBean.permisos[1]}">
+
+				<p:submenu label="Examen Complexivo">
+
+					<p:menuitem value="Asignatura-Docente" icon="fa fa-university"
+						url="administrarAsignatura.jsf" />
+
+					<p:menuitem value="Gestión" icon="fa fa-user" url="principalEC.jsf" />
+
+				</p:submenu>
+
+				<p:submenu label="Trabajo de Titulación">
+
+					<p:menuitem value="Gestión" icon="fa fa-user" url="principalTT.jsf" />
+
+					<p:menuitem value="Líneas investigación" icon="fa fa-flask "
+						url="ingresoLineaInvestigacionTT.jsf" />
+
+					<p:menuitem value="Seminarios" icon="fa fa-male "
+						url="gestionSeminarioTT.jsf" />
+
+				</p:submenu>
+
+				<p:menuitem value="Docentes" icon="fa fa-list-ul" url="docente.jsf" />
+
+				<p:menuitem value="Historial Estudiantes" icon="fa fa-user"
+					url="historialEstudiante.jsf" />
+
+				<p:menuitem value="Estudiantes" icon="fa fa-list-ul"
+					url="estudiante.jsf" />
+
+				<p:menuitem value="Reportes" icon="fa fa-print" url="reporte.jsf" />
+
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[1]}" />
+
+			<p:submenu label="Coordinador"
+				rendered="#{loginBean.permisos[2] or loginBean.permisos[12]}">
+
+				<p:submenu label="Examen Complexivo">
+
+					<p:menuitem value="Asignatura-Docente" icon="fa fa-university"
+						url="administrarAsignatura.jsf" />
+
+					<p:menuitem value="Gestión" icon="fa fa-user"
+						url="gestionCoordinadorEC.jsf" />
+
+				</p:submenu>
+
+				<p:submenu label="Trabajo de Titulación">
+					<p:menuitem value="Gestión" icon="fa fa-user"
+						url="gestionCoordinadorTT.jsf" />
+
+					<p:menuitem value="Líneas investigación" icon="fa fa-flask "
+						url="ingresoLineaInvestigacionTT.jsf" />
+
+					<p:menuitem value="Seminarios" icon="fa fa-male "
+						url="gestionSeminarioTT.jsf" />
+
+				</p:submenu>
+
+				<p:menuitem value="Docentes" icon="fa fa-list-ul" url="docente.jsf" />
+
+				<p:menuitem value="Reportes" icon="fa fa-print" url="reporte.jsf" />
+
+			</p:submenu>
+
+			<p:separator
+				rendered="#{loginBean.permisos[2] or loginBean.permisos[12]}" />
+
+			<p:submenu label="Tutor"
+				rendered="#{loginBean.permisos[5] or loginBean.permisos[10]}">
+				<p:submenu label="Examen Complexivo"
+					rendered="#{loginBean.permisos[10]}">
+					<p:menuitem value="Tutorías" icon="fa fa-binoculars"
+						url="seguimientoTutoriasEC.jsf" />
+				</p:submenu>
+
+				<p:submenu label="Trabajo Titulación"
+					rendered="#{loginBean.permisos[5]}">
+					<p:menuitem value="Temas" icon="fa fa-flask"
+						url="administrarCasoInvestigacion.jsf" />
+					<p:menuitem value="Tutorizado" icon="fa fa-child"
+						url="asignarEstudianteTrabajoTitulacion.jsf" />
+					<p:menuitem value="Tutorías" icon="fa fa-binoculars"
+						url="seguimientoTutorias.jsf" />
+				</p:submenu>
+
+			</p:submenu>
+
+			<p:separator
+				rendered="#{loginBean.permisos[5] or loginBean.permisos[10]}" />
+
+			<p:submenu label="Reactivos" rendered="#{loginBean.permisos[4]}">
+				<p:menuitem value="Reactivo Teórico" icon="fa fa-flask"
+					url="administrarPreguntas.jsf" />
+				<p:menuitem value="Reactivo Práctico" icon="fa fa-flask"
+					url="administrarReactivosPracticos.jsf" />
+				<p:menuitem value="Material creación reactivos" icon="fa fa-folder"
+					url="https://drive.google.com/drive/folders/0B7koeB_H4tegY1VDZ1FjMDBJTmM"
+					target="_blank" />
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[4]}" />
+
+			<p:submenu label="Evaluador" rendered="#{loginBean.permisos[3]}">
+				<p:submenu label="Examen Complexivo">
+					<p:menuitem value="Antiplagio" icon="fa fa-line-chart"
+						url="antiplagioEC.jsf" />
+					<p:menuitem value="Citas papers" icon="fa fa-pencil-square-o"
+						url="citaPapersEC.jsf" />
+					<p:menuitem value="Validación Estructura Documento"
+						icon="fa fa-check-circle-o" url="validarDocumentoEC.jsf" />
+					<p:menuitem value="Calificaciones" icon="fa fa-pencil-square-o"
+						url="calificacionesEC.jsf" />
+				</p:submenu>
+				<p:submenu label="Trabajo de Titulación">
+					<p:menuitem value="Antiplagio" icon="fa fa-line-chart"
+						url="antiplagioTT.jsf" />
+					<p:menuitem value="Citas papers" icon="fa fa-pencil-square-o"
+						url="citaPapersTT.jsf" />
+					<p:menuitem value="Validación Estructura Documento"
+						icon="fa fa-check-circle-o" url="validarDocumentoTT.jsf" />
+					<p:menuitem value="Calificaciones" icon="fa fa-pencil-square-o"
+						url="calificacionTT.jsf" />
+				</p:submenu>
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[3]}" />
+
+			<p:submenu label="Certificados" rendered="#{loginBean.permisos[11]}">
+				<p:submenu label="Examen Complexivo">
+					<p:menuitem value="Certificados" icon="fa fa-certificate"
+						url="certificadosEC.jsf" />
+				</p:submenu>
+				<p:submenu label="Trabajo de Titulación">
+					<p:menuitem value="Certificados" icon="fa fa-certificate"
+						url="certificadosTT.jsf" />
+				</p:submenu>
+				<p:menuitem value="Reportes" icon="fa fa-print"
+					url="reporteCert.jsf" />
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[11]}" />
+
+			<p:submenu label="Biblioteca" rendered="#{loginBean.permisos[9]}">
+				<p:submenu label="Documentos">
+					<p:menuitem value="Trabajo Escrito" icon="fa fa-file-pdf-o"
+						url="biblioteca.jsf" />
+				</p:submenu>
+			</p:submenu>
+
+			<p:separator rendered="#{loginBean.permisos[9]}" />
+
+			<p:submenu label="Documentos">
+				<p:menuitem value="Documentos e Instructivos"
+					icon="fa fa-file-text-o" url="documentos.jsf" />
+			</p:submenu>
+			<p:separator />
+
+			<p:submenu label="Cuenta">
+				<p:menuitem value="Actualizar datos" icon="fa fa-pencil"
+					url="actualizarDatos.jsf" />
+				<p:menuitem value="Cambiar Contraseña" icon="fa fa-key"
+					url="cambiarContrasena.jsf" />
+			</p:submenu>
+			<p:separator />
+
+		</ps:menu>
+	</h:form>
+
+</ui:composition>

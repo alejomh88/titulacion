@@ -1,0 +1,237 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Recepción de la dimensión escrita del trabajo de titulación"
+						visible="#{recepcionDETTBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Criterios de búsqueda">
+
+							<h:form id="busqueda">
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:outputLabel value="Proceso" />
+											<p:selectOneMenu required="true"
+												requiredMessage="Seleccione un proceso"
+												value="#{recepcionDETTBean.proceso}">
+												<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+												<f:selectItems value="#{recepcionDETTBean.procesos}"
+													var="proceso" itemValue="#{proceso.id}"
+													itemLabel="#{proceso.id}" />
+											</p:selectOneMenu>
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:outputLabel value="Carrera" />
+											<p:selectOneMenu id="carrera" required="true"
+												requiredMessage="Seleccione una carrera"
+												value="#{recepcionDETTBean.carrera}" filter="true"
+												filterMatchMode="contains" autoWidth="true">
+												<f:selectItem itemValue=""
+													itemLabel="Seleccione una carrera" />
+												<f:selectItems value="#{recepcionDETTBean.carreras}"
+													var="carrera" itemValue="#{carrera.id}"
+													itemLabel="#{carrera.nombre}" />
+											</p:selectOneMenu>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText
+												value="#{recepcionDETTBean.criterioBusquedaEstudiante}" />
+										</div>
+
+										<div class="ui-grid-col-1 UiGridCol">
+											<p:outputLabel value="" />
+											<p:commandButton icon="fa fa-search white"
+												actionListener="#{recepcionDETTBean.buscar}"
+												update="panelPrincipal, :mensaje" />
+										</div>
+
+									</div>
+								</div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+						<p:fieldset legend="Resultados de búsqueda">
+
+							<h:form id="formDataTable">
+								<p:dataTable var="estudiante"
+									value="#{recepcionDETTBean.listadoEstudiantesTrabajoTitulacion}"
+									paginator="true"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									rows="10" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Acción" style="width: 10%" />
+											<p:column rowspan="2" headerText="Estudiante" />
+											<p:column rowspan="2" headerText="Especialista 1" />
+											<p:column colspan="2" headerText="Porcentaje de coincidencia" />
+											<p:column rowspan="2" headerText="Especialista 2" />
+											<p:column colspan="2"
+												headerText="Citas bibliográficas de papers" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Rev. 1" />
+											<p:column headerText="Rev. 2" />
+											<p:column headerText="Rev. 1" />
+											<p:column headerText="Rev. 2" />
+
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<p:tooltip for="btnComiteEvaluador" value="Validar documento" />
+										<p:commandButton id="btnComiteEvaluador"
+											icon="fa fa-users white"
+											action="#{recepcionDETTBean.seleccionarComiteEvaluador}"
+											rendered="#{((estudiante.antiplagio le 10 or estudiante.antiplagio2 le 10) and (estudiante.citas1 ge 25 or estudiante.citas2 ge 25)) ? true : false}"
+											disabled="#{estudiante.recepcionDE ? true : false}"
+											update="panelPrincipal, panelSeleccionar, :mensaje">
+											<f:setPropertyActionListener value="#{estudiante}"
+												target="#{recepcionDETTBean.estudianteTrabajoTitulacion}" />
+										</p:commandButton>
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudiante.estudiante.id} - #{estudiante.estudiante.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudiante.especialista1.id} - #{estudiante.especialista1.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value=" #{estudiante.antiplagio}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudiante.antiplagio2}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel
+											value="#{estudiante.especialista2.id} - #{estudiante.especialista2.apellidoNombre}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudiante.citas1}" />
+									</p:column>
+
+									<p:column>
+										<p:outputLabel value="#{estudiante.citas2}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</p:fieldset>
+
+						<div class="EmptyBox20"></div>
+
+					</p:panel>
+
+					<p:panel id="panelSeleccionar"
+						header="Validar recepción de la dimensión escrita del trabajp de titulación"
+						visible="#{recepcionDETTBean.panelSeleccionar}">
+
+						<h:form>
+
+							<div class="EmptyBox20"></div>
+
+							<p:fieldset legend="Datos generales">
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Estudiante" />
+											<p:inputText readonly="true"
+												value="#{recepcionDETTBean.estudianteTrabajoTitulacion.estudiante.id} - #{recepcionDETTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre}" />
+										</div>
+
+									</div>
+								</div>
+
+								<div class="EmptyBox10"></div>
+
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel value="Título de la investigación" />
+											<p:inputText readonly="true"
+												value="#{recepcionDETTBean.estudianteTrabajoTitulacion.tituloInvestigacion}" />
+										</div>
+
+									</div>
+								</div>
+
+							</p:fieldset>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar recepción"
+											actionListener="#{recepcionDETTBean.guardar}"
+											styleClass="GreenButton"
+											update="panelPrincipal , panelSeleccionar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{recepcionDETTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelSeleccionar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

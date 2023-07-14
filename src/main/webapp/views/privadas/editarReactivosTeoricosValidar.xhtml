@@ -1,0 +1,360 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="formNuevo">
+
+			<p:outputLabel value="EDITAR REACTIVOS TEÓRICOS"
+				styleClass="black Fs30 FontBold" />
+
+			<p:inputText
+				value="Carrera: ( #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.asignatura.mallaCurricular.carrera.id} ) #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.asignatura.mallaCurricular.carrera.nombre} - Asignatura: ( #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.asignatura.id} ) #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.asignatura.nombre} - Unidad Didáctica: ( #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.id} ) #{administrarPreguntasValidacionBean.pregunta.unidadDidactica.nombre} - Pregunta: ( #{administrarPreguntasValidacionBean.pregunta.id} )"
+				readonly="true" styleClass="DispBlock Wid90 black Fs14 FontBold" />
+
+			<p align="left"
+				style="background-color: #000; width: 90%; margin-top: 5px;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">Nivel de Dificultad</strong>
+			</p>
+			<p:selectOneMenu id="nivelDificultad" required="true"
+				requiredMessage="Escoja un nivel de dificultad"
+				value="#{administrarPreguntasValidacionBean.pregunta.nivelDificultad.id}"
+				filter="true" filterMatchMode="contains"
+				styleClass="DispBlock Wid90 black Fs14 FontBold">
+				<f:selectItem itemValue="0"
+					itemLabel="Escoja un nivel de dificultad" />
+				<f:selectItems
+					value="#{administrarPreguntasValidacionBean.listNivelDificultad}"
+					var="nivelDificultad" itemValue="#{nivelDificultad.id}"
+					itemLabel="#{nivelDificultad.nombre} - Tiempo máximo en el que debería resolverse el reactivo teórico: #{nivelDificultad.tiempo/60} min" />
+			</p:selectOneMenu>
+
+			<p align="left"
+				style="background-color: #000; width: 90%; margin-top: 5px;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">Eje temático (Tema específico
+					que forma parte de la unidad didáctica seleccionada)</strong>
+			</p>
+			<p:inputTextarea id="ejeTematico"
+				value="#{administrarPreguntasValidacionBean.pregunta.ejeTematico}"
+				styleClass="DispBlock Wid90 black Fs14 FontBold"
+				style="margin-left: 10px;" />
+
+			<p align="left"
+				style="background-color: #000; width: 90%; margin-top: 5px;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">Bibliografía (La bibliografía
+					debe corresponder a textos que se encuentren en biblioteca o
+					artículos de revistas indexadas de acceso gratuito)</strong>
+			</p>
+
+			<p:inputTextarea
+				value="#{administrarPreguntasValidacionBean.pregunta.bibliografia}"
+				styleClass="DispBlock Wid90 black Fs14 FontBold"
+				style="margin-left: 10px;" />
+
+			<p align="left"
+				style="background-color: #000; width: 90%; margin-top: 5px;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">Justificación (Debe justificar
+					por que la respuesta seleccionada es correcta)</strong>
+			</p>
+			<p:inputTextarea
+				value="#{administrarPreguntasValidacionBean.pregunta.justificacion}"
+				styleClass="DispBlock Wid90 black Fs14 FontBold"
+				style="margin-left: 10px;" />
+
+			<!-- ENUNCIADO -->
+
+			<div class="EmptyBox30"></div>
+
+			<p align="left" style="background-color: #000; width: 90%"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">- Use tipografía Arial en
+					tamaño de 3 puntos, color negro y sea prudente al usar el espaciado</strong><br />
+				<strong style="color: #FFF">- No use formato en negrita,
+					cursiva, subrayado, tachado, color de fondo y resaltado.</strong><br /> <strong
+					style="color: #FFF">- Las imagenes deben ser legibles, no
+					mayores a 1 MB, de formato jpg, jpeg, png.</strong>
+			</p>
+
+			<p:outputLabel value="-- Enunciado o Planteamiento --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:inputTextarea id="editor" widgetVar="editorWidget"
+				value="#{administrarPreguntasValidacionBean.pregunta.enunciado}"
+				style="width: 90%; height: 250px;" />
+
+			<p:commandButton id="btnFormNuevo" value="Enviar"
+				style="display:none" />
+
+		</h:form>
+
+		<h:form id="formInsertarImagenEnunciado">
+
+			<p:outputLabel value="Imagen del Enunciado o Planteamiento"
+				styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+			<p:fileUpload id="uploadEnunciado" label="Escojer imagen enunciado"
+				uploadLabel="Subir imagen enunciado"
+				cancelLabel="Anular imagen enunciado" mode="advanced" fileLimit="1"
+				sizeLimit="1000000" skinSimple="true" multiple="true"
+				fileUploadListener="#{administrarPreguntasValidacionBean.subirImagenEnunciado}"
+				invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+				invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+				fileLimitMessage="Solo puede subir una imagen a la vez"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgEnunciado" />
+
+			<p:graphicImage id="imgEnunciado" cache="false"
+				style="border: solid;" height="350" width="90%"
+				value="#{administrarPreguntasValidacionBean.imagenEnunciado}" />
+
+		</h:form>
+
+		<h:form id="formBorrarImagenEnunciado">
+
+			<p:commandButton value="Borrar imagen enunciado"
+				actionListener="#{administrarPreguntasValidacionBean.eliminarImagenEnunciado}"
+				update="formInsertarImagenEnunciado" />
+
+		</h:form>
+
+		<h:form id="formEditorA">
+
+			<!-- OPCIÓN A -->
+
+			<div class="EmptyBox30"></div>
+
+			<p:outputLabel value="-- Opción A --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:inputTextarea id="editor" widgetVar="editorWidget"
+				value="#{administrarPreguntasValidacionBean.pregunta.posiblesRespuestas[0].descripcion}"
+				style="width: 90%; height: 100px;" />
+
+			<p:commandButton id="btnFormEditorA" value="Enviar"
+				style="display:none" />
+
+		</h:form>
+
+		<h:form id="formInsertarImagenOpcionA">
+
+			<p:outputLabel value="Imagen de la Opción A"
+				styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+			<p:fileUpload id="uploadOpcionA" label="Escojer imagen opción A"
+				uploadLabel="Subir imagen opción A"
+				cancelLabel="Anular imagen opción A" mode="advanced" fileLimit="1"
+				sizeLimit="1000000" skinSimple="true" multiple="true"
+				fileUploadListener="#{administrarPreguntasValidacionBean.subirImagenOpcionA}"
+				invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+				invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+				fileLimitMessage="Solo puede subir una imagen a la vez"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgOpcionA" />
+
+			<p:graphicImage id="imgOpcionA" cache="false" style="border: solid;"
+				height="350" width="90%"
+				value="#{administrarPreguntasValidacionBean.imagenOpcionA}" />
+
+		</h:form>
+
+		<h:form id="formBorrarImagenOpcionA">
+
+			<p:commandButton value="Borrar imagen opción A"
+				actionListener="#{administrarPreguntasValidacionBean.eliminarImagenOpcionA}"
+				update="formInsertarImagenOpcionA" />
+
+		</h:form>
+
+		<h:form id="formEditorB">
+
+			<!-- OPCIÓN B -->
+
+			<div class="EmptyBox30"></div>
+
+			<p:outputLabel value="-- Opción B --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:inputTextarea id="editor" widgetVar="editorWidget"
+				value="#{administrarPreguntasValidacionBean.pregunta.posiblesRespuestas[1].descripcion}"
+				style="width: 90%; height: 100px;" />
+
+			<p:commandButton id="btnFormEditorB" value="Enviar"
+				style="display:none" />
+
+		</h:form>
+
+		<h:form id="formInsertarImagenOpcionB">
+
+			<p:outputLabel value="Imagen de la Opción B"
+				styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+			<p:fileUpload id="uploadOpcionB" label="Escojer imagen opción B"
+				uploadLabel="Subir imagen opción B"
+				cancelLabel="Anular imagen opción B" mode="advanced" fileLimit="1"
+				sizeLimit="1000000" skinSimple="true" multiple="true"
+				fileUploadListener="#{administrarPreguntasValidacionBean.subirImagenOpcionB}"
+				invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+				invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+				fileLimitMessage="Solo puede subir una imagen a la vez"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgOpcionB" />
+
+			<p:graphicImage id="imgOpcionB" cache="false" style="border: solid;"
+				height="350" width="90%"
+				value="#{administrarPreguntasValidacionBean.imagenOpcionB}" />
+
+		</h:form>
+
+		<h:form id="formBorrarImagenOpcionB">
+
+			<p:commandButton value="Borrar imagen opción B"
+				actionListener="#{administrarPreguntasValidacionBean.eliminarImagenOpcionB}"
+				update="formInsertarImagenOpcionB" />
+
+		</h:form>
+
+		<h:form id="formEditorC">
+			<!-- OPCIÓN C -->
+
+			<div class="EmptyBox30"></div>
+
+			<p:outputLabel value="-- Opción C --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:inputTextarea id="editor" widgetVar="editorWidget"
+				value="#{administrarPreguntasValidacionBean.pregunta.posiblesRespuestas[2].descripcion}"
+				style="width: 90%; height: 100px;" />
+
+			<p:commandButton id="btnFormEditorC" value="Enviar"
+				style="display:none" />
+
+		</h:form>
+
+		<h:form id="formInsertarImagenOpcionC">
+
+			<p:outputLabel value="Imagen de la Opción C"
+				styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+			<p:fileUpload id="uploadOpcionC" label="Escojer imagen opción C"
+				uploadLabel="Subir imagen opción C"
+				cancelLabel="Anular imagen opción C" mode="advanced" fileLimit="1"
+				sizeLimit="1000000" skinSimple="true" multiple="true"
+				fileUploadListener="#{administrarPreguntasValidacionBean.subirImagenOpcionC}"
+				invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+				invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+				fileLimitMessage="Solo puede subir una imagen a la vez"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgOpcionC" />
+
+			<p:graphicImage id="imgOpcionC" cache="false" style="border: solid;"
+				height="350" width="90%"
+				value="#{administrarPreguntasValidacionBean.imagenOpcionC}" />
+
+		</h:form>
+
+		<h:form id="formBorrarImagenOpcionC">
+
+			<p:commandButton value="Borrar imagen opción C"
+				actionListener="#{administrarPreguntasValidacionBean.eliminarImagenOpcionC}"
+				update="formInsertarImagenOpcionC" />
+
+		</h:form>
+
+		<h:form id="formEditorD">
+
+			<!-- OPCIÓN D -->
+
+			<div class="EmptyBox30"></div>
+
+			<p:outputLabel value="-- Opción D --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:inputTextarea id="editor" widgetVar="editorWidget"
+				value="#{administrarPreguntasValidacionBean.pregunta.posiblesRespuestas[3].descripcion}"
+				style="width: 90%; height: 100px;" />
+
+			<p:commandButton id="btnFormEditorD" value="Enviar"
+				style="display:none" />
+
+		</h:form>
+
+		<h:form id="formInsertarImagenOpcionD">
+
+			<p:outputLabel value="Imagen de la Opción D"
+				styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+			<p:fileUpload id="uploadOpcionD" label="Escojer imagen opción D"
+				uploadLabel="Subir imagen opción D"
+				cancelLabel="Anular imagen opción D" mode="advanced" fileLimit="1"
+				sizeLimit="1000000" skinSimple="true" multiple="true"
+				fileUploadListener="#{administrarPreguntasValidacionBean.subirImagenOpcionD}"
+				invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+				invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+				fileLimitMessage="Solo puede subir una imagen a la vez"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgOpcionD" />
+
+			<p:graphicImage id="imgOpcionD" cache="false" style="border: solid;"
+				height="350" width="90%"
+				value="#{administrarPreguntasValidacionBean.imagenOpcionD}" />
+
+		</h:form>
+
+		<h:form id="formBorrarImagenOpcionD">
+
+			<p:commandButton value="Borrar imagen opción D"
+				actionListener="#{administrarPreguntasValidacionBean.eliminarImagenOpcionD}"
+				update="formInsertarImagenOpcionD" />
+
+		</h:form>
+
+		<h:form id="formBotones">
+
+			<div class="EmptyBox30"></div>
+
+			<p:outputLabel value="-- Respuesta Correcta --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<div class="EmptyBox10"></div>
+
+			<p:selectOneMenu id="respuestaCorrecta" required="true"
+				requiredMessage="Escoja la respuesta correcta"
+				value="#{administrarPreguntasValidacionBean.pregunta.sostiApantisi}"
+				styleClass="DispBlock Wid90 black Fs14 FontBold">
+				<f:selectItem itemValue="--"
+					itemLabel="Escoja la respuesta correcta" />
+				<f:selectItem itemValue="A" itemLabel="Opción A" />
+				<f:selectItem itemValue="B" itemLabel="Opción B" />
+				<f:selectItem itemValue="C" itemLabel="Opción C" />
+				<f:selectItem itemValue="D" itemLabel="Opción D" />
+			</p:selectOneMenu>
+
+			<div class="EmptyBox30"></div>
+
+			<p:commandButton id="btnNuevoAceptar" value="Guardar"
+				icon="fa fa-floppy-o white" styleClass="GreenButton"
+				onclick="document.getElementById('formNuevo:btnFormNuevo').onclick(); document.getElementById('formEditorA:btnFormEditorA').onclick(); document.getElementById('formEditorB:btnFormEditorB').onclick(); document.getElementById('formEditorC:btnFormEditorC').onclick(); document.getElementById('formEditorD:btnFormEditorD').onclick()"
+				actionListener="#{administrarPreguntasValidacionBean.actualizar}"
+				update=":mensaje" />
+			<p:commandButton value="Cancelar"
+				actionListener="#{administrarPreguntasValidacionBean.regresarReactivosTeoricos}"
+				icon="fa fa-close white" styleClass="RedButton" />
+
+			<div class="EmptyBox10"></div>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

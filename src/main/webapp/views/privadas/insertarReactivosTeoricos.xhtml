@@ -1,0 +1,389 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="formNuevo">
+
+			<p:outputLabel value="INSERTAR REACTIVOS TEÓRICOS"
+				styleClass="black Fs30 FontBold" />
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+							<div class="ui-grid-col-6 UiGridCol">
+								<p align="left" style="background-color: #000; margin-top: 5px;"
+									class="Alert AlertInfo PMensaje">
+									<strong style="color: #FFF">Carrera - Asignatura -
+										Unidad Didáctica</strong>
+								</p>
+
+								<p:inputTextarea
+									value="Carrera: (#{administrarPreguntasBean.carreraMallaProcesoAux.carrera}) - Asignatura: ( #{administrarPreguntasBean.carreraMallaProcesoAux.asignatura} ) #{administrarPreguntasBean.asignaturaSeleccionada.nombre} - Unidad Didáctica: ( #{administrarPreguntasBean.unidadDidacticaSeleccionada.id} ) #{administrarPreguntasBean.unidadDidacticaSeleccionada.nombre}"
+									readonly="true" styleClass="DispBlock black Fs14 FontBold" />
+							</div>
+
+							<div class="ui-grid-col-6 UiGridCol">
+								<p align="left" style="background-color: #000; margin-top: 5px;"
+									class="Alert AlertInfo PMensaje">
+									<strong style="color: #FFF">Eje temático (Tema
+										específico que forma parte de la unidad didáctica
+										seleccionada)</strong>
+								</p>
+								<p:inputTextarea id="ejeTematico"
+									value="#{administrarPreguntasBean.pregunta.ejeTematico}"
+									styleClass="DispBlock black Fs14 FontBold" />
+							</div>
+						</div>
+
+						<div class="ui-grid-row">
+							<div class="ui-grid-col-6 UiGridCol">
+								<p align="left" style="background-color: #000; margin-top: 5px;"
+									class="Alert AlertInfo PMensaje">
+									<strong style="color: #FFF">Bibliografía (La
+										bibliografía debe corresponder a textos que se encuentren en
+										biblioteca o artículos de revistas indexadas de acceso
+										gratuito)</strong>
+								</p>
+
+								<p:inputTextarea
+									value="#{administrarPreguntasBean.pregunta.bibliografia}"
+									styleClass="DispBlock black Fs14 FontBold" />
+							</div>
+
+							<div class="ui-grid-col-6 UiGridCol">
+								<p align="left" style="background-color: #000; margin-top: 5px;"
+									class="Alert AlertInfo PMensaje">
+									<strong style="color: #FFF">Justificación (Debe
+										justificar por que la respuesta seleccionada es correcta, y
+										porqué las demás opciones de respuesta son incorrectas.)</strong>
+								</p>
+								<p:inputTextarea
+									value="#{administrarPreguntasBean.pregunta.justificacion}"
+									styleClass="DispBlock black Fs14 FontBold" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- ENUNCIADO -->
+
+			<div class="EmptyBox30"></div>
+
+			<p align="left" style="background-color: #000;"
+				class="Alert AlertInfo PMensaje">
+				<strong style="color: #FFF">- Use tipografía Arial en
+					tamaño de 3 puntos, color negro y sea prudente al usar el espaciado</strong><br />
+				<strong style="color: #FFF">- No use formato en negrita,
+					cursiva, subrayado, tachado, color de fondo y resaltado.</strong><br /> <strong
+					style="color: #FFF">- Las imagenes deben ser legibles, no
+					mayores a 1 MB, de formato jpg, jpeg, png.</strong><br /> <strong
+					style="color: #FFF">- Para darle un formato de espaciado
+					al texto ingresado que contenga las posibles opciones de respuesta,
+					debe insertar la siguiente etiqueta: &lt;tab&gt;</strong>
+			</p>
+
+			<p:outputLabel value="-- Enunciado o Planteamiento --"
+				styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+			<p:commandButton id="btnFormNuevo" value="Enviar"
+				style="display:none" />
+		</h:form>
+
+		<div class="ui-grid ui-grid-responsive">
+			<div class="ui-grid-row">
+				<div class="ui-grid-col-6 UiGridCol">
+					<h:form id="formNueva">
+
+						<div class="EmptyBox30"></div>
+						<p:inputTextarea id="editor" widgetVar="editorWidget"
+							onkeyup="enunciadoKeyPress();"
+							placeholder="Escriba aquí el enunciado o planteamiento del reactivo"
+							value="#{administrarPreguntasBean.pregunta.enunciado}"
+							style="width:90%; height: 200px;" />
+
+						<p:commandButton id="btnFormNueva" value="Enviar"
+							style="display:none" />
+					</h:form>
+
+					<div class="EmptyBox10"></div>
+
+					<h:form id="formInsertarImagenEnunciado">
+
+						<p:outputLabel value="Imagen del Enunciado o Planteamiento"
+							styleClass="DispBlock MargTop10 black Fs16 FontBold" />
+
+						<p:fileUpload id="uploadEnunciado"
+							label="Escojer imagen enunciado"
+							uploadLabel="Subir imagen enunciado"
+							cancelLabel="Anular imagen enunciado" mode="advanced"
+							fileLimit="1" sizeLimit="1000000" skinSimple="true"
+							multiple="true"
+							fileUploadListener="#{administrarPreguntasBean.subirImagenEnunciado}"
+							invalidFileMessage="Esto no es una imagen, escoja otro archivo"
+							invalidSizeMessage="El archivo sobrepasa el tamaño permitido(1 MB)"
+							fileLimitMessage="Solo puede subir una imagen a la vez"
+							allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="imgEnunciado" />
+
+						<p:graphicImage id="imgEnunciado" cache="false"
+							style="border: solid;" height="250" width="90%"
+							value="#{administrarPreguntasBean.imagenEnunciado}" />
+					</h:form>
+
+					<h:form id="formBorrarImagenEnunciado">
+
+						<p:commandButton value="Borrar imagen enunciado"
+							actionListener="#{administrarPreguntasBean.eliminarImagenEnunciado}"
+							update="formInsertarImagenEnunciado" />
+
+					</h:form>
+
+				</div>
+
+				<div class="ui-grid-col-6 UiGridCol">
+					<h:form id="formEditorA">
+
+						<!-- OPCIÓN A -->
+
+						<div class="EmptyBox10"></div>
+
+						<p:outputLabel value="-- Opción A --"
+							styleClass="DispBlock black Fs20 FontBold TexAlCenter" />
+
+						<div class="EmptyBox10"></div>
+
+						<p:inputTextarea id="editorR1" widgetVar="editorWidgetR1"
+							placeholder="Escriba aquí la opción de respuesta a"
+							value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[0].descripcion}"
+							style="width: 90%" onkeyup="akeyPress();" />
+
+						<p:commandButton id="btnFormEditorA" value="Enviar"
+							style="display:none" />
+					</h:form>
+
+					<h:form id="formEditorB">
+
+						<!-- OPCIÓN B -->
+
+						<div class="EmptyBox10"></div>
+
+						<p:outputLabel value="-- Opción B --"
+							styleClass="DispBlock black Fs20 FontBold TexAlCenter" />
+
+						<div class="EmptyBox10"></div>
+
+						<p:inputTextarea id="editorR2" widgetVar="editorWidgetR2"
+							placeholder="Escriba aquí la opción de respuesta b"
+							value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[1].descripcion}"
+							style="width: 90%" onkeyup="bkeyPress();" />
+
+						<p:commandButton id="btnFormEditorB" value="Enviar"
+							style="display:none" />
+
+					</h:form>
+
+					<h:form id="formEditorC">
+						<!-- OPCIÓN C -->
+
+						<div class="EmptyBox10"></div>
+
+						<p:outputLabel value="-- Opción C --"
+							styleClass="DispBlock black Fs20 FontBold TexAlCenter" />
+
+						<div class="EmptyBox10"></div>
+
+						<p:inputTextarea id="editorR3" widgetVar="editorWidgetR3"
+							placeholder="Escriba aquí la opción de respuesta c"
+							value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[2].descripcion}"
+							style="width: 90%" onkeyup="ckeyPress();" />
+
+						<p:commandButton id="btnFormEditorC" value="Enviar"
+							style="display:none" />
+
+					</h:form>
+
+					<h:form id="formEditorD">
+
+						<!-- OPCIÓN D -->
+
+						<div class="EmptyBox10"></div>
+
+						<p:outputLabel value="-- Opción D --"
+							styleClass="DispBlock black Fs20 FontBold TexAlCenter" />
+
+						<div class="EmptyBox10"></div>
+
+						<p:inputTextarea id="editorR4" widgetVar="editorWidgetR4"
+							placeholder="Escriba aquí la opción de respuesta d"
+							value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[3].descripcion}"
+							style="width: 90%" onkeyup="dkeyPress();" />
+
+						<p:commandButton id="btnFormEditorD" value="Enviar"
+							style="display:none" />
+
+					</h:form>
+
+
+					<div class="EmptyBox10"></div>
+
+					<p:outputLabel value="-- Respuesta Correcta --"
+						styleClass="DispBlock black Fs20 FontBold TexAlCenter" />
+
+					<div class="EmptyBox10"></div>
+
+					<h:form id="formRespuestaCorrecta">
+
+						<p:selectOneMenu id="respuestaCorrecta" required="true"
+							requiredMessage="Escoja la respuesta correcta"
+							value="#{administrarPreguntasBean.pregunta.sostiApantisi}"
+							styleClass="DispBlock Wid90 black Fs14 FontBold">
+							<f:selectItem itemValue="--"
+								itemLabel="Escoja la respuesta correcta" />
+							<f:selectItem itemValue="A" itemLabel="Opción A" />
+							<f:selectItem itemValue="B" itemLabel="Opción B" />
+							<f:selectItem itemValue="C" itemLabel="Opción C" />
+							<f:selectItem itemValue="D" itemLabel="Opción D" />
+						</p:selectOneMenu>
+
+						<p:commandButton id="btnFormRespuestaCorrecta" value="Enviar"
+							style="display:none" />
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<div class="EmptyBox30"></div>
+
+		<div class="Container100 ui-fluid">
+			<div class="ui-grid ui-grid-responsive">
+				<h:form id="formBotones">
+					<div class="ui-grid-row">
+						<div class="ui-grid-col-6 UiGridCol">
+							<p:commandButton id="btnNuevoAceptar" value="Guardar"
+								icon="fa fa-floppy-o white" styleClass="GreenButton"
+								onclick="document.getElementById('formNuevo:btnFormNuevo').onclick(); document.getElementById('formNueva:btnFormNueva').onclick();document.getElementById('formEditorA:btnFormEditorA').onclick(); document.getElementById('formEditorB:btnFormEditorB').onclick(); document.getElementById('formEditorC:btnFormEditorC').onclick(); document.getElementById('formEditorD:btnFormEditorD').onclick(); document.getElementById('formRespuestaCorrecta:btnFormRespuestaCorrecta').onclick();"
+								actionListener="#{administrarPreguntasBean.insertar}"
+								update=":mensaje" />
+
+						</div>
+						<div class="ui-grid-col-6 UiGridCol">
+							<p:commandButton value="Cancelar"
+								actionListener="#{administrarPreguntasBean.regresarReactivosTeoricos}"
+								icon="fa fa-close white" styleClass="RedButton" />
+						</div>
+					</div>
+				</h:form>
+			</div>
+		</div>
+
+		<p:outputLabel value="-- Previasualizar reactivo teórico --"
+			styleClass="DispBlock black Fs30 FontBold TexAlCenter" />
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100">
+				<div class="ContainerIndent">
+					<p class="TexAlCenter Fs24 FontBold ColorExamen Margin0">Examen
+						Complexivo - Parte Teórica</p>
+					<div class="EmptyBox20"></div>
+					<h:form id="formTimer">
+						<div id="datosIngreso" class="divDatosIzq50">
+							<p:fragment autoUpdate="true">
+								<ul class="Margin0 TexAlCenter">
+									<li class="fa fa-history DispInlBlock Fs22 ColorExamen"></li>
+									<li class="DispInlBlock Fs22 ColorExamen">Tiempo Restante:
+										100 S</li>
+								</ul>
+							</p:fragment>
+						</div>
+						<div id="tablaIngreso" class="divDatosDer50">
+							<ul class="Margin0 TexAlCenter">
+								<li class="fa fa-th-list DispInlBlock Fs22 ColorExamen"></li>
+								<li class="DispInlBlock Fs22 ColorExamen">Pregunta 1 de 50
+									preguntas sin contestar</li>
+							</ul>
+						</div>
+
+						<div class="TexAlCenter Margin20BotTop">
+							<p:commandButton value="Saltar Pregunta"
+								icon="fa fa-repeat black" styleClass="Margin1emRight GrayButton" />
+
+							<p:commandButton value="Siguiente Pregunta"
+								icon="fa fa-check-square-o black" styleClass="GrayButton" />
+						</div>
+					</h:form>
+					<div class="Seperator"></div>
+					<div class="divDatosIzq100">
+						<h:form id="formPregunta">
+							<p:outputLabel
+								value="El enunciado o planteamiento se mostrará aquí"
+								id="lblEnunciado"
+								styleClass="DispBlock Fs18 FontBold ColorExamen" escape="false" />
+						</h:form>
+					</div>
+					<div class="divDatosDer100">
+						<h:form id="formImgEnunciado">
+							<ui:fragment id="fragEnunciado" rendered="true">
+								<div class="DivImagenEnunciado">
+									<p:graphicImage id="imgEnunciado" cache="false"
+										styleClass="ImagenPregunta"
+										value="#{examenBean.imagenEnunciado}" />
+								</div>
+							</ui:fragment>
+						</h:form>
+					</div>
+					<div class="EmptyBox5"></div>
+					<h:form id="formImgRespuestas">
+						<ui:fragment rendered="#{examenBean.muetraImagenesPregunta}">
+							<div class="divDatosIzq50">
+								<div class="DivImagen">
+									<p:outputLabel
+										value="#{administrarPreguntasBean.pregunta.posiblesRespuestas[0].descripcion}"
+										styleClass="Literal" />
+									<p:graphicImage id="img1" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen1}" />
+								</div>
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal2}"
+										styleClass="Literal" />
+									<p:graphicImage id="img2" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen2}" />
+								</div>
+							</div>
+							<div class="divDatosDer50">
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal3}"
+										styleClass="Literal" />
+									<p:graphicImage id="img3" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen3}" />
+								</div>
+								<div class="DivImagen">
+									<p:outputLabel value="#{examenBean.literal4}"
+										styleClass="Literal" />
+									<p:graphicImage id="img4" styleClass="ImagenPregunta"
+										cache="false" value="#{examenBean.imagen4}" />
+								</div>
+							</div>
+						</ui:fragment>
+					</h:form>
+					<div class="EmptyBox20"></div>
+					<h:form id="formRespuesta">
+						<p:selectOneRadio id="btns" layout="grid" columns="1"
+							onchange="focusBtn()" styleClass="Wid100 btns">
+							<f:selectItem itemLabel="A.- " itemValue="a" />
+							<f:selectItem itemLabel="B.- " itemValue="b" />
+							<f:selectItem itemLabel="C.- " itemValue="c" />
+							<f:selectItem itemLabel="D.- " itemValue="d" />
+						</p:selectOneRadio>
+						<div class="EmptyBox20"></div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+
+
+	</ui:define>
+</ui:composition>

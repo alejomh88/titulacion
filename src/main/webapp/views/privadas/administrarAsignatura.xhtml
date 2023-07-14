@@ -1,0 +1,401 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Administrar asignatura"
+						visible="#{administrarAsignaturaBean.panelPrincipal}">
+
+						<h:form>
+							<p:dataTable var="mc"
+								value="#{administrarAsignaturaBean.listCMPA}"
+								stickyHeader="true" sortBy="#{mc.carrera}" rowKey="#{mc.id}"
+								selectionMode="single"
+								selection="#{administrarAsignaturaBean.carreraMallaProcesoAgrupado}">
+
+								<p:ajax event="rowSelect"
+									listener="#{administrarAsignaturaBean.onRowSelect}"
+									update="panelPrincipal, formDataTable" />
+
+								<p:column headerText="Carreras" style="width:55%;">
+									<h:outputText value="#{mc.carrera}" />
+								</p:column>
+								<p:column headerText="Malla Curricular" style="width:10%;">
+									<h:outputText value="#{mc.malla}" />
+								</p:column>
+								<p:column headerText="Procesos" style="width:35%;">
+									<h:outputText value=" #{mc.proceso}" />
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+
+						<h:form id="formDataTable">
+							<p:dataTable var="asignatura" stickyHeader="true"
+								value="#{administrarAsignaturaBean.listAsignatura}"
+								rowStyleClass="#{asignatura.activo eq true ? null : 'desactivo'}"
+								reflow="true" emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									<p:commandButton update="formDataTable, :formNuevo, :mensaje"
+										icon="fa fa-plus white" value="Insertar"
+										disabled="#{administrarAsignaturaBean.listAsignatura eq null ? true : false}"
+										oncomplete="comprobarAbrir(xhr, status, args, 'panelInsertar')"
+										action="#{administrarAsignaturaBean.limpiar}" />
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnEditar" value="Editar" />
+									<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+										update="formDataTable, :formEditar, :mensaje"
+										oncomplete="PF('panelEditar').show()"
+										disabled="#{asignatura.activo==true?'false':'true'}">
+										<f:setPropertyActionListener value="#{asignatura}"
+											target="#{administrarAsignaturaBean.asignatura}" />
+									</p:commandButton>
+
+									<p:tooltip for="btnDocentes" value="Asignar docentes" />
+									<p:commandButton id="btnDocentes" icon="fa fa-users white"
+										action="#{administrarAsignaturaBean.presentarListadoDocente}"
+										update="panelPrincipal, panelDocentes, :mensaje">
+										<f:setPropertyActionListener value="#{asignatura}"
+											target="#{administrarAsignaturaBean.asignatura}" />
+									</p:commandButton>
+
+									<p:tooltip for="btnEliminar"
+										value="#{asignatura.activo==true?'Desactivar':'Activar'}" />
+									<p:commandButton id="btnEliminar"
+										icon="#{asignatura.activo==true?'fa fa-trash white':'fa fa-check white'}"
+										update="formDataTable, :formEliminar, :mensaje"
+										oncomplete="PF('panelEliminar').show()">
+										<f:setPropertyActionListener value="#{asignatura}"
+											target="#{administrarAsignaturaBean.asignatura}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Asignatura" styleClass="Wid50">
+									<p:outputLabel value="#{asignatura.nombre}" />
+								</p:column>
+
+								<p:column headerText="Unidad curricular" styleClass="Wid25">
+									<p:outputLabel value="#{asignatura.unidadCurricular.nombre}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div class="Seperator MargTopBottom10"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-2 UiGridCol">
+										<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+											icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+						</h:form>
+
+					</p:panel>
+
+					<p:dialog widgetVar="panelInsertar" header="Insertar Asignatura"
+						closable="false" closeOnEscape="true" modal="true"
+						resizable="false" styleClass="Wid90" appendTo="@(body)">
+						<h:form id="formNuevo">
+							<p:outputLabel value="Asignatura" styleClass="DispBlock" />
+							<p:inputText
+								value="#{administrarAsignaturaBean.asignatura.nombre}"
+								styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+							<p:outputLabel value="Unidad curricular"
+								styleClass="DispBlock MargTop10" />
+							<p:selectOneMenu id="unidadCurricular" required="true"
+								requiredMessage="Escoja una unidad curricular"
+								value="#{administrarAsignaturaBean.asignatura.unidadCurricular.id}"
+								filter="true" filterMatchMode="contains"
+								styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+								<f:selectItem itemValue="0"
+									itemLabel="Escoja una unidad curricular" />
+								<f:selectItems
+									value="#{administrarAsignaturaBean.listUnidadCurricular}"
+									var="uc" itemValue="#{uc.id}" itemLabel="#{uc.nombre}" />
+							</p:selectOneMenu>
+
+							<div class="Seperator MargTopBottom10"></div>
+
+							<p:commandButton value="Guardar"
+								update=":formDataTable, :mensaje"
+								oncomplete="comprobarCerrar(xhr, status, args, 'panelInsertar')"
+								icon="fa fa-floppy-o white"
+								actionListener="#{administrarAsignaturaBean.insertar}"
+								styleClass="GreenButton" />
+							<p:commandButton value="Cancelar"
+								oncomplete="PF('panelInsertar').hide()" icon="fa fa-close white"
+								process="@this" styleClass="RedButton" />
+						</h:form>
+					</p:dialog>
+
+					<p:dialog widgetVar="panelEditar" header="Editar Asignatura"
+						closable="false" closeOnEscape="true" modal="true"
+						resizable="false" styleClass="Wid90" appendTo="@(body)">
+						<h:form id="formEditar">
+							<p:outputLabel value="Asignatura" styleClass="DispBlock" />
+							<p:inputText
+								value="#{administrarAsignaturaBean.asignatura.nombre}"
+								styleClass="Wid80 TexAlCenter Fs18 MargTop10" />
+							<p:outputLabel value="Unidad curricular"
+								styleClass="DispBlock MargTop10" />
+							<p:selectOneMenu id="unidadCurricular" required="true"
+								requiredMessage="Escoja una unidad curricular"
+								value="#{administrarAsignaturaBean.asignatura.unidadCurricular.id}"
+								filter="true" filterMatchMode="contains"
+								styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+								<f:selectItem itemValue="0"
+									itemLabel="Escoja una unidad curricular" />
+								<f:selectItems
+									value="#{administrarAsignaturaBean.listUnidadCurricular}"
+									var="uc" itemValue="#{uc.id}" itemLabel="#{uc.nombre}" />
+							</p:selectOneMenu>
+
+							<div class="Seperator MargTopBottom10"></div>
+
+							<p:commandButton value="Guardar"
+								update=":formDataTable, :mensaje"
+								oncomplete="comprobarCerrar(xhr, status, args, 'panelEditar')"
+								icon="fa fa-floppy-o white"
+								actionListener="#{administrarAsignaturaBean.actualizar}"
+								styleClass="GreenButton" />
+							<p:commandButton value="Cancelar"
+								oncomplete="PF('panelEditar').hide()" icon="fa fa-close white"
+								process="@this" styleClass="RedButton" />
+						</h:form>
+					</p:dialog>
+
+					<p:dialog widgetVar="panelEliminar" id="panelEliminar"
+						severity="alert"
+						header="#{administrarPreguntasBean.pregunta.activo==true?'Desactivar':'Activar'}"
+						showEffect="explode" hideEffect="explode" modal="false"
+						resizable="false">
+						<h:form id="formEliminar">
+							<p:outputLabel
+								value="¿Desea #{administrarAsignaturaBean.asignatura.activo==true?'desactivar':'activar'} la asignatura" />
+							<br />
+							<br />
+							<p:commandButton value="Aceptar"
+								update=":formDataTable ,:mensaje, formEliminar"
+								icon="fa fa-check white" oncomplete="PF('panelEliminar').hide()"
+								actionListener="#{administrarAsignaturaBean.eliminar}" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('panelEliminar').hide()" icon="fa fa-close white" />
+						</h:form>
+					</p:dialog>
+
+					<p:panel id="panelDocentes"
+						header="Asignación de docente(s) a la asignatura #{administrarAsignaturaBean.asignatura.nombre}"
+						visible="#{administrarAsignaturaBean.panelDocentes}">
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-2 UiGridCol">
+									<p:commandButton id="btnVolverPrincipal" value="Volver"
+										icon="fa fa-arrow-left white" styleClass="OrangeButton"
+										action="#{administrarAsignaturaBean.volverPrincipal}"
+										update="panelPrincipal, panelDocentes, :mensaje" />
+								</div>
+							</div>
+						</div>
+
+						<h:form id="formListadoDocentes">
+							<p:dataTable var="docenteAsignatura" stickyHeader="true"
+								value="#{administrarAsignaturaBean.listDocentesAsignaturas}"
+								paginator="true"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								rows="10" reflow="true"
+								emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									<p:tooltip for="btnNuevoDocente" value="Asignar docente" />
+									<p:commandButton id="btnNuevoDocente"
+										value="Asignar docente a la asignatura"
+										action="#{administrarAsignaturaBean.insertarDocenteAsignatura}"
+										update="panelPrincipal, panelDocentes, panelInsertarDocentes, :mensaje" />
+								</f:facet>
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Acción" style="width: 15%" />
+										<p:column headerText="Docente" />
+										<p:column headerText="Activo/Desactivo" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<p:tooltip for="btnDesactivarDocenteAsignatura"
+										value="#{docenteAsignatura.activo eq true ? 'Desactivar docente':'Acivar docente'}" />
+									<p:commandButton id="btnDesactivarDocenteAsignatura"
+										icon="#{docenteAsignatura.activo eq true ? 'fa fa-check-circle white':'fa fa-times-circle white'}"
+										action="#{administrarAsignaturaBean.desactivarDocenteAsignatura}"
+										update="panelPrincipal, panelDocentes, :mensaje">
+										<f:setPropertyActionListener value="#{docenteAsignatura}"
+											target="#{administrarAsignaturaBean.docenteAsignatura}" />
+									</p:commandButton>
+									<p:tooltip for="btnEliminarDocenteAsignatura"
+										value="Eliminar docente" />
+									<p:commandButton id="btnEliminarDocenteAsignatura"
+										icon="fa fa-trash white"
+										action="#{administrarAsignaturaBean.eliminarDocenteAsignatura}"
+										update="panelPrincipal, panelDocentes, panelEliminarDocentes, :mensaje">
+										<f:setPropertyActionListener value="#{docenteAsignatura}"
+											target="#{administrarAsignaturaBean.docenteAsignatura}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{docenteAsignatura.docente.apellidoNombre} - (#{docenteAsignatura.docente.id}) - #{docenteAsignatura.docente.email}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel
+										value="#{docenteAsignatura.activo eq true ? 'Activo: Puede ingresar reactivos teòricos y pràcticos':'Desactivado: No puede ingresar reactivos teóricos y prácticos.'}" />
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelInsertarDocentes"
+						header="Insertar docente(s) en la asignatura #{administrarAsignaturaBean.asignatura.nombre}"
+						visible="#{administrarAsignaturaBean.panelInsertarDocentes}">
+
+						<h:form id="formSeleccionDocente">
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:fieldset legend="Criterio de búsqueda">
+											<div class="ui-grid-col-11 UiGridCol">
+												<p:inputText
+													value="#{administrarAsignaturaBean.criterioBusquedaDocente}"
+													placeholder="Cédula/Apellidos y Nombres" />
+											</div>
+											<div class="ui-grid-col-1 UiGridCol">
+												<p:commandButton icon="fa fa-search white"
+													action="#{administrarAsignaturaBean.buscarDocente}"
+													update="panelInsertarDocentes, :mensaje" />
+											</div>
+										</p:fieldset>
+										<p:fieldset legend="Resultados de búsqueda">
+
+											<p:dataTable var="doce" reflow="true"
+												value="#{administrarAsignaturaBean.listadoDocentes}"
+												paginator="true"
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+												rows="10" emptyMessage="No hay Información Disponible"
+												paginatorPosition="bottom" rowKey="#{doce.id}"
+												selection="#{administrarAsignaturaBean.docenteSeleccionado}"
+												selectionMode="single">
+												<p:ajax event="rowSelect"
+													update="panelInsertarDocentes, :mensaje"
+													listener="#{administrarAsignaturaBean.seleccionarDocente}" />
+
+												<p:column headerText="Docente">
+													<h:outputText value="#{doce.id} - #{doce.apellidoNombre}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+									</div>
+
+									<div class="ui-grid-col-6 UiGridCol">
+										<div class="ui-grid-col-12">
+											<p:outputLabel value="Docente" />
+											<p:inputText readonly="true" placeholder="() - "
+												value="( #{administrarAsignaturaBean.docente.id} ) - #{administrarAsignaturaBean.docente.apellidoNombre}" />
+										</div>
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:commandButton value="Guardar"
+												actionListener="#{administrarAsignaturaBean.guardarDocente}"
+												styleClass="GreenButton"
+												update="panelInsertarDocentes, panelDocentes, :mensaje" />
+										</div>
+
+										<div class="ui-grid-col-6 UiGridCol">
+											<p:commandButton value="Cancelar"
+												action="#{administrarAsignaturaBean.volverPanelDocentes}"
+												update="panelInsertarDocentes, panelDocentes, :mensaje"
+												styleClass="RedButton" />
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+							<div class="EmptyBox10"></div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelEliminarDocentes"
+						header="Eliminar docente(s) en la asignatura #{administrarAsignaturaBean.asignatura.nombre}"
+						visible="#{administrarAsignaturaBean.panelEliminarDocentes}">
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+
+								<div class="ui-grid-col-2 UiGridCol">
+									<p:commandButton id="btnVolverDocentes2" value="Volver"
+										icon="fa fa-arrow-left white" styleClass="OrangeButton"
+										action="#{administrarAsignaturaBean.volverPanelDocentes}"
+										update="panelEliminarDocentes, panelDocentes, :mensaje" />
+								</div>
+							</div>
+						</div>
+						<div class="EmptyBox20"></div>
+						<p:fieldset legend="Eliminar docente de asignatura">
+							<h:form>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-12 UiGridCol">
+											<p:outputLabel
+												value="¿Está seguro(a) de eliminar al docente #{administrarAsignaturaBean.docenteAsignatura.docente.apellidoNombre} de la asignatura #{administrarAsignaturaBean.docenteAsignatura.asignatura.nombre}?" />
+										</div>
+									</div>
+								</div>
+								<div class="EmptyBox20"></div>
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Aceptar"
+												action="#{administrarAsignaturaBean.eliminarDocente}"
+												update="panelEliminarDocentes, panelDocentes, :mensaje"
+												icon="fa fa-trash white" styleClass="GreenButton" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:commandButton value="Cancelar" icon="fa fa-close white"
+												update="panelEliminarDocentes, panelDocentes, :mensaje"
+												action="#{administrarAsignaturaBean.volverPanelDocentes}"
+												styleClass="OrangeButton" />
+										</div>
+									</div>
+								</div>
+								<div class="EmptyBox10"></div>
+							</h:form>
+						</p:fieldset>
+					</p:panel>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

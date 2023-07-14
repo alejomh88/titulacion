@@ -1,0 +1,131 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Título de la investigación">
+						<h:form id="formTitulo">
+
+							<p class="black Fs18 FontBold">
+								<strong>Tener en cuenta que el título debe cumplir con
+									las siguientes normas:</strong>
+							</p>
+							<ul class="black Fs16 FontBold">
+								<li>- Debe abarcar la naturaleza y dirección de la
+									respuesta</li>
+								<li>- Debe ser de hasta 20 palabras</li>
+								<li>- Debe utilizar el acento gráfico agudo ( ´ ), mas no
+									el acento gráfico grave ( ` )</li>
+								<li>- Debe usar un solo espacio entre palabras</li>
+								<li>- No debe contener ningún caracter especial ni signos
+									de puntuación (%, -, !, @, #, $, %, ^, *, ?, _, ", etc)</li>
+								<li>- No debe contener espacios iniciales, espacios finales
+									y saltos de línea (no presione la tecla enter)</li>
+								<li>- Si en el título existe una palabra de la cual usted
+									desee darle un formato, guíese del siguiente ejemplo:</li>
+								<ul>
+									<li>Negrita con &lt;b&gt;palabra&lt;/b&gt; ======> <b>palabra</b>
+									</li>
+									<li>Cursiva con &lt;i&gt;palabra&lt;/i&gt; ======> <i>palabra</i></li>
+									<li>Subrayado con &lt;u&gt;palabra&lt;/u&gt; ======> <u>palabra</u>
+									</li>
+									<li>Negrita y cursiva con
+										&lt;b&gt;&lt;i&gt;palabra&lt;/i&gt;&lt;/b&gt; ======> <b><i>palabra</i></b>
+									</li>
+									<li>Cursiva y subrayado con
+										&lt;i&gt;&lt;u&gt;palabra&lt;/u&gt;&lt;/i&gt; ======> <i><u>palabra</u></i>
+									</li>
+									<li>Negrita y subrayado con
+										&lt;b&gt;&lt;u&gt;palabra&lt;/u&gt;&lt;/b&gt; ======> <b><u>palabra</u></b>
+									</li>
+									<li>Negrita, Cursiva y subrayado con
+										&lt;b&gt;&lt;i&gt;&lt;u&gt;palabra&lt;/u&gt;&lt;/i&gt;&lt;/b&gt;
+										======> <b><i><u>palabra</u></i></b>
+									</li>
+								</ul>
+							</ul>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Carrera" styleClass="FontBold" />
+										<p:selectOneMenu required="true" requiredMessage="Carrera"
+											value="#{tituloInvestigacionECBean.ppId}">
+											<f:selectItem itemValue="0" itemLabel="Seleccione la carrera" />
+											<f:selectItems value="#{tituloInvestigacionECBean.listaPP}"
+												var="pp" itemValue="#{pp.id}"
+												itemLabel="#{pp.proceso.id} | #{pp.carrera.nombre}" />
+											<p:ajax event="change"
+												listener="#{tituloInvestigacionECBean.obtenerPP}"
+												update="panelPrincipal, :mensaje" />
+										</p:selectOneMenu>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Título de investigación" />
+										<p:inputText id="tituloInvestigacion"
+											onkeyup="formatearTituloInvestigacion();"
+											value="#{tituloInvestigacionECBean.pp.tituloInvestigacion}"
+											addLine=""
+											placeholder="Ingrese el título de la investigación" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Previsualización del título." />
+										<br />
+										<div class="EmptyBox10"></div>
+										<p:outputLabel id="opTituloInvestigacion" escape="false"
+											value="#{tituloInvestigacionECBean.pp.tituloInvestigacion}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar" styleClass="Fs16 BlueButton"
+											id="btnFormTitulo"
+											actionListener="#{tituloInvestigacionECBean.actualizar}"
+											update="panelPrincipal, :mensaje" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

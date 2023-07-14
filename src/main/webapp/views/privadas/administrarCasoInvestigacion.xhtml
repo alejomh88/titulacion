@@ -1,0 +1,235 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Administrar Temas de Investigación"
+						visible="#{administrarCasoInvestigacionBean.panelPrincipal}">
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+
+							<div class="TexAlCenter">
+								<p:dataTable var="docenteSeminario"
+									value="#{administrarCasoInvestigacionBean.docentesSeminarios}"
+									selectionMode="single" stickyHeader="true"
+									selection="#{administrarCasoInvestigacionBean.docenteSeminarioSeleccionado}"
+									rowKey="#{docenteSeminario.id}" reflow="true"
+									emptyMessage="No hay Información Disponible">
+
+									<f:facet name="header">
+										Escoja un seminario
+									</f:facet>
+
+									<p:ajax event="rowSelect"
+										listener="#{administrarCasoInvestigacionBean.onRowSelect}"
+										update="panelPrincipal" />
+
+									<p:column headerText="Proceso" styleClass="Wid20">
+										<h:outputText value="#{docenteSeminario.seminario.proceso.id}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Carrera" styleClass="Wid40">
+										<h:outputText
+											value="#{docenteSeminario.seminario.lineaInvestigacionCarrera.carrera.nombre}"
+											escape="false" />
+									</p:column>
+
+									<p:column headerText="Seminario" styleClass="Wid40">
+										<h:outputText value="#{docenteSeminario.seminario.nombre}"
+											escape="false" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</h:form>
+
+						<div class="EmptyBox20"></div>
+
+						<h:form>
+							<p:dataTable var="trabajoTitulacion" stickyHeader="true"
+								value="#{administrarCasoInvestigacionBean.trabajosTitulacion}"
+								reflow="true" emptyMessage="No hay Información Disponible">
+
+								<f:facet name="header">
+									<p:commandButton value="Insertar Tema de Investigación"
+										disabled="#{administrarCasoInvestigacionBean.disableBtnCasoInvestigacion}"
+										action="#{administrarCasoInvestigacionBean.prepararInsertar}"
+										update="panelPrincipal, panelInsertar, :mensaje" />
+								</f:facet>
+
+								<p:column headerText="Acción" styleClass="Wid10">
+									<p:tooltip for="btnEditar" value="Editar" />
+									<p:commandButton id="btnEditar" icon="fa fa-pencil white"
+										action="#{administrarCasoInvestigacionBean.prepararEditar}"
+										update="panelPrincipal, panelEditar, :mensaje">
+										<f:setPropertyActionListener value="#{trabajoTitulacion}"
+											target="#{administrarCasoInvestigacionBean.trabajoTitulacion}" />
+									</p:commandButton>
+
+									<p:tooltip for="btnEliminar" value="Eliminar" />
+									<p:commandButton id="btnEliminar" icon="fa fa-trash white"
+										action="#{administrarCasoInvestigacionBean.prepararEliminar}"
+										update="panelPrincipal, panelEliminar, :mensaje">
+										<f:setPropertyActionListener value="#{trabajoTitulacion}"
+											target="#{administrarCasoInvestigacionBean.trabajoTitulacion}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Tema de Investigación" styleClass="Wid5">
+									<p:outputLabel value="#{trabajoTitulacion.casoInvestigacion}"
+										escape="false" />
+								</p:column>
+							</p:dataTable>
+
+							<div class="EmptyBox20"></div>
+
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelInsertar" header="Insertar Tema de Investigación"
+						visible="#{administrarCasoInvestigacionBean.panelInsertar}">
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tema de Investigación" />
+										<p:inputTextarea placeholder="Escriba aquí el tema de investigación"
+											value="#{administrarCasoInvestigacionBean.trabajoTitulacion.casoInvestigacion}" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{administrarCasoInvestigacionBean.insertar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelInsertar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											actionListener="#{administrarCasoInvestigacionBean.establecerPanelPrincipal}"
+											styleClass="RedButton" update="panelPrincipal, panelInsertar" />
+									</div>
+
+								</div>
+							</div>
+						</h:form>
+
+					</p:panel>
+
+					<p:panel id="panelEditar" header="Editar Temas de Investigación"
+						visible="#{administrarCasoInvestigacionBean.panelEditar}">
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Tema de Investigación"
+											styleClass="DispBlock" />
+										<p:inputTextarea
+											value="#{administrarCasoInvestigacionBean.trabajoTitulacion.casoInvestigacion}" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Guardar"
+											actionListener="#{administrarCasoInvestigacionBean.editar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelEditar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											actionListener="#{administrarCasoInvestigacionBean.establecerPanelPrincipal}"
+											styleClass="RedButton" update="panelPrincipal, panelEditar" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelEliminar"
+						header="Eliminar Temas de Investigación"
+						visible="#{administrarCasoInvestigacionBean.panelEliminar}">
+
+						<h:form>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="¿Desea eliminar realmente el Tema de Investigación?"
+											styleClass="DispBlock" />
+										<p:inputTextarea
+											value="#{administrarCasoInvestigacionBean.trabajoTitulacion.casoInvestigacion}"
+											readonly="true" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Eliminar"
+											actionListener="#{administrarCasoInvestigacionBean.eliminar}"
+											styleClass="RedButton"
+											update="panelPrincipal, panelEliminar, :mensaje" />
+									</div>
+
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											actionListener="#{administrarCasoInvestigacionBean.establecerPanelPrincipal}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelEliminar" />
+									</div>
+
+								</div>
+							</div>
+
+						</h:form>
+
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,226 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row">
+
+							<div class="ui-grid-col-3 UiGridCol" />
+
+							<div class="ui-grid-col-6 UiGridCol">
+
+								<p:panel header="Actualizar Datos">
+									<h:form id="formActualizarDatos">
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+												<p:fieldset legend="IMPORTANTE: "
+													rendered="#{actualizarDatosBean.activarMensajeActualizarDatos}">
+													<div class="ui-grid-col-12 UiGridCol">
+														<p:outputLabel
+															value="Por favor, verifique sus datos personales que se encuentren escritos correctamente, ya que esta información constará en los registros oficiales sobre su titulación, por ello es de vital importancia verificarlos y corregirlos. " />
+														<p:outputLabel
+															value="Si todo se encuentra correcto o si ha editado alguna información, de clic en el botón actualizar." />
+													</div>
+												</p:fieldset>
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Cédula o Pasaporte" />
+													<p:inputText id="numeroDocumento" readonly="true"
+														value="#{actualizarDatosBean.usuario.id}" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Apellidos y nombres" />
+													<p:inputText id="nombres" required="true"
+														requiredMessage="Ingrese sus nombres" readonly="true"
+														value="#{actualizarDatosBean.usuario.apellidoNombre}"
+														placeholder="Nombres" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Género" />
+													<p:selectOneMenu id="genero" required="true"
+														requiredMessage="Género"
+														value="#{actualizarDatosBean.usuario.genero}">
+														<f:selectItem itemValue="M" itemLabel="Masculino" />
+														<f:selectItem itemValue="F" itemLabel="Femenino" />
+													</p:selectOneMenu>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Correo Electrónico" />
+													<p:inputText id="email" required="true" readonly="true"
+														requiredMessage="Ingrese su dirección de correo electrónico"
+														value="#{actualizarDatosBean.usuario.email}"
+														placeholder="Dirección Correo Electrónico" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Cuenta URKUND"
+														rendered="#{actualizarDatosBean.renderUrkund}" />
+													<p:inputText id="usuarioUrkund"
+														rendered="#{actualizarDatosBean.renderUrkund}"
+														required="true" requiredMessage="Ingrese su cuenta URKUND"
+														value="#{actualizarDatosBean.usuario.usuarioUrkund}"
+														placeholder="Cuenta URKUND" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-12 UiGridCol">
+													<p:outputLabel value="Celular" />
+
+													<p:inputText id="telefono" required="true"
+														requiredMessage="Ingrese su dirección de teléfono"
+														value="#{actualizarDatosBean.usuario.telefono}"
+														placeholder="Teléfono" />
+												</div>
+
+											</div>
+										</div>
+
+										<div class="EmptyBox10"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton id="btnExe" value="Actualizar"
+														styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.actualizar}"
+														update=":mensaje, formActualizarDatos" />
+												</div>
+
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:button value="Cancelar" outcome="home.jsf" id="btnAtras"
+														styleClass="OrangeButton" />
+												</div>
+
+											</div>
+										</div>
+										<div class="EmptyBox20"></div>
+
+										<div class="ui-grid ui-grid-responsive">
+											<div class="ui-grid-row">
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton id="btnPruebaDrive"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Drive" styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.probarDrive}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnExeCorreoFechas"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Fechas y lugar EC COmplexivo"
+														styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.envioCorreoFechasLugarEC}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnPruebaCambioCorreos"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Cambio Correos" styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.pruebaCambioCorreos}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnCrearDocumentoDrive"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Crear documento drive" styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.crearDocumentoDrive}"
+														update=":mensaje, formActualizarDatos" />
+												</div>
+												<div class="ui-grid-col-6 UiGridCol">
+													<p:commandButton id="btnPruebaDriveEPP"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Drive Crear EPP"
+														styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.probarDriveEPP}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnPruebaExcel"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Excel" styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.probarExcel}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnPruebaCambioCorreosEnviar"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Cambio Correos Enviar"
+														styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.enviarInfoCorreosCambiados}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnProbarDescargarDrive"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Probar Descargar Google Drive"
+														styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.probarDocumentoDrive}"
+														update=":mensaje, formActualizarDatos" />
+													<p:commandButton id="btnLeerCsvSustentacionFCE"
+														rendered="#{actualizarDatosBean.adminFranklin}"
+														value="Leer CSV FCE" styleClass="Fs16 BlueButton"
+														actionListener="#{actualizarDatosBean.sustentacionesCSVFCE}"
+														update=":mensaje, formActualizarDatos" />
+												</div>
+											</div>
+										</div>
+
+									</h:form>
+								</p:panel>
+							</div>
+							<div class="ui-grid-col-3 UiGridCol" />
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

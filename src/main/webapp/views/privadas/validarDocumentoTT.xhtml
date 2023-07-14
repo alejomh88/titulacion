@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal"
+						header="Validar estructura del documento"
+						visible="#{validarDocumentoTTBean.panelPrincipal}">
+
+						<h:form>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-2 UiGridCol">
+										<p:commandButton value="Actualizar Tabla" id="withIcon"
+											actionListener="#{validarDocumentoTTBean.a}"
+											update="panelPrincipal, panelValidar, :mensaje"
+											icon="fa fa-repeat white" />
+									</div>
+								</div>
+							</div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+
+									<div class="ui-grid-col-12 UiGridCol">
+
+										<div class="EmptyBox10"></div>
+
+										<p:dataTable var="ett" stickyHeader="true"
+											value="#{validarDocumentoTTBean.listadoEstudiantesTrabajosTitulacion}"
+											paginator="true" rows="10" reflow="true"
+											emptyMessage="No hay Información Disponible"
+											first="#{validarDocumentoTTBean.paginaActual}">
+
+											<p:ajax event="page"
+												listener="#{validarDocumentoTTBean.onPageChange}" />
+
+											<p:column headerText="Acción" styleClass="Wid10">
+
+												<p:tooltip for="btnValidar"
+													value="Validar estructura del trabajo" />
+												<p:commandButton id="btnValidar"
+													disabled="#{ett.validarDocumentoE3 eq true ? 'true' : (ett.especialistaSuplente1.email == calificacionesECBean.user and ett.activarSuplenteE != true) or (calificacionesECBean.user == ett.especialistaSuplantadoE.email)? true : false}"
+													icon="fa fa-line-chart white"
+													action="#{validarDocumentoTTBean.validarDocumento}"
+													update="panelPrincipal, panelValidar, :mensaje">
+													<f:setPropertyActionListener value="#{ett}"
+														target="#{validarDocumentoTTBean.estudianteTrabajoTitulacion}" />
+												</p:commandButton>
+
+											</p:column>
+
+											<p:column headerText="Carrera">
+												<p:outputLabel value="#{ett.carrera.nombre}" />
+											</p:column>
+
+											<p:column headerText="Estudiante">
+												<p:outputLabel
+													value="#{ett.estudiante.apellidoNombre} (#{ett.estudiante.id})" />
+											</p:column>
+
+											<p:column headerText="Aprobado Tutor">
+												<p:button readonly="true"
+													value="#{ett.aprobado eq true ? 'Aprobado por tutor' : 'Aún sin aprobar'}"
+													styleClass="#{ett.aprobado eq true ? 'GreenButton' : 'RedButton' }" />
+											</p:column>
+
+											<p:column headerText="Enlace Documento">
+												<p:button target="_blank"
+													value="#{ett.urlDrive eq null ? 'No se ha generado el documento' : 'Ir al documento'}"
+													styleClass="#{ett.urlDrive ne null ? 'GreenButton' : 'RedButton'}"
+													readonly="#{ett.urlDrive ne null ? 'true' : 'false' }"
+													href="https://docs.google.com/document/d/#{ett.urlDrive eq null ? '' : ett.urlDrive }" />
+											</p:column>
+
+											<p:column headerText="Especialista">
+												<p:outputLabel
+													value="#{(ett.especialista1.email == calificacionesECBean.user ? 'Especialista 1' : (ett.especialista2.email == calificacionesECBean.user ? 'Especialista 2' : (ett.especialista3.email == calificacionesECBean.user ? 'Especialista 3' : 'Suplente 1')))}" />
+											</p:column>
+
+											<p:column headerText="Estado" styleClass="Wid10">
+												<p:outputLabel
+													value="#{ett.validarDocumentoE3 eq null ? 'Aún no ha validado' : 'Validado'}" />
+											</p:column>
+
+										</p:dataTable>
+
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+					<p:panel id="panelValidar"
+						header="Validación de la estructura del documento"
+						visible="#{validarDocumentoTTBean.panelValidar}">
+						<h:form id="formpanelValidar">
+							<div class="EmptyBox10"></div>
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel value="Estudiante" />
+										<p:inputText readonly="true"
+											value="#{validarDocumentoTTBean.estudianteTrabajoTitulacion.estudiante.apellidoNombre} - (#{validarDocumentoTTBean.estudianteTrabajoTitulacion.estudiante.id}) - #{validarDocumentoTTBean.estudianteTrabajoTitulacion.estudiante.email}" />
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox10"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:outputLabel
+											value="La validación comprende el cumplimiento de la estructura del documento de la dimensión escrita detallada en el 
+&lt;strong&gt;Artículo 46 de la Guía Complementaria para la Instrumentalización del Sistema de Titulación del Sistema de Titulación de Pregrado de la Universidad Técnica de Machala
+&lt;/strong&gt;, del cual se debe encontrar a partir de las páginas
+&lt;i&gt;Dedicatoria (opcional), Agradecimiento (opcional), Resumen, Palabras Claves, Abstract, Keywords y los demás que continúan
+&lt;/i&gt; de los cuales debe estar plasmado en el documento de Google Drive, los preliminares no son necesarios ya que lo genera la plataforma de titulación una vez el estudiante apruebe el proceso. La validación que usted va a realizar comprende la revisión de la estructura correcta del documento de google drive del estudiante."
+											escape="false" />
+										<div class="EmptyBox10"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="EmptyBox20"></div>
+
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Validar"
+											actionListener="#{validarDocumentoTTBean.actualizar}"
+											styleClass="GreenButton"
+											update="panelPrincipal, panelValidar, :mensaje" />
+									</div>
+									<div class="ui-grid-col-3 UiGridCol">
+										<p:commandButton value="Cancelar"
+											action="#{validarDocumentoTTBean.establecerPanelPrincipal}"
+											update="panelPrincipal, panelValidar, :mensaje"
+											styleClass="RedButton" />
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,207 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Eliminar Calificaciones">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{listadoCalificacionTemaPracticoBean .carrera}"
+						filter="true" filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{listadoCalificacionTemaPracticoBean .listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu required="true" requiredMessage="Escoja un tipo"
+						value="#{listadoCalificacionTemaPracticoBean.consultaOrdGra}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1" itemLabel="Ordinario" />
+						<f:selectItem itemValue="2" itemLabel="Gracia" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="filtro" required="true"
+						requiredMessage="Escoja un Filtro"
+						value="#{listadoCalificacionTemaPracticoBean.consultaABC}"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="1"
+							itemLabel="Estudiante con Apellido Paterno de la A-I" />
+						<f:selectItem itemValue="2"
+							itemLabel="Estudiante con Apellido Paterno de la J-Q" />
+						<f:selectItem itemValue="3"
+							itemLabel="Estudiante con Apellido Paterno de la R-Z" />
+					</p:selectOneMenu>
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{listadoCalificacionTemaPracticoBean .buscar}" />
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="casoPractico"
+						value="#{listadoCalificacionTemaPracticoBean .listTemaPracticos}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid10">
+							<p:tooltip for="btnMostrar" value="Eliminar" />
+							<p:commandButton id="btnMostrar" icon="fa fa-trash white"
+								action="#{listadoCalificacionTemaPracticoBean.cargarActa(casoPractico)}"
+								update="formDataTable, :formActa, :mensaje"
+								oncomplete="mostarPanel('panelActa')" />
+						</p:column>
+
+						<p:column headerText="Cédula" styleClass="Wid5">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.id}" />
+						</p:column>
+
+						<p:column headerText="Estudiante" styleClass="Wid30">
+							<p:outputLabel
+								value="#{casoPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{casoPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{casoPractico.estudiantePeriodo.estudiante.nombre}" />
+						</p:column>
+
+						<p:column headerText="Fecha Sustentacion" styleClass="Wid15">
+							<p:outputLabel value="#{casoPractico.fechaSustentacionOrdinaria}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+									timeZone="America/Guayaquil" />
+							</p:outputLabel>
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelActa" header="Calificaciones" styleClass="DispNone">
+			<h:form id="formActa">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{listadoCalificacionTemaPracticoBean .temaPractico.estudiantePeriodo.estudiante.id} #{listadoCalificacionTemaPracticoBean .temaPractico.estudiantePeriodo.estudiante.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.estudiantePeriodo.estudiante.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.estudiantePeriodo.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<div class="EmptyBox10"></div>
+				<p:outputLabel value="Calificación Escrita" styleClass="DispBlock" />
+				<p:dataTable var="cartilla"
+					value="#{listadoCalificacionTemaPracticoBean .listCartillaEsc}"
+					reflow="true" emptyMessage="No hay Información Disponible">
+
+					<p:column headerText="Criterio" styleClass="Wid20">
+						<p:outputLabel value="#{cartilla.criterio}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp1}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp2}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp3}" />
+					</p:column>
+
+					<p:column headerText="Suma Parcial" styleClass="Wid20 TexAlCenter">
+						<p:outputLabel
+							value="#{cartilla.esp1+cartilla.esp2+cartilla.esp3}" />
+					</p:column>
+
+					<p:column headerText="Promedio Parcial"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.totalCriterio}" />
+					</p:column>
+
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="5" footerText="PROMEDIO TOTAL:" />
+							<p:column
+								footerText="#{listadoCalificacionTemaPracticoBean .totalEsc}" />
+						</p:row>
+					</p:columnGroup>
+
+				</p:dataTable>
+
+				<div class="EmptyBox10"></div>
+				<p:outputLabel value="Calificación Oral" styleClass="DispBlock" />
+				<p:dataTable var="cartilla"
+					value="#{listadoCalificacionTemaPracticoBean .listCartillaOral}"
+					reflow="true" emptyMessage="No hay Información Disponible">
+
+					<p:column headerText="Criterio" styleClass="Wid20">
+						<p:outputLabel value="#{cartilla.criterio}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista1.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp1}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista2.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp2}" />
+					</p:column>
+
+					<p:column
+						headerText="#{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.id} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.apellidoPaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.apellidoMaterno} #{listadoCalificacionTemaPracticoBean .temaPractico.especialista3.nombre}"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.esp3}" />
+					</p:column>
+
+					<p:column headerText="Suma Parcial" styleClass="Wid20 TexAlCenter">
+						<p:outputLabel
+							value="#{cartilla.esp1+cartilla.esp2+cartilla.esp3}" />
+					</p:column>
+
+					<p:column headerText="Promedio Parcial"
+						styleClass="Wid20 TexAlCenter">
+						<p:outputLabel value="#{cartilla.totalCriterio}" />
+					</p:column>
+
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="5" footerText="PROMEDIO TOTAL:" />
+							<p:column
+								footerText="#{listadoCalificacionTemaPracticoBean .totalOral}" />
+						</p:row>
+					</p:columnGroup>
+
+				</p:dataTable>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Eliminar"
+					update=":formDataTable ,:mensaje, formActa"
+					icon="fa fa-check white" oncomplete="mostarPanel('panelActa')"
+					actionListener="#{listadoCalificacionTemaPracticoBean.eliminarCalificacion}" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelActa')" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>

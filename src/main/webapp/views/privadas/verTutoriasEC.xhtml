@@ -1,0 +1,235 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Examen complexivo"
+						visible="#{verTutoriasECBean.panelPrincipal}">
+
+						<p:fieldset legend="Tutor"
+							rendered="#{verTutoriasECBean.pp.tutor.apellidoNombre==null?false:true}">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-12 UiGridCol">
+										<p:inputText
+											value="#{verTutoriasECBean.pp.tutor.apellidoNombre} - #{verTutoriasECBean.pp.tutor.id}- #{verTutoriasECBean.pp.tutor.email}"
+											readonly="true" autoResize="true" />
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+
+						<div class="EmptyBox10"></div>
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:fieldset
+										legend="Documento del google drive y aprobación por parte del tutor">
+
+										<div class="ui-grid-row">
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel value="Acceso al documento" />
+												<p:button
+													href="https://docs.google.com/document/d/#{verTutoriasECBean.pp.urlDrive == null ? '' : verTutoriasECBean.pp.urlDrive }"
+													value="#{verTutoriasECBean.pp.urlDrive == null ? 'Aún no se genera' : 'Clic para ir al documento'}"
+													target="_blank"
+													disabled="#{verTutoriasECBean.pp.urlDrive == null ? true : false}" />
+											</div>
+											<div class="ui-grid-col-4 UiGridCol">
+												<p:outputLabel
+													value="Aprobación de tutorías y trabajo escrito por tutor" />
+												<p:commandButton type="button"
+													value="#{verTutoriasECBean.pp.aprobado == true ? 'Aprobado' : 'Aún sin aprobar'}"
+													icon="#{verTutoriasECBean.pp.aprobado == true ? 'fa fa-check white' : 'fa fa-close white'}"
+													styleClass="#{verTutoriasECBean.pp.aprobado == true ? 'GreenButton' : 'RedButton'}" />
+											</div>
+											<div class="ui-grid-col-4 UiGridCol" style="display: none;">
+												<p:outputLabel value="Envío del archivo al URKUND del tutor" />
+												<p:commandButton id="btnEnvioDocumento" update=":mensaje"
+													actionListener="#{verTutoriasECBean.enviarUrkund}"
+													value="#{verTutoriasECBean.pp.urlDrive == null ? 'No puede enviar el documento' : 'Enviar Documento'}"
+													disabled="#{verTutoriasECBean.pp.urlDrive == null ? true : false }">
+													<p:confirm header="Confirmar envío"
+														message="¿Está seguro de envíar su trabajo al URKUND (herramienta antiplagio)? Recuerde que el informe de su trabajo escrito debe estar culminado y estructurado como lo indica el artículo 46 de la guía de instrumentalización del proceso de titulación. Si usted esta seguro(a) de que su trabajo está completo para ser eviado a analizar a la herramienta antiplagio de clic en si, caso contrario cancele la confirmación dando clic en no."
+														icon="ui-icon-alert" />
+												</p:commandButton>
+
+												<p:confirmDialog global="true" showEffect="fade" width="70%"
+													hideEffect="fade">
+													<p:commandButton value="Si" type="button" update=":mensaje"
+														styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+													<p:commandButton value="No" type="button"
+														styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+												</p:confirmDialog>
+											</div>
+										</div>
+
+									</p:fieldset>
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox10"></div>
+
+
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas de tutorias realizadas" />
+									<p:inputText readonly="true"
+										value="#{verTutoriasECBean.numeroHorasTutorias}" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Número total de horas a cumplir" />
+									<p:inputText readonly="true" value="12 horas" />
+								</div>
+								<div class="ui-grid-col-4 UiGridCol">
+									<p:outputLabel value="Horas restantes" />
+									<p:inputText readonly="true"
+										value="#{verTutoriasECBean.numeroTotalHorasMinutosRestantes}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="EmptyBox20"></div>
+
+						<div class="TexAlCenter">
+
+							<h:form id="formMostrar">
+
+								<div class="EmptyBox10"></div>
+
+								<p:dataTable var="tutoria" stickyHeader="true"
+									value="#{verTutoriasECBean.pp.tutorias}" reflow="true"
+									emptyMessage="No hay tutorías realizadas">
+
+									<p:column headerText="Acción" styleClass="Wid5">
+										<p:tooltip for="btnInsertarComentario"
+											value="Insertar comentario" />
+										<p:commandButton id="btnInsertarComentario"
+											icon="fa fa-comment white"
+											action="#{verTutoriasECBean.presentarInsertarComentario}"
+											update="panelPrincipal, panelInsertarTutorias, :mensaje">
+											<f:setPropertyActionListener value="#{tutoria}"
+												target="#{verTutoriasECBean.tutoriaEC}" />
+										</p:commandButton>
+									</p:column>
+
+
+									<p:column headerText="Fecha inicio tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fecha}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Fecha fin tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fechaFinTutoria}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Fecha proxima tutoría" styleClass="Wid10">
+										<p:outputLabel value="#{tutoria.fechaProximaTutoria}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+												timeZone="America/Guayaquil" />
+										</p:outputLabel>
+									</p:column>
+
+									<p:column headerText="Actividades" styleClass="Wid25">
+										<p:outputLabel value="#{tutoria.actividad}" />
+									</p:column>
+
+									<p:column headerText="Tareas a realizar" styleClass="Wid25">
+										<p:outputLabel value="#{tutoria.tarea}" />
+									</p:column>
+
+									<p:column headerText="Comentarios del estudiante"
+										styleClass="Wid15">
+										<p:outputLabel value="#{tutoria.comentarioEstudiante}" />
+									</p:column>
+
+								</p:dataTable>
+
+								<div class="EmptyBox10"></div>
+
+							</h:form>
+
+						</div>
+
+					</p:panel>
+
+					<p:panel id="panelInsertarTutorias" header="Insertar Tutorías"
+						visible="#{verTutoriasECBean.panelInsertarTutorias}">
+						<h:form>
+							<p:fieldset legend="Datos de la tutoria">
+								<div class="ui-grid ui-grid-responsive">
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Fecha" />
+											<p:inputText value="#{verTutoriasECBean.tutoriaEC.fecha}"
+												readonly="true" autoResize="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Actividad" />
+											<p:inputTextarea
+												value="#{verTutoriasECBean.tutoriaEC.actividad}"
+												readonly="true" autoResize="true" />
+										</div>
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Tareas a realizar" />
+											<p:inputTextarea
+												value="#{verTutoriasECBean.tutoriaEC.tareasRealizadas}"
+												readonly="true" autoResize="true" />
+										</div>
+									</div>
+
+									<div class="EmptyBox20"></div>
+
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-4 UiGridCol">
+											<p:outputLabel value="Comentario sobre la tutoría" />
+										</div>
+										<div class="ui-grid-col-8 UiGridCol">
+											<p:inputTextarea
+												value="#{verTutoriasECBean.tutoriaEC.comentarioEstudiante}"
+												autoResize="true" />
+										</div>
+									</div>
+
+									<div class="ui-grid-row">
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Guardar"
+												actionListener="#{verTutoriasECBean.actualizar}"
+												update=":panelPrincipal, :panelInsertarTutorias, :mensaje"
+												styleClass="GreenButton" />
+										</div>
+
+										<div class="ui-grid-col-3 UiGridCol">
+											<p:commandButton value="Cancelar"
+												action="#{verTutoriasECBean.activarPanelPrincipal}"
+												update=":panelPrincipal, :panelInsertarTutorias"
+												styleClass="OrangeButton" />
+										</div>
+									</div>
+
+								</div>
+							</p:fieldset>
+						</h:form>
+					</p:panel>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

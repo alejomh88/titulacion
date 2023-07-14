@@ -1,0 +1,260 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="panelPrincipal" header="Calificaciones">
+			<div class="TexAlCenter">
+				<h:form id="busqueda">
+					<p:selectOneMenu id="carrera" required="true"
+						requiredMessage="Escoja una Carrera"
+						value="#{calificacionTrabajoTitulacionBean.carrera}" filter="true"
+						filterMatchMode="contains"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+						<f:selectItem itemValue="0" itemLabel="Escoja una Carrera" />
+						<f:selectItems
+							value="#{calificacionTrabajoTitulacionBean.listCarreras}"
+							var="carrera" itemValue="#{carrera.id}"
+							itemLabel="#{carrera.nombre}" />
+					</p:selectOneMenu>
+
+					<p:inputText
+						value="#{calificacionTrabajoTitulacionBean.cedulaEstudiante}"
+						placeholder="Cédula del estudiante"
+						styleClass="Wid80 TexAlCenter MargTop10 Fs18" />
+
+					<div class="EmptyBox10"></div>
+					<p:commandButton update="busqueda, :formDataTable, :mensaje"
+						icon="fa fa-search white" value="Buscar"
+						actionListener="#{calificacionTrabajoTitulacionBean.buscar}" />
+					<div class="EmptyBox10"></div>
+					<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+					<p:inputText
+						value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.nombre}"
+						readonly="true" styleClass="Wid80 TexAlCenter Fs18" />
+
+					<div class="DivIzq50">
+						<p:outputLabel value="Calificación Conjunta Escr."
+							styleClass="DispBlock" />
+						<p:inputText
+							value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.calificacionEscrita}"
+							readonly="true" styleClass="Wid80 TexAlCenter Fs18" />
+					</div>
+					<div class="DivDer50">
+						<p:outputLabel value="Calificación Conjunta Oral"
+							styleClass="DispBlock" />
+						<p:inputText
+							value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.calificacionOral}"
+							readonly="true" styleClass="Wid80 TexAlCenter Fs18" />
+					</div>
+					<div class="EmptyBox10"></div>
+				</h:form>
+				<h:form id="formDataTable">
+					<p:dataTable var="especialista"
+						value="#{calificacionTrabajoTitulacionBean.listEspecialista}"
+						reflow="true" emptyMessage="No hay Información Disponible">
+
+						<p:column headerText="Acción" styleClass="Wid20">
+							<p:tooltip for="btnCalificacionEscrita"
+								value="Calificación Escrita" />
+							<p:commandButton id="btnCalificacionEscrita"
+								icon="fa fa-pencil white"
+								disabled="#{calificacionTrabajoTitulacionBean.bnEsc}"
+								action="#{calificacionTrabajoTitulacionBean.limpiarEsc(especialista)}"
+								update="formDataTable, :formInsertarEsc, :mensaje"
+								oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertarEsc')" />
+
+							<p:tooltip for="btnCalificacionOral" value="Calificación Oral" />
+							<p:commandButton id="btnCalificacionOral"
+								icon="fa fa-bullhorn white"
+								disabled="#{calificacionTrabajoTitulacionBean.bnOral}"
+								action="#{calificacionTrabajoTitulacionBean.limpiarOral(especialista)}"
+								update="formDataTable, :formInsertarOral, :mensaje"
+								oncomplete="comprobarInsertar(xhr, status, args, 'panelInsertarOral')" />
+						</p:column>
+
+
+						<p:column headerText="Especialista" styleClass="Wid80">
+							<p:outputLabel
+								value="#{especialista.id} #{especialista.apellidoPaterno} #{especialista.apellidoMaterno} #{especialista.nombre}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<div class="Seperator MargTopBottom10"></div>
+
+					<p:button value="Regresar" outcome="home.jsf" id="btnAtras"
+						icon="fa fa-arrow-left white" styleClass="OrangeButton" />
+
+					<div class="EmptyBox10"></div>
+				</h:form>
+			</div>
+		</p:panel>
+
+		<p:panel id="panelInsertarEsc" header="Insertar Calificación Escrita"
+			styleClass="DispNone">
+			<h:form id="formInsertarEsc">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Especialista" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.especialista.id} #{calificacionTrabajoTitulacionBean.especialista.apellidoPaterno} #{calificacionTrabajoTitulacionBean.especialista.apellidoMaterno} #{calificacionTrabajoTitulacionBean.especialista.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Opción de titulación" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.opcionTitulacion.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<div class="EmptyBox10"></div>
+
+				<p:dataTable id="formDataCalificacion" var="calificacion"
+					value="#{calificacionTrabajoTitulacionBean.listCalificacion}"
+					reflow="true" emptyMessage="No hay Información Disponible">
+
+					<p:column headerText="Criterio" styleClass="Wid20">
+						<p:outputLabel
+							value="#{calificacion.criterioTrabajoTitulacion.nombre}" />
+					</p:column>
+
+					<p:column headerText="Indicador" styleClass="Wid50">
+						<p:outputLabel
+							value="#{calificacion.indicadorTrabajoTitulacion.nombre}" />
+					</p:column>
+
+					<p:column headerText="Peso" styleClass="Wid30">
+						<p:selectOneMenu id="indicador" required="true"
+							requiredMessage="Escoja un Indicador"
+							value="#{calificacion.indicadorTrabajoTitulacion.id}"
+							styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+							<f:selectItem itemValue="0" itemLabel="Escoja un Indicador" />
+							<f:selectItems
+								value="#{calificacion.listIndicadorTrabajoTitulaciones}"
+								var="indicador" itemValue="#{indicador.id}"
+								itemLabel="#{indicador.pesoSuperior}" />
+							<p:ajax event="change"
+								listener="#{calificacionTrabajoTitulacionBean.añadirCalificacion(calificacion)}"
+								update="formDataCalificacion" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:dataTable>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update=":guardarCalificacionEsc"
+					oncomplete="PF('aceptarCalificacionEsc').show()"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelInsertarEsc')" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+		<p:panel id="panelInsertarOral" header="Insertar Calificación Oral"
+			styleClass="DispNone">
+			<h:form id="formInsertarOral">
+				<p:outputLabel value="Estudiante" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoPaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.apellidoMaterno} #{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.estudiante.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Especialista" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.especialista.id} #{calificacionTrabajoTitulacionBean.especialista.apellidoPaterno} #{calificacionTrabajoTitulacionBean.especialista.apellidoMaterno} #{calificacionTrabajoTitulacionBean.especialista.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<p:outputLabel value="Opción de titulación" styleClass="DispBlock" />
+				<p:inputText readonly="true"
+					value="#{calificacionTrabajoTitulacionBean.estudianteTrabajoTitulacion.opcionTitulacion.nombre}"
+					styleClass="DispBlock Wid90" />
+
+				<div class="EmptyBox10"></div>
+
+				<p:dataTable id="formDataCalificacion" var="calificacion"
+					value="#{calificacionTrabajoTitulacionBean.listCalificacion}"
+					reflow="true" emptyMessage="No hay Información Disponible">
+
+					<p:column headerText="Criterio" styleClass="Wid20">
+						<p:outputLabel
+							value="#{calificacion.criterioTrabajoTitulacion.nombre}" />
+					</p:column>
+
+					<p:column headerText="Indicador" styleClass="Wid50">
+						<p:outputLabel
+							value="#{calificacion.indicadorTrabajoTitulacion.nombre}" />
+					</p:column>
+
+					<p:column headerText="Peso" styleClass="Wid30">
+						<p:selectOneMenu id="indicador" required="true"
+							requiredMessage="Escoja un Indicador"
+							value="#{calificacion.indicadorTrabajoTitulacion.id}"
+							styleClass="Wid80 TexAlCenter MargTop10 Fs18 labelCenter">
+							<f:selectItem itemValue="0" itemLabel="Escoja un Indicador" />
+							<f:selectItems
+								value="#{calificacion.listIndicadorTrabajoTitulaciones}"
+								var="indicador" itemValue="#{indicador.id}"
+								itemLabel="#{indicador.pesoSuperior}" />
+							<p:ajax event="change"
+								listener="#{calificacionTrabajoTitulacionBean.añadirCalificacion(calificacion)}"
+								update="formDataCalificacion" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:dataTable>
+
+				<div class="Seperator MargTopBottom10"></div>
+
+				<p:commandButton value="Guardar" update=":guardarCalificacionOral"
+					oncomplete="PF('aceptarCalificacionOral').show()"
+					id="btnNuevoAceptar" icon="fa fa-floppy-o white"
+					styleClass="GreenButton" />
+				<p:commandButton value="Cancelar"
+					oncomplete="mostarPanel('panelInsertarOral')" id="btnNuevolimpiar"
+					icon="fa fa-close white" process="@this" styleClass="RedButton" />
+			</h:form>
+		</p:panel>
+
+		<p:dialog widgetVar="aceptarCalificacionEsc" severity="alert"
+			header="Calificación Escrita" showEffect="explode"
+			hideEffect="explode" modal="false" resizable="false">
+			<h:form id="guardarCalificacionEsc">
+				<p:outputLabel value="¿Desea insertar realmente la calificación?" />
+				<br />
+				<br />
+				<p:commandButton value="Aceptar"
+					update=":busqueda, :formDataTable ,:mensaje, formInsertarEsc"
+					icon="fa fa-check white"
+					oncomplete="PF('aceptarCalificacionEsc').hide();comprobarInsertar(xhr, status, args, 'panelInsertarEsc');"
+					actionListener="#{calificacionTrabajoTitulacionBean.insertarCalificacionEsc}" />
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('aceptarCalificacionEsc').hide()"
+					icon="fa fa-close white" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="aceptarCalificacionOral" severity="alert"
+			header="Calificación Oral" showEffect="explode" hideEffect="explode"
+			modal="false" resizable="false">
+			<h:form id="guardarCalificacionOral">
+				<p:outputLabel value="¿Desea insertar realmente la calificación?" />
+				<br />
+				<br />
+				<p:commandButton value="Aceptar"
+					update=":busqueda, :formDataTable ,:mensaje, formInsertarOral"
+					icon="fa fa-check white"
+					oncomplete="PF('aceptarCalificacionOral').hide();comprobarInsertar(xhr, status, args, 'panelInsertarOral');"
+					actionListener="#{calificacionTrabajoTitulacionBean.insertarCalificacionOral}" />
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('aceptarCalificacionOral').hide()"
+					icon="fa fa-close white" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

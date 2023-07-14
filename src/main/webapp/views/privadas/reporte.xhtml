@@ -1,0 +1,719 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div class="layout-portlets-box BgcWhite">
+			<div class="Container100 ui-fluid">
+				<div class="ContainerIndent">
+
+					<p:panel id="panelPrincipal" header="Reportes">
+
+						<h:form id="formParametros">
+
+							<div class="ui-g">
+								<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+									<p:outputLabel value="Formato" />
+									<p:selectOneMenu value="#{reporteBean.formatoReporte}">
+										<f:selectItem itemValue="" itemLabel="Seleccione un formato" />
+										<f:selectItem itemValue="pdf" itemLabel="PDF" />
+										<f:selectItem itemValue="xls" itemLabel="XLS" />
+										<p:ajax event="change" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Proceso" />
+									<p:selectOneMenu value="#{reporteBean.proceso}">
+										<f:selectItem itemValue="" itemLabel="Seleccione un proceso" />
+										<f:selectItems value="#{reporteBean.procesos}" var="proceso"
+											itemValue="#{proceso.id}"
+											itemLabel="#{proceso.id} | #{proceso.observacion}" />
+										<p:ajax event="change"
+											listener="#{reporteBean.obtenerCarreras}"
+											update="formParametros" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Carrera" />
+									<p:selectOneMenu value="#{reporteBean.carrera}" filter="true"
+										filterMatchMode="contains" autoWidth="false">
+										<f:selectItem itemValue="0" itemLabel="Seleccione un carrera" />
+										<f:selectItems value="#{reporteBean.carreras}" var="carrera"
+											itemValue="#{carrera.id}"
+											itemLabel="#{carrera.nombre} | #{carrera.id}" />
+										<p:ajax event="change" update="formParametros"
+											listener="#{reporteBean.cargarDatosReportes}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Malla"
+										rendered="#{reporteBean.esCoordinador}" />
+									<p:selectOneMenu value="#{reporteBean.malla}" filter="true"
+										rendered="#{reporteBean.esCoordinador}"
+										filterMatchMode="contains" autoWidth="false">
+										<f:selectItem itemValue="0" itemLabel="Seleccione una malla" />
+										<f:selectItems value="#{reporteBean.mallas}" var="malla"
+											itemValue="#{malla.id}" itemLabel="#{malla.id}" />
+										<p:ajax event="change" listener="#{reporteBean.cambioMalla}" />
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+
+						</h:form>
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Estudiantes que participan del proceso"
+										actionListener="#{reporteBean.participantes}" ajax="false"
+										update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Cumplimiento general de reactivos teóricos"
+										actionListener="#{reporteBean.cumplimientoGeneralReactivosTeoricos}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Cumplimiento de reactivos teóricos por docente"
+										actionListener="#{reporteBean.cumplimientoReactivosTeoricosDocentes}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Banco de reactivos teóricos"
+										rendered="#{reporteBean.esCoordinador}"
+										actionListener="#{reporteBean.bancoReactivosTeoricos}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Listado de asistencia al examen complexivo teórico"
+										actionListener="#{reporteBean.listadoAsistenciaExamenComplexivoPT}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Resultados del examen complexivo teórico"
+										actionListener="#{reporteBean.resultadoExamenComplexivoTeorico}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Cumplimiento general de reactivos prácticos"
+										actionListener="#{reporteBean.cumplimientoGeneralReactivosPracticos}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Cumplimiento de reactivos prácticos por docente"
+										actionListener="#{reporteBean.cumplimientoReactivosPracticosDocentes}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Banco de reactivos prácticos"
+										actionListener="#{reporteBean.bancoReactivosPracticos}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Reactivos prácticos seleccionados"
+										actionListener="#{reporteBean.reactivosPracticosSeleccionados}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Calificacion Examen Complexivo - Parte Teórica"
+										actionListener="#{reporteBean.calificacionExamenComplexivoPT}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+								<h:form>
+									<p:commandButton
+										value="Tutor y comité evaluador para aprobación Trabajo Titulación"
+										actionListener="#{reporteBean.tutorComiteEvaluadorConsejoDirectivoTrabajoTitulacion}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Tutor y comité evaluador para aprobación Examen Complexivo"
+										actionListener="#{reporteBean.tutorComiteEvaluadorConsejoDirectivo}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton rendered="#{reporteBean.esCoordinador}"
+										value="Información tutorías Trabajos de Titulación"
+										actionListener="#{reporteBean.tutoriasTrabajoTitulacion}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton value="Información tutorías Examen Complexivo"
+										actionListener="#{reporteBean.tutoriasExamenComplexivo}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+								<h:form>
+
+									<p:commandButton
+										value="Listado líneas investigación, seminarios, temas de investigación y estudiantes - Trabajo Titulación"
+										actionListener="#{reporteBean.estudiantesTrabajosTitulacionLineasSeminariosTemas}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Título investigación estudiantes graduados (Examen Complexivo)"
+										actionListener="#{reporteBean.listadoEstudiantesTitulosInvetigacionExamenComplexivo}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form>
+
+									<p:commandButton
+										value="Título investigación estudiantes graduados (Trabajo Titulación)"
+										actionListener="#{reporteBean.listadoEstudiantesTitulosInvetigacionTrabajoTitulacion}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+								<h:form
+									rendered="#{reporteBean.esUmmog or reporteBean.esAnalista}">
+									<p:commandButton
+										value="Estadísticas Dependencias No Adeudar (Examen Complexivo)"
+										actionListener="#{reporteBean.estadisticasNoAdeudarUmmog_EC}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esUmmog or reporteBean.esAnalista}">
+									<p:commandButton
+										value="Estadísticas Dependencias No Adeudar (Trabajo Titulación)"
+										actionListener="#{reporteBean.estadisticasNoAdeudarUmmog_TT}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esUmmog or reporteBean.esAnalista}">
+									<p:commandButton
+										value="Listado de estudiante aprobados, archivos subidos y biblioteca (Examen Complexivo)"
+										actionListener="#{reporteBean.estudiantesAprobadosArchivosyBiblioteca_EC}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esUmmog or reporteBean.esAnalista}">
+									<p:commandButton
+										value="Listado de estudiante aprobados, archivos subidos y biblioteca (Trabajo Titulación)"
+										actionListener="#{reporteBean.estudiantesAprobadosArchivosyBiblioteca_TT}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esCoordinador or reporteBean.esUmmog or reporteBean.esAnalista}">
+									<p:commandButton
+										value="Estadísticas Examen Complexivo Parte Teórica (escoger malla)"
+										actionListener="#{reporteBean.estadisticaEC_PT}" ajax="false"
+										update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form rendered="#{reporteBean.esCoordinador}">
+									<p:commandButton
+										value="Estadísticas Examen Complexivo Parte Práctica (escoger malla)"
+										actionListener="#{reporteBean.estadisticaEC_PP}" ajax="false"
+										update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form rendered="#{reporteBean.esCoordinador}">
+									<p:commandButton
+										value="Estadísticas Trabajo Titulación (escoger malla)"
+										actionListener="#{reporteBean.estadisticaTT}" ajax="false"
+										update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esCoordinador or reporteBean.esUmmog}">
+									<p:commandButton value="Estudiantes con Urkund y Citas"
+										actionListener="#{reporteBean.estudiantesUrkundCitas}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+								<h:form
+									rendered="#{reporteBean.esCoordinador or reporteBean.esUmmog}">
+									<p:commandButton
+										value="Estudiantes aprobados con enlace biblioteca"
+										actionListener="#{reporteBean.estudiantesAprobadosEnlaceBiblioteca}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+
+							</div>
+
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esCoordinador or reporteBean.esUmmog}">
+									<p:commandButton
+										value="Estudiantes Examen Complexivo Calificaciones"
+										actionListener="#{reporteBean.estudiantesExamenComplexivoCalificaciones}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form
+									rendered="#{reporteBean.esCoordinador or reporteBean.esUmmog}">
+									<p:commandButton
+										value="Estudiantes Trabajos Titulacion Calificaciones"
+										actionListener="#{reporteBean.estudiantesTrabajoTitulacionCalificaciones}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+						</div>
+
+						<hr />
+
+						<div class="ui-g">
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form rendered="#{reporteBean.esUmmog}">
+									<p:commandButton value="Estudiantes Aprobados Tesorería"
+										rendered="#{reporteBean.esAdministrador or reporteBean.esUmmog}"
+										type="button" onclick="PF('dlgEstudiantesTesoreria').show();" />
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form rendered="#{reporteBean.esUmmog}">
+									<p:commandButton value="Aptitud Legal"
+										rendered="#{reporteBean.esAdministrador or reporteBean.esUmmog}"
+										actionListener="#{reporteBean.imprimirAptitudLegal}"
+										ajax="false" update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+								<h:form rendered="#{reporteBean.esUmmog}">
+									<p:commandButton value="Acta de Graduación"
+										rendered="#{reporteBean.esAdministrador or reporteBean.esUmmog}"
+										actionListener="#{reporteBean.actaGraduacion}" ajax="false"
+										update=":mensaje">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</h:form>
+							</div>
+
+							<div class="ui-g-12 ui-md-6 ui-lg-3">
+
+								<h:form rendered="#{reporteBean.esUmmog}">
+									<p:commandButton value="Estudiantes Aprobados Secretaría"
+										rendered="#{reporteBean.esAdministrador or reporteBean.esUmmog}"
+										type="button" onclick="PF('dlgEstudiantesSecretaria').show();" />
+								</h:form>
+
+							</div>
+
+						</div>
+
+					</p:panel>
+
+					<p:dialog header="Generar listado para Tesoreria."
+						widgetVar="dlgEstudiantesTesoreria" modal="true" height="300 px"
+						width="500px">
+						<h:form rendered="#{reporteBean.esUmmog}"
+							id="formEstudiantesAprobadosTesoreria">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<h:outputText value="Indicar la fecha de graduación" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:calendar id="txtFechaGraduacion"
+											value="#{reporteBean.fechaActaGraduacion}" navigator="true"
+											pattern="yyyy-MM-dd" />
+									</div>
+								</div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<h:outputText value="Ingresar número de oficio UMMOG" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputText value="#{reporteBean.numeroOficioUMMOGTesoreria}"
+											required="true" id="txtEstudiantesAprobadosTesoreria"
+											placeholder="201_-xxx"
+											requiredMessage="Por favor, llene el campo de Número de oficio UMMOG." />
+									</div>
+								</div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:commandButton id="btnEstudiantesAprobadosTesoreria"
+											value="Registrar e Imprimir" type="button"
+											onclick="validarIngresoInformacion();" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:commandButton value="Cancelar" type="button"
+											onclick="PF('dlgEstudiantesTesoreria').hidden();" />
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:dialog>
+
+					<p:dialog header="Confirmar"
+						widgetVar="dlgEstudiantesTesoreriaConfirmar" modal="true"
+						width="600px">
+						<h:form id="formEstudiantesAprobadosTesoreriaConfirmar"
+							rendered="#{reporteBean.esUmmog}">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<h:outputText
+										value="Recuerde que si es la primera vez que registra un número de oficio, éste actualizará a todos los estudiantes que tengan una fecha de graduación. Caso contrario si ya ha generado un listado previo, este mismo número de oficio descargará a los estudiantes que hayan sido asignados previamente." />
+								</div>
+							</div>
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:inputText id="txtEstudiantesAprobadosTesoreriaConfirmar"
+										value="#{reporteBean.numeroOficioUMMOGTesoreria}"
+										required="true" style="visibility:hidden;" />
+									<p:calendar id="txtFechaGraduacionConfirmar"
+										value="#{reporteBean.fechaActaGraduacion}" navigator="true"
+										pattern="yyyy-MM-dd" style="visibility:hidden;" />
+								</div>
+							</div>
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-6 UiGridCol">
+									<p:commandButton value="Aceptar" ajax="false" update=":mensaje"
+										oncomplete="PF('dlgEstudiantesTesoreriaConfirmar').show();"
+										actionListener="#{reporteBean.estudiantesAprobadosTesoreria}">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</div>
+								<div class="ui-grid-col-6 UiGridCol">
+									<p:commandButton value="Cancelar" type="button"
+										onclick="PF('dlgEstudiantesTesoreriaConfirmar').hidden();" />
+								</div>
+							</div>
+						</h:form>
+					</p:dialog>
+
+
+
+					<p:dialog header="Generar listado para Secretaria."
+						widgetVar="dlgEstudiantesSecretaria" modal="true" height="300 px"
+						width="500px">
+						<h:form rendered="#{reporteBean.esUmmog}"
+							id="formEstudiantesAprobadosSecretaria">
+							<div class="ui-grid ui-grid-responsive">
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<h:outputText value="Ingresar número de oficio UMMOG" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:inputText
+											value="#{reporteBean.numeroOficioUMMOGSecretaria}"
+											required="true" id="txtEstudiantesAprobadosSecretaria"
+											placeholder="201_-xxx"
+											requiredMessage="Por favor, llene el campo de Número de oficio UMMOG." />
+									</div>
+								</div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<h:outputText value="Indicar la fecha del oficio" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:calendar id="txtfechaOficioUMMOGSecretaria"
+											value="#{reporteBean.fechaOficioUMMOGSecretaria}"
+											navigator="true" pattern="yyyy-MM-dd" />
+									</div>
+								</div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<h:outputText
+											value="Indicar si existen estudios de homologaciones" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:selectBooleanButton id="chkHomologaciones"
+											value="#{reporteBean.estudiosHomologaciones}" onLabel="Si"
+											offLabel="No" style="width:60px" />
+									</div>
+								</div>
+
+								<div class="ui-grid-row">
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:commandButton id="btnEstudiantesAprobadosSecretaria"
+											value="Registrar e Imprimir" type="button"
+											onclick="validarIngresoInformacionSecretaria();" />
+									</div>
+									<div class="ui-grid-col-6 UiGridCol">
+										<p:commandButton value="Cancelar" type="button"
+											onclick="PF('dlgEstudiantesSecretaria').hidden();" />
+									</div>
+								</div>
+							</div>
+						</h:form>
+					</p:dialog>
+
+					<p:dialog header="Confirmar"
+						widgetVar="dlgEstudiantesSecretariaConfirmar" modal="true"
+						width="600px">
+						<h:form id="formEstudiantesAprobadosSecretariaConfirmar"
+							rendered="#{reporteBean.esUmmog}">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<h:outputText
+										value="Recuerde que si es la primera vez que registra un número de oficio, éste actualizará a todos los estudiantes que tengan una fecha de graduación, actas de graduación y aquellos que han sido validadados en las dependencias de no adeudar. Caso contrario si ya ha generado un listado previo, este mismo número de oficio descargará a los estudiantes que hayan sido asignados previamente." />
+								</div>
+							</div>
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-12 UiGridCol">
+									<p:inputText id="txtEstudiantesAprobadosSecretariaConfirmar"
+										value="#{reporteBean.numeroOficioUMMOGSecretaria}"
+										required="true" style="visibility:hidden;" />
+									<p:calendar id="txtfechaOficioUMMOGSecretariaConfirmar"
+										value="#{reporteBean.fechaOficioUMMOGSecretaria}"
+										navigator="true" pattern="yyyy-MM-dd"
+										style="visibility:hidden;" />
+									<p:selectBooleanButton id="chkHomologacionesConfirmacion"
+										value="#{reporteBean.estudiosHomologaciones}" onLabel="Si"
+										offLabel="No" style="width:60px;visibility:hidden;" />
+								</div>
+							</div>
+
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-6 UiGridCol">
+									<p:commandButton value="Aceptar" ajax="false" update=":mensaje"
+										oncomplete="PF('dlgEstudiantesSecretariaConfirmar').show();"
+										actionListener="#{reporteBean.estudiantesAprobadosSecretaria}">
+										<p:fileDownload value="#{reporteBean.documento}" />
+									</p:commandButton>
+								</div>
+								<div class="ui-grid-col-6 UiGridCol">
+									<p:commandButton value="Cancelar" type="button"
+										onclick="PF('dlgEstudiantesSecretariaConfirmar').hidden();" />
+								</div>
+							</div>
+						</h:form>
+					</p:dialog>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>
