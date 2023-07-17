@@ -1,4 +1,7 @@
 pipeline {
+    agent {
+        label 'maven'
+    }
 
     stages {
         stage('Source') {
