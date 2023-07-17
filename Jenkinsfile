@@ -12,7 +12,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building stage!'
-                sh 'make build'
+                sh 'mvn clean'
+				sh 'mvn install'
             }
         }
     }
