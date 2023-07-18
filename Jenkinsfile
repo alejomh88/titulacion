@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Scan!'
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
-		  sh './mvnw clean package org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.3:sonar'
+		  sh 'mvn clean package sonar:sonar'
 		}
             }
         }
