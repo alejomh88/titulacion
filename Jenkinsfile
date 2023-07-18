@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Scan!'
                 withSonarQubeEnv(installationName: 'sonarqubetest')
-		  sh 'mvn clean package sonar:sonar'
+		  sh './mvnw clean package sonar:sonar'
             }
         }
     }
