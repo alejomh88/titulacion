@@ -17,14 +17,12 @@ pipeline {
         }
 	stage('Build docker image'){
             steps{
-                script{
 		   withDockerServer([uri: "tcp://172.17.0.1:2375"]) {
   			withDockerRegistry([credentialsId: 'dockerhubpwd', url: "https://hub.docker.com/repositories/alejo88"]) {
     			sh '''
       			docker build -t whatever .
       			docker push whatever
 	  		'''
-			}
 		    }
                 }
             }
