@@ -43,6 +43,6 @@ public class UtilityJUnitTest {
      @Test
      public void convertirFechaTexto() {
          System.out.println(UtilsDate.convertirDateATexto(new Date()));
-         assertEquals("diecinueve días del mes de julio de dos mil ventitres", UtilsDate.convertirDateATexto(new Date()));
+         assertEquals("veinte días del mes de julio de dos mil ventitres", UtilsDate.convertirDateATexto(new Date()));
      }
 }
