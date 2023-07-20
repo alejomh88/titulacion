@@ -22,7 +22,9 @@ pipeline {
         // we give the image the same version as the .war package
         image = docker.build("<docker_cloud_user_id>/mywebapp", "MyWebApp")
         image.push()
-      }  
+      		}  
+    	    }
+	}
 	/*
 	stage('Scan') {
             steps {
