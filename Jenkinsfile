@@ -15,7 +15,8 @@ pipeline {
 		sh 'mvn clean install'
             }
         }
-	stage ('Docker image build and push') {
+	stage('Docker image build and push') {
+		steps {
     		// Build and push image with Jenkins' docker-plugin
     		withDockerServer([uri: "tcp://172.17.0.1:2375"]) {
       		withDockerRegistry([credentialsId: "dockerhubpwd", url: "https://hub.docker.com/repositories/alejo88"]) {
@@ -24,6 +25,7 @@ pipeline {
         	image.push()
       		}  
     	    }
+	}
 	}
 	/*
 	stage('Scan') {
