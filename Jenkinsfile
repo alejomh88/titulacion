@@ -18,7 +18,9 @@ pipeline {
 	stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t alejo88/devops-integration .'
+		    docker.withServer('tcp://172.17.0.1:2375') {
+  		    def myImage = docker.build('alejo88/devops-integration')
+                    //sh 'docker build -t alejo88/devops-integration .'
                 }
             }
         }
