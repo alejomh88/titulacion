@@ -9,6 +9,7 @@ import ec.edu.utmachala.titulacion.entity.Carrera;
 import ec.edu.utmachala.titulacion.entity.DocenteAsignatura;
 import ec.edu.utmachala.titulacion.entity.EstudianteBiblioteca;
 import ec.edu.utmachala.titulacion.entity.EstudianteExamenComplexivoPP;
+import ec.edu.utmachala.titulacion.entity.MallaCurricular;
 import ec.edu.utmachala.titulacion.entity.Parametro;
 import ec.edu.utmachala.titulacion.entity.Proceso;
 import ec.edu.utmachala.titulacion.entity.UnidadCurricular;
@@ -18,6 +19,7 @@ import ec.edu.utmachala.titulacion.service.AsignaturaService;
 import ec.edu.utmachala.titulacion.service.CarreraService;
 import ec.edu.utmachala.titulacion.service.DocenteAsignaturaService;
 import ec.edu.utmachala.titulacion.service.EstudiantesExamenComplexivoPPService;
+import ec.edu.utmachala.titulacion.service.MallaCurricularService;
 import ec.edu.utmachala.titulacion.service.ParametroService;
 import ec.edu.utmachala.titulacion.service.ProcesoService;
 import ec.edu.utmachala.titulacion.service.UsuarioService;
@@ -124,6 +126,9 @@ public class AdministrarAsignaturaBeanTest {
     
     @Mock
     private UtilsMail utilsMail;
+    
+    @Mock
+    private MallaCurricularService mallaCurricularService;
     
     @Before
     public void setUp() {
@@ -464,92 +469,9 @@ public class AdministrarAsignaturaBeanTest {
         assertEquals(expectedMessages.get(0).getDetail(), captured.getDetail());
     	    	
     }
-    
-    /*@Test
-    public void testguardarDocente()
-    {
-    	ArgumentCaptor<String> clientIdCaptor = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<FacesMessage> facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
-		List<FacesMessage> expectedMessages = new ArrayList<>();
-		Integer carrera=20;
-		Carrera c = new Carrera();
-		List<Proceso> procesos = new ArrayList<Proceso>();
-		procesos.add(new Proceso());
-		List<File> listAdjunto = null;
-		String detalle="";
-		String asunto="";
-		
-		Parametro parametro = new Parametro();
-		Map<String, String> parametros = new HashMap<>();
-		parametros.put("emailEmisor", "titulacion_sv1@utmachala.edu.ec");
-		//parametros.put("emailEmisor", "armoroch@pichincha.com");
-		//parametros.put("passEmail", "passEmail");
-		parametros.put("passEmail", "Sieger2711*");
-		parametros.put("mailSmtpHost", "smtp.Gmail.com");
-		//parametros.put("mailSmtpHost", "smtppichincha.uio.bpichincha.com");
-		parametros.put("mailSmtpPort", "587");
-		//parametros.put("mailSmtpPort", "25");
-		parametros.put("mailSmtpAuth", String.valueOf(true));
-		parametros.put("mailSmtpSslTrust", "*");
-		parametros.put("mailSmtpStartTlsEnable", String.valueOf(true));
-		
-		expectedMessages.add(new FacesMessage(FacesMessage.SEVERITY_INFO, "MENSAJE DEL SISTEMA", "El docente ha sido asignado a la asignatura correctamente."));
-		
-		when(carreraMallaProcesoAgrupado.getCarrera()).thenReturn("10 - 20,500");
-		when(carreraService.obtenerObjeto("select c from Carrera c where c.id=?1",
-				new Object[] { carrera }, false, new Object[] {})).thenReturn(c);
-		when(procesoService.obtenerLista(
-				"select p from Proceso p inner join p.carreraMallaProceso cmp inner join cmp.mallaCurricular mc where mc.id=?1 order by p.fechaInicio ",
-				new Object[] { carreraMallaProcesoAgrupado.getMalla() }, 0, false, new Object[] {})).thenReturn(procesos);
-		when(parametroService.obtener()).thenReturn(parametro);
-		when(parametroService.traerMap(parametro)).thenReturn(parametros);
-		when(docente.getEmail()).thenReturn("mail@mail.com");
-		
-	    when(facesContext.getMessageList()).thenReturn(expectedMessages);
-	    when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
-	       
-	    administrarAsignaturaBeanController.guardarDocente();
-	    
-	    verify(facesContext).addMessage(clientIdCaptor.capture(),facesMessageCaptor.capture());
-		
-        assertNull(clientIdCaptor.getValue());
-	
-        FacesMessage captured = facesMessageCaptor.getValue();
-	    
-        assertEquals(expectedMessages.get(0).getSeverity(), captured.getSeverity());
-        assertEquals(expectedMessages.get(0).getSummary(), captured.getSummary());
-        assertEquals(expectedMessages.get(0).getDetail(), captured.getDetail());
-    }
-    
+ 
     @Test
-    public void testguardarDocenteException()
-    {
-    	ArgumentCaptor<String> clientIdCaptor = ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<FacesMessage> facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
-		List<FacesMessage> expectedMessages = new ArrayList<>();
-		
-		expectedMessages.add(new FacesMessage(FacesMessage.SEVERITY_INFO, "MENSAJE DEL SISTEMA", "Error en el servidor de tipo: "));
-		
-		when(carreraMallaProcesoAgrupado.getCarrera()).thenReturn("10 - 20,500");
-		
-	    when(facesContext.getMessageList()).thenReturn(expectedMessages);
-	    when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
-	    
-	    administrarAsignaturaBeanController.guardarDocente();
-	    
-	    verify(facesContext).addMessage(clientIdCaptor.capture(),facesMessageCaptor.capture());
-		
-        assertNull(clientIdCaptor.getValue());
-	
-        FacesMessage captured = facesMessageCaptor.getValue();
-        //System.out.println(captured.getDetail());
-        assertEquals(expectedMessages.get(0).getSeverity(), captured.getSeverity());
-        assertEquals(expectedMessages.get(0).getSummary(), captured.getSummary());
-        assertEquals((expectedMessages.get(0).getDetail().toString().substring(0, 30)), (captured.getDetail().toString().substring(0, 30)));   	    	
-    }
-    
-    @Test
-    public void testInsertar()
+    public void testInsertarAsignaturaEmpty()
     {
     	ArgumentCaptor<String> clientIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<FacesMessage> facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
@@ -557,10 +479,18 @@ public class AdministrarAsignaturaBeanTest {
 
         expectedMessages.add(new FacesMessage(FacesMessage.SEVERITY_INFO, "MENSAJE DEL SISTEMA", "Ingrese un nombre de la asignatura"));
 		
-    	Asignatura testAsignatura = new Asignatura();
-    	testAsignatura.setNombre("Contabilidad");
-    	
-        when(asignatura.getNombre()).thenReturn(testAsignatura.getNombre());
+    	Asignatura tAsignatura = new Asignatura();
+    	tAsignatura.setNombre("");
+        UnidadCurricular tUnidad = new UnidadCurricular();
+        tUnidad.setId("1");
+        tUnidad.setNombre("Test");
+        tAsignatura.setUnidadCurricular(tUnidad);
+    	MallaCurricular mc = new MallaCurricular();
+        when(asignatura.getNombre()).thenReturn(tAsignatura.getNombre());
+        when(asignatura.getUnidadCurricular()).thenReturn(tAsignatura.getUnidadCurricular());
+        when(mallaCurricularService.obtenerObjeto(
+					"select mc from MallaCurricular mc where mc.id=?1",
+					new Object[] { carreraMallaProcesoAgrupado.getMalla() }, false, new Object[0])).thenReturn(mc);
         
     	when(facesContext.getMessageList()).thenReturn(expectedMessages);
 	when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
@@ -576,6 +506,80 @@ public class AdministrarAsignaturaBeanTest {
         assertEquals(expectedMessages.get(0).getSeverity(), captured.getSeverity());
         assertEquals(expectedMessages.get(0).getSummary(), captured.getSummary());
         assertEquals(expectedMessages.get(0).getDetail(), captured.getDetail());
-    }*/
+    }
 
+    @Test
+    public void testInsertarUnidadCurricularEmpty()
+    {
+    	ArgumentCaptor<String> clientIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<FacesMessage> facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
+        List<FacesMessage> expectedMessages = new ArrayList<>();
+
+        expectedMessages.add(new FacesMessage(FacesMessage.SEVERITY_INFO, "MENSAJE DEL SISTEMA", "Escoger la unidad curricular."));
+		
+    	Asignatura tAsignatura = new Asignatura();
+    	tAsignatura.setNombre("CONTABILIDAD");
+        UnidadCurricular tUnidad = new UnidadCurricular();
+        tUnidad.setId("0");
+        tAsignatura.setUnidadCurricular(tUnidad);
+    	MallaCurricular mc = new MallaCurricular();
+        when(asignatura.getNombre()).thenReturn(tAsignatura.getNombre());
+        when(asignatura.getUnidadCurricular()).thenReturn(tAsignatura.getUnidadCurricular());
+        when(mallaCurricularService.obtenerObjeto(
+					"select mc from MallaCurricular mc where mc.id=?1",
+					new Object[] { carreraMallaProcesoAgrupado.getMalla() }, false, new Object[0])).thenReturn(mc);
+        
+    	when(facesContext.getMessageList()).thenReturn(expectedMessages);
+	when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
+	    
+    	administrarAsignaturaBeanController.insertar();
+    	
+    	verify(facesContext).addMessage(clientIdCaptor.capture(),facesMessageCaptor.capture());
+		
+        assertNull(clientIdCaptor.getValue());
+	
+        FacesMessage captured = facesMessageCaptor.getValue();
+	    
+        assertEquals(expectedMessages.get(0).getSeverity(), captured.getSeverity());
+        assertEquals(expectedMessages.get(0).getSummary(), captured.getSummary());
+        assertEquals(expectedMessages.get(0).getDetail(), captured.getDetail());
+    }
+    
+    @Test
+    public void testInsertarAsignatura()
+    {
+    	ArgumentCaptor<String> clientIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<FacesMessage> facesMessageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
+        List<FacesMessage> expectedMessages = new ArrayList<>();
+
+        expectedMessages.add(new FacesMessage(FacesMessage.SEVERITY_INFO, "MENSAJE DEL SISTEMA", "Inserto la asignatura correctamente"));
+		
+    	Asignatura tAsignatura = new Asignatura();
+    	tAsignatura.setNombre("CONTABILIDAD");
+        UnidadCurricular tUnidad = new UnidadCurricular();
+        tUnidad.setId("1");
+        tAsignatura.setUnidadCurricular(tUnidad);
+    	MallaCurricular mc = new MallaCurricular();
+        when(asignatura.getNombre()).thenReturn(tAsignatura.getNombre());
+        when(asignatura.getUnidadCurricular()).thenReturn(tAsignatura.getUnidadCurricular());
+        when(mallaCurricularService.obtenerObjeto(
+					"select mc from MallaCurricular mc where mc.id=?1",
+					new Object[] { carreraMallaProcesoAgrupado.getMalla() }, false, new Object[0])).thenReturn(mc);
+        
+    	when(facesContext.getMessageList()).thenReturn(expectedMessages);
+	when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
+	    
+    	administrarAsignaturaBeanController.insertar();
+    	
+    	verify(facesContext).addMessage(clientIdCaptor.capture(),facesMessageCaptor.capture());
+		
+        assertNull(clientIdCaptor.getValue());
+	
+        FacesMessage captured = facesMessageCaptor.getValue();
+	    
+        assertEquals(expectedMessages.get(0).getSeverity(), captured.getSeverity());
+        assertEquals(expectedMessages.get(0).getSummary(), captured.getSummary());
+        assertEquals(expectedMessages.get(0).getDetail(), captured.getDetail());
+    }
+    
 }
