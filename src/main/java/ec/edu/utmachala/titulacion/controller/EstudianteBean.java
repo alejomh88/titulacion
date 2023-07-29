@@ -94,7 +94,7 @@ public class EstudianteBean implements Serializable {
 			boolPanelPrincipal = true;
 			boolPanelEditar = false;
 
-			presentaMensaje(FacesMessage.SEVERITY_INFO, "Actualizó correctamente los datos del docente", "cerrar",
+			presentaMensaje(FacesMessage.SEVERITY_INFO, "Actualizó correctamente los datos del estudiante", "cerrar",
 					true);
 		}
 	}
