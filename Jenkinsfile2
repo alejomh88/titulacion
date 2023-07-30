@@ -21,8 +21,6 @@ stage("Deploy to EKS") {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
 			kubectl create namespace development
-			kubectl config set-context devcontext --namespace=development
-			kubectl config use-context devcontext
                         sh "kubectl apply -f deployNodev5.yml"
                     }
                 }
