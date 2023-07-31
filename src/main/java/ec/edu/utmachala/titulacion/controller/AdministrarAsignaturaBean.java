@@ -162,7 +162,7 @@ public class AdministrarAsignaturaBean implements Serializable {
 		asignatura.setNombre(asignatura.getNombre().toUpperCase());
 		if (asignatura.getNombre().compareToIgnoreCase("") == 0)
 			UtilsAplicacion.presentaMensaje(FacesMessage.SEVERITY_INFO, "Ingrese un nombre");
-		if (asignatura.getUnidadCurricular().getId().compareToIgnoreCase("") == 0)
+                else if (asignatura.getUnidadCurricular().getId().compareToIgnoreCase("") == 0)
 			UtilsAplicacion.presentaMensaje(FacesMessage.SEVERITY_INFO, "Ingrese una unidad curricular");
 		else {
 			asignaturaService.actualizar(asignatura);
@@ -317,7 +317,7 @@ public class AdministrarAsignaturaBean implements Serializable {
 	}
 
 	public void guardarDocente() {
-		if (docente == null) {
+		if (docente.getId() == "") {
 			UtilsAplicacion.presentaMensaje(FacesMessage.SEVERITY_INFO, "No ha seleccionado un docente.");
 		} else {
 			try {

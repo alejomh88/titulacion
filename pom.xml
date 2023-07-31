@@ -111,6 +111,8 @@
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>spark</artifactId>
 			<version>1.3</version>
+			<scope>system</scope>
+			<systemPath>/var/spark-1.3.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -306,6 +308,7 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
 	<build>
         <finalName>devops-integration</finalName>
     </build>

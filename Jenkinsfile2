@@ -15,5 +15,16 @@ stages {
                 }
             }
         }
+stage("Deploy to EKS") {
+            steps {
+                script {
+                    dir('kubernetes') {
+                        sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "kubectl apply -f deployNodev5.yml"
+                    }
+                }
+            }
+        }
+
 	}
 }

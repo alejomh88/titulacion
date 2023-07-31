@@ -4,13 +4,17 @@
  */
 package ec.edu.utmachala.titulacion.utility;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.text.ParseException;  
 
 /**
  *
@@ -42,6 +46,5 @@ public class UtilityJUnitTest {
     //
      @Test
      public void convertirFechaTexto() {
-       
      }
 }
