@@ -28,7 +28,8 @@ pipeline {
         //             sh 'mvn clean package sonar:sonar'
         //         }
         //     }
-        }
+        //}
+
         stage('Build') {
             steps {
                 echo 'Building stage!'
@@ -48,5 +49,6 @@ pipeline {
                     }
                 }
             }
+        }
         }
     }
