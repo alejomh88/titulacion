@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    parameters {
+            string(name: 'ImageName', description: 'name of the docker build', defaultValue: 'devops-integration')
+            string(name: 'ImageTag', description: 'tag of the docker build', defaultValue: '001')
+            string(name: 'DockerHubUser', description: 'name of the Application', defaultValue: 'alejo88')
+    }
+
+    stages {
+        stage('Source') {
+            steps {
+                git 'https://github.com/alejomh88/titulacion.git'
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                echo 'Unit Test stage!'
+                sh 'mvn test'
+            }
+        }
+        // stage('Sonarqube Scan') {
+        //     steps {
+        //         echo 'Sonarqube Scan stage!'
+        //         withSonarQubeEnv(installationName: 'sonarqubetest') {
+        //             sh 'mvn clean package sonar:sonar'
+        //         }
+        //     }
+        //}
+
+        stage('Build') {
+            steps {
+                echo 'Building stage!'
+                sh 'mvn clean install'
+            }
+        }
+        stage('Docker image build and push') {
+            steps {
+                script {
+                    // Build and push image with Jenkins' docker-plugin
+                    withDockerServer([uri: 'tcp://172.17.0.1:2375']) {
+                        withDockerRegistry(credentialsId: 'dockerHubCredentials', url: 'https://index.docker.io/v1/') {
+                            // we give the image the same version as the .war package
+                            image = docker.build("${params.DockerHubUser}/" + "${params.ImageName}:" + "${params.ImageTag}", '.')
+                            image.push()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
