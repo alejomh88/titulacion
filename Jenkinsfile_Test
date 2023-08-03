@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-            IMAGE_NAME = 'devops-integration'
-            IMAGE_TAG = '002'
-            DOCKER_HUB_USER = 'alejo88'
+        IMAGE_NAME = 'devops-integration'
+        IMAGE_TAG = '002'
+        DOCKER_HUB_USER = 'alejo88'
     }
 
     stages {
@@ -17,6 +17,13 @@ pipeline {
             steps {
                 echo 'Unit Test stage!'
                 sh 'mvn test'
+            }
+        }
+
+        stage('Integration Test') {
+            steps {
+                echo 'Integration Test stage!'
+                sh 'mvn verify'
             }
         }
         // stage('Sonarqube Scan') {
@@ -42,8 +49,8 @@ pipeline {
                             image = docker.build("${DOCKER_HUB_USER}/" + "${IMAGE_NAME}:" + "${IMAGE_TAG}", '.')
                             image.push()
                         }
-                }
                     }
+                }
             }
         }
     }
