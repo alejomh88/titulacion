@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    parameters {
-            string(name: 'ImageName', description: 'name of the docker build', defaultValue: 'devops-integration')
-            string(name: 'ImageTag', description: 'tag of the docker build', defaultValue: '001')
-            string(name: 'DockerHubUser', description: 'name of the Application', defaultValue: 'alejo88')
+    environment {
+            IMAGE_NAME = 'devops-integration'
+            IMAGE_TAG = '002'
+            DOCKER_HUB_USER = 'alejo88'
     }
 
     stages {
@@ -41,7 +41,7 @@ pipeline {
                     withDockerServer([uri: 'tcp://172.17.0.1:2375']) {
                         withDockerRegistry(credentialsId: 'dockerHubCredentials', url: 'https://index.docker.io/v1/') {
                             // we give the image the same version as the .war package
-                            image = docker.build("${params.DockerHubUser}/" + "${params.ImageName}:" + "${params.ImageTag}", '.')
+                            image = docker.build("${DOCKER_HUB_USER}/" + "${IMAGE_NAME}:" + "${IMAGE_TAG}", '.')
                             image.push()
                         }
                     }
