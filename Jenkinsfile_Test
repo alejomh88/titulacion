@@ -61,4 +61,11 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+		    archiveArtifacts artifacts: 'results/*.xml'
+            junit 'results/*_result.xml'
+            cleanWs()
+        }
+    }
 }
