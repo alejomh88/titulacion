@@ -55,5 +55,10 @@ pipeline {
                 }
             }
         }
+        stage('Slack notification') {
+            steps {
+                slackSend channel: 'EduGPT', message: 'Ejecución exitosa Pipeline Test', teamDomain: 'edugptespacio', tokenCredentialId: 'slack'
+            }
+        }
     }
 }
