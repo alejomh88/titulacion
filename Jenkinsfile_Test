@@ -18,7 +18,6 @@ pipeline {
             steps {
                 echo 'Unit Test stage!'
                 sh 'mvn test'
-		archiveArtifacts artifacts: 'results/*.xml'
             }
         }
 
@@ -64,8 +63,7 @@ pipeline {
     }
     post {
         always {
-            junit 'results/*_result.xml'
-            cleanWs()
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
