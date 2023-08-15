@@ -14,9 +14,9 @@ pipeline {
                 git 'https://github.com/alejomh88/titulacion.git'
             }
         }
-        stage('Unit Test') {
+        stage('Build and Test') {
             steps {
-                echo 'Unit Test stage!'
+                echo 'Build and Test!'
                 sh 'mvn test'
             }
             post {
