@@ -17,7 +17,7 @@ pipeline {
         stage('Build and Test') {
             steps {
                 echo 'Build and Test!'
-                sh 'mvn test'
+                sh 'mvn clean install'
             }
             post {
                 always {
@@ -26,12 +26,6 @@ pipeline {
             }
         }
 
-        stage('Integration Test') {
-            steps {
-                echo 'Integration Test stage!'
-                sh 'mvn verify'
-            }
-        }
         // stage('Sonarqube Scan') {
         //     steps {
         //         echo 'Sonarqube Scan stage!'
@@ -41,12 +35,6 @@ pipeline {
         //     }
         //}
 
-        stage('Build') {
-            steps {
-                echo 'Building stage!'
-                sh 'mvn clean install'
-            }
-        }
         stage('Docker image build and push') {
             steps {
                 script {
