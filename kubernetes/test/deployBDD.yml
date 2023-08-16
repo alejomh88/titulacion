@@ -1,0 +1,95 @@
+#Persistent Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  awsElasticBlockStore:
+    volumeID: aws://us-east-1a/vol-0fabdad586ba50af7
+    fsType: ext4
+  persistentVolumeReclaimPolicy: Recycle
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc
+  labels:
+    type: amazonEBS
+spec:
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+
+#ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: postgresdb
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: test123
+ 
+---
+
+#Server BDD
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "postgres-dpt"
+spec:
+  selector:
+    matchLabels:
+      app: "postgresdpt"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "postgresdpt"
+    spec:
+      containers:
+        - name: "postgresdpt"
+          image: "postgres:12-alpine"
+          ports:
+            - containerPort: 5432
+              name: "postgresdpt"
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+
+          volumeMounts:
+            - name: "postgresdb-persistent-storage"
+              mountPath: "/var/lib/postgresql/data"
+              subPath: "postgres"
+
+      volumes:
+        - name: "postgresdb-persistent-storage"
+          persistentVolumeClaim:
+            claimName: "pvc"
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "postgresdb"
+  labels:
+    app: "postgresdb"
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: "postgresdpt"
