@@ -1,0 +1,44 @@
+#Server APP
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    env: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: test
+  template:
+    metadata:
+      labels:
+        env: test
+    spec:
+      containers:
+      - name: server
+        env:
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: hostname-config
+                key: postgres_host
+        image: alejo88/titulacion-test
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-svc
+  labels:
+    env: test
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    env: test
