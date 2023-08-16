@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'edugpt'
+        IMAGE_NAME = 'titulacion'
         IMAGE_TAG = '002'
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'test'
