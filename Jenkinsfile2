@@ -2,8 +2,6 @@ pipeline {
   agent { label "maven" }
   environment {
     AWS_DEFAULT_REGION="us-east-1"
-    AWS_ACCESS_KEY_ID="ASIAQMZCW2O6ZZDQTZP2"
-    AWS_SECRET_ACCESS_KEY="XRZoEAQA21tUTML6qd7PK0mu8r579sUNzy2vvvoM"
   }
 stages {
         stage("Create an EKS Cluster") {
