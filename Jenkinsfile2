@@ -4,8 +4,6 @@ pipeline {
     AWS_DEFAULT_REGION="us-east-1"
     AWS_ACCESS_KEY_ID="ASIAQMZCW2O6ZZDQTZP2"
     AWS_SECRET_ACCESS_KEY="XRZoEAQA21tUTML6qd7PK0mu8r579sUNzy2vvvoM"
-    aws_session_token="FwoGZXIvYXdzENv//////////wEaDKN4qUBsAwIKOoUwJCK2Ac0Eanufq/j5Sgl5J3+4WXd18Ekl7VHiwF4Gf3w5Ve289C+sLomLOuXyAfPGDAArxgYlh/DkTs1hOYlAQAPZHmfnZfxclXtzNVbGlq2QkhFtfg1+royRtv0LPpknjn3ghbM2Zk371Kaz1i/VVAaeAlv/b7ZNV8o4DYlWAnYhTwP0ZcywvTDyJnCyiNkw5LHAGK/G+K0nStYkzPoHpYAbWtOtHcfdjpoFLLPUFm91RHcxoTkrz1uSKKaX+6YGMi0H+s7ZrJudUhvHxYi1Ux9cofRJlWwPYk6OoGJnQy/3l5T7cTlAxiXmp9AX9jY="
-    //THE_BUTLER_SAYS_SO=credentials('027453215677')
   }
 stages {
         stage("Create an EKS Cluster") {
