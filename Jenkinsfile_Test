@@ -7,7 +7,7 @@ pipeline {
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'test'
         AWS_DEFAULT_REGION = 'us-east-1'
-        THE_BUTLER_SAYS_SO = credentials('280470347585')
+        THE_BUTLER_SAYS_SO = credentials('764071613828')
     }
 
     stages {
@@ -55,6 +55,18 @@ pipeline {
                     dir('terraform/test') {
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
+                    }
+                }
+            }
+        }
+        stage('Deploy to EKS') {
+            steps {
+                script {
+                    dir('kubernetes/test') {
+                        sh 'aws eks update-kubeconfig --name myapp-eks-cluster-test'
+                        sh 'kubectl apply -f deployBDD.yml'
+                        sh 'kubectl create configmap hostname-config --from-literal=postgres_host=$(kubectl get svc postgresdb -o jsonpath="{.spec.clusterIP}")'
+                        sh 'kubectl apply -f deployAPP.yml'
                     }
                 }
             }
