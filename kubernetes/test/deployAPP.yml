@@ -24,7 +24,7 @@ spec:
               configMapKeyRef:
                 name: hostname-config
                 key: postgres_host
-        image: alejo88/titulacion-test
+        image: alejo88/titulacion-test:002
         ports:
         - containerPort: 8080
 
