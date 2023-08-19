@@ -52,7 +52,7 @@ pipeline {
         stage('Create an EKS Cluster') {
             steps {
                 script {
-                    dir('terraform') {
+                    dir('terraform/test') {
                         sh 'terraform init -migrate-state'
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
