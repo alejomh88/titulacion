@@ -15,7 +15,7 @@ module "eks" {
     }
 
     eks_managed_node_groups = {
-        dev = {
+        test = {
             min_size = 1
             max_size = 1
             desired_size = 1
