@@ -1,43 +1,18 @@
 pipeline {
-    agent {
-        label 'maven'
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = 'ASIAQMZCW2O6WIVRA67Y'
+        AWS_SECRET_ACCESS_KEY = 'pSQb7dzBLDMpkXkitwBaZW+wAu453R8UN3OHhhWr'
+        AWS_DEFAULT_REGION = "us-east-1"
     }
-
     stages {
-        stage('Source') {
+        stage("Create an EKS Cluster") {
             steps {
-                git 'https://github.com/alejomh88/titulacion.git'
+                script {
+                    dir('terraform/test') {
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
+                    }
+                }
             }
         }
-        stage('Build') {
-            steps {
-                echo 'Building stage!'
-		sh 'mvn clean install'
-            }
-        }
-	stage('Docker image build and push') {
-		steps {
-		script {
-    		// Build and push image with Jenkins' docker-plugin
-    		withDockerServer([uri: "tcp://172.17.0.1:2375"]) {
-      		withDockerRegistry(credentialsId: 'dockerHubCredentials', url: "https://index.docker.io/v1/") {
-        	// we give the image the same version as the .war package
-			image = docker.build("alejo88/titulacion", ".")
-       		        image.push()
-      		}  
-    	    }
-		}
-	}
-	}
-	/*
-	stage('Scan') {
-            steps {
-                echo 'Scan!'
-                withSonarQubeEnv(installationName: 'sonarqubetest') {
-		  sh 'mvn clean package sonar:sonar'
-		}
-            }
-        }
-	*/
-    }
-}
