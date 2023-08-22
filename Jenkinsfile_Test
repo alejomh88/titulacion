@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'titulacion'
-        IMAGE_TAG = '002'
+        IMAGE_TAG = '001'
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'test'
         AWS_DEFAULT_REGION = 'us-east-1'
@@ -27,14 +27,6 @@ pipeline {
                 }
             }
         }
-        //stage('Sonarqube Scan') {
-        //    steps {
-        //        echo 'Sonarqube Scan stage!'
-        //        withSonarQubeEnv(installationName: 'sonarqubetest') {
-        //            sh 'mvn clean package sonar:sonar'
-        //        }
-        //    }
-        //}
         stage('Docker image build and push') {
             steps {
                 script {
@@ -43,18 +35,6 @@ pipeline {
                             image = docker.build("${DOCKER_HUB_USER}/" + "${IMAGE_NAME}-" + "${ENVIRONMENT}:" + "${IMAGE_TAG}", '.')
                             image.push()
                         }
-                    }
-                }
-            }
-        }
-        stage('Deploy to EKS') {
-            steps {
-                script {
-                    dir('kubernetes/test') {
-                        sh 'aws eks update-kubeconfig --name myapp-eks-cluster-test'
-                        sh 'kubectl delete configmap hostname-config'
-                        sh 'kubectl create configmap hostname-config --from-literal=postgres_host=$(kubectl get svc postgresdb -o jsonpath="{.spec.clusterIP}")'
-                        sh 'kubectl apply -f deployAPP.yml'
                     }
                 }
             }
