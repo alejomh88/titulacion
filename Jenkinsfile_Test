@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'titulacion'
-        IMAGE_TAG = '002'
+        IMAGE_TAG = '001'
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'test'
         AWS_DEFAULT_REGION = 'us-east-1'
