@@ -10,14 +10,6 @@ pipeline {
         THE_BUTLER_SAYS_SO = credentials('764071613828')
     }
     stages {
-        stage('Clean directories') {
-            steps {
-                cleanWs()
-                //sh 'docker system prune -f'
-                sh 'docker image prune -f'
-                //sh 'npm cache clean --force'
-            }
-        }
         stage('Source') {
             steps {
                 git 'https://github.com/alejomh88/titulacion.git'
@@ -25,7 +17,6 @@ pipeline {
         }
         stage('Build and Test') {
             steps {
-                echo 'Build and Test!'
                 sh 'mvn clean install'
             }
             post {
