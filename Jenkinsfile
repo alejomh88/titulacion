@@ -14,7 +14,7 @@ pipeline {
             steps {
                 cleanWs()
                 //sh 'docker system prune -f'
-                //sh 'docker image prune -f'
+                sh 'docker image prune -f'
                 //sh 'npm cache clean --force'
             }
         }
@@ -49,7 +49,7 @@ pipeline {
         }
         stage('Slack notification') {
             steps {
-               slackSend channel: 'EduGPT', message: 'Ejecución exitosa Pipeline Prod ${BUILD_NUMBER}', teamDomain: 'edugptespacio', tokenCredentialId: 'slack'
+               slackSend channel: 'EduGPT', message: "Ejecución exitosa Pipeline Prod - Build N. ${BUILD_NUMBER}", teamDomain: 'edugptespacio', tokenCredentialId: 'slack'
             }
         }
     }
