@@ -49,7 +49,7 @@ pipeline {
         }
         stage('Slack notification') {
             steps {
-                slackSend channel: 'EduGPT', message: 'Ejecución exitosa Pipeline Prod' + ${BUILD_NUMBER}, teamDomain: 'edugptespacio', tokenCredentialId: 'slack'
+               slackSend channel: 'EduGPT', message: 'Ejecución exitosa Pipeline Prod ${BUILD_NUMBER}', teamDomain: 'edugptespacio', tokenCredentialId: 'slack'
             }
         }
     }
