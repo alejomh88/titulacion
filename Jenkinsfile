@@ -10,11 +10,6 @@ pipeline {
         THE_BUTLER_SAYS_SO = credentials('764071613828')
     }
     stages {
-        stage('Source') {
-            steps {
-                git 'https://github.com/alejomh88/titulacion.git'
-            }
-        }
         stage('Build and Test') {
             steps {
                 sh 'mvn clean install'
