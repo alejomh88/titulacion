@@ -15,7 +15,7 @@ pipeline {
                 cleanWs()
                 //sh 'docker system prune -f'
                 //sh 'docker image prune -f'
-                sh 'npm cache clean --force'
+                //sh 'npm cache clean --force'
             }
         }
         stage('Source') {
