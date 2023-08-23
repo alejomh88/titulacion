@@ -13,8 +13,8 @@ pipeline {
         stage('Clean directories') {
             steps {
                 cleanWs()
-                sh 'docker system prune -f'
-                sh 'docker image prune -f'
+                //sh 'docker system prune -f'
+                //sh 'docker image prune -f'
                 sh 'npm cache clean --force'
             }
         }
