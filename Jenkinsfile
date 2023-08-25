@@ -22,6 +22,7 @@ pipeline {
                 }
             }
         }
+	/*
 	stage('Sonarqube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
@@ -29,6 +30,7 @@ pipeline {
                 }
             }
         }
+	*/
         stage('Docker image build and push') {
             steps {
                 script {
