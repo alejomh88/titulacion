@@ -22,6 +22,13 @@ pipeline {
                 }
             }
         }
+	stage('Sonarqube Scan') {
+            steps {
+                withSonarQubeEnv(installationName: 'sonarqubetest') {
+                    sh 'mvn clean package sonar:sonar'
+                }
+            }
+        }
         stage('Docker image build and push') {
             steps {
                 script {
