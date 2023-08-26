@@ -22,7 +22,6 @@ pipeline {
                 }
             }
         }
-	/*
 	stage('Sonarqube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
@@ -30,7 +29,6 @@ pipeline {
                 }
             }
         }
-	*/
         stage('Docker image build and push') {
             steps {
                 script {
@@ -44,7 +42,7 @@ pipeline {
                 }
             }
         }
-		stage('Deploy to EKS') {
+	stage('Deploy to EKS') {
             steps {
                 script {
                     dir('kubernetes/test') {
