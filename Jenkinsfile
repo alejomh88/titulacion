@@ -47,7 +47,7 @@ pipeline {
                 script {
                     dir('kubernetes/prod') {
                         sh 'aws eks update-kubeconfig --name myapp-eks-cluster'
-                        sh 'kubectl delete configmap hostname-config'
+                        //sh 'kubectl delete configmap hostname-config'
                         sh 'kubectl create configmap hostname-config --from-literal=postgres_host=$(kubectl get svc postgresdb -o jsonpath="{.spec.clusterIP}")'
                         sh 'kubectl apply -f deployAPP.yml --force'
                     }
