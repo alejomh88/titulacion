@@ -6,9 +6,9 @@ pipeline {
         IMAGE_TAG = '001'
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'prod'
-        AWS_ACCESS_KEY_ID = 'ASIAQMZCW2O65IJOHQ4H'
-        AWS_SECRET_ACCESS_KEY = 'y1p2DTE/p1QlJ8viXo51K9FCtDNtHPVK/8fWTuGw'
-        AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEIT//////////wEaDKBjjr9ooUdKusVjbiK2AUidd7iSQjKeesaBtNks12Q2AXdz/Vy+QtJ+jSNqt37/RFvGxtAL3xuHbLvG6MZ3kF0wKsByqaBFc1Ke3ctIrXXOX3WanSN3agKXHeTck7Q1658g08T5gAU6BvkHtK3iBspg0ZSHqQAnxuhwFWIesKYJIRHz7Is0qJJVkICuD3BPRqEQdtTkoEaF1LrLXvRFILSFwMbKzogC6p/6YsMkr40U68pfd7qdcdIRqHrSqXDs/Qdzy4KjKKCioKcGMi3gp/oBmSTUcTvIYoRx80XLlMKyuY0K/USVb3YA5RSXjTCrcBZ2wkPZvEkc3l4='
+        AWS_ACCESS_KEY_ID = 'ASIAQMZCW2O6W2AIRKPW'
+        AWS_SECRET_ACCESS_KEY = 'dOs2lEPSnVbnofDzqsxN4pUhRPlmFpWtHbyPxfkG'
+        AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEKz//////////wEaDOil73Hc1v4IvhgTESK2AcdhWGQbWw21uE2sFq2Gzih5NUJmc3vCwHzBYLhU7niGBSEtnsQLRB/fAXi3xNhcG+U4vmOyOOU7QGJ4Co1pI+MD5YV0i+M8pxwnoQt2tLKz19JulGk2yJwwusKtfC1ppLZ/3xIOxGC26Ce7/OTsljskmu2ZNDqmPTPJikfrd3G1OThKbrgeCPw1BJ2hW4f0Zr4SP4UG1VJ7/u7z2Jip34b0KeNsLQ+qMi5FeG5oi0EXt+hVAr5mKLqSqacGMi3MnMQDLLnNDVR+Y7d+0JMrXQolxByrO7KGMG8lqBrWItTgBb7Sbmt7gjS/fno='
         AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
@@ -22,7 +22,6 @@ pipeline {
                 }
             }
         }
-	/*
 	stage('Sonarqube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
@@ -30,7 +29,6 @@ pipeline {
                 }
             }
         }
-	*/
         stage('Docker image build and push') {
             steps {
                 script {
