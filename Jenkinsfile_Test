@@ -22,7 +22,6 @@ pipeline {
                 }
             }
         }
-/*
 	stage('Sonarqube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
@@ -30,7 +29,6 @@ pipeline {
                 }
             }
         }
-*/
         stage('Docker image build and push') {
             steps {
                 script {
@@ -65,7 +63,7 @@ pipeline {
     }
     post {
         always {
-			script {
+		script {
                 env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT} | head -n1', returnStdout: true).stripIndent().trim()
                 env.GIT_AUTHOR = sh (script: 'git log -1 --pretty=%ae ${GIT_COMMIT} | awk -F "@" \'{print $1}\' | grep -Po "[a-z]{1,}" | head -n1', returnStdout: true).trim()
                 slackSend(
