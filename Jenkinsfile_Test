@@ -22,6 +22,7 @@ pipeline {
                 }
             }
         }
+/*
 	stage('Sonarqube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqubetest') {
@@ -29,6 +30,7 @@ pipeline {
                 }
             }
         }
+*/
         stage('Docker image build and push') {
             steps {
                 script {
@@ -42,6 +44,7 @@ pipeline {
                 }
             }
         }
+/*
 	stage('Deploy to EKS') {
             steps {
                 script {
@@ -54,6 +57,7 @@ pipeline {
                 }
             }
         }
+/*
         stage('Slack notification') {
             steps {
                slackSend channel: 'EduGPT', message: "Ejecución exitosa Pipeline Test - Build N. ${BUILD_NUMBER}", 
