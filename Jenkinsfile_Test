@@ -77,8 +77,8 @@ pipeline {
                         More info at: ${env.BUILD_URL}
                         Time: ${currentBuild.durationString.minus(' and counting')}
                         """.stripIndent().trim(),
-                    channel: 'slack-channel',
-                    tokenCredentialId: 'SlackToken'
+                    channel: 'EduGPT',
+                    tokenCredentialId: 'slack'
                 )
             }
             cleanWs(cleanWhenNotBuilt: false,
