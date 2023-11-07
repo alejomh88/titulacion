@@ -6,10 +6,8 @@ pipeline {
         IMAGE_TAG = '001'
         DOCKER_HUB_USER = 'alejo88'
         ENVIRONMENT = 'prod'
-        AWS_ACCESS_KEY_ID = 'ASIAQMZCW2O6W2AIRKPW'
-        AWS_SECRET_ACCESS_KEY = 'dOs2lEPSnVbnofDzqsxN4pUhRPlmFpWtHbyPxfkG'
-        AWS_SESSION_TOKEN = 'FwoGZXIvYXdzEKz//////////wEaDOil73Hc1v4IvhgTESK2AcdhWGQbWw21uE2sFq2Gzih5NUJmc3vCwHzBYLhU7niGBSEtnsQLRB/fAXi3xNhcG+U4vmOyOOU7QGJ4Co1pI+MD5YV0i+M8pxwnoQt2tLKz19JulGk2yJwwusKtfC1ppLZ/3xIOxGC26Ce7/OTsljskmu2ZNDqmPTPJikfrd3G1OThKbrgeCPw1BJ2hW4f0Zr4SP4UG1VJ7/u7z2Jip34b0KeNsLQ+qMi5FeG5oi0EXt+hVAr5mKLqSqacGMi3MnMQDLLnNDVR+Y7d+0JMrXQolxByrO7KGMG8lqBrWItTgBb7Sbmt7gjS/fno='
         AWS_DEFAULT_REGION = "us-east-1"
+	THE_BUTLER_SAYS_SO = credentials('764071613828')
     }
     stages {
         stage('Build and Test') {
